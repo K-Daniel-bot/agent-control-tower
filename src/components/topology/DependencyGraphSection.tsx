@@ -1,204 +1,228 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import * as d3 from 'd3'
 import { useOrchestra } from '@/context/AgentOrchestraContext'
 import { useCytoscapeElements } from '@/hooks/useCytoscapeElements'
 import SectionHeader from './SectionHeader'
 import GraphLegend from './GraphLegend'
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// ─── Node / Link types for D3 ─────────────────────────────────────────────────
+interface D3Node extends d3.SimulationNodeDatum {
+  id: string
+  label: string
+  nodeType: string
+  color: string
+  status?: string
+  r: number
+}
 
-// ─── Module-level pre-load ────────────────────────────────────────────────────
-// Cytoscape starts loading the moment this file is imported,
-// NOT when the component mounts. By the time the user clicks TEST, it's ready.
-let _cytoscapeFn: any = null
-let _loadPromise: Promise<any> | null = null
+interface D3Link extends d3.SimulationLinkDatum<D3Node> {
+  id: string
+  color: string
+  opacity?: number
+}
 
-function getCytoscape(): Promise<any> {
-  if (_cytoscapeFn) return Promise.resolve(_cytoscapeFn)
-  if (!_loadPromise) {
-    _loadPromise = Promise.all([
-      import('cytoscape'),
-      import('cytoscape-fcose'),
-    ]).then(([cytoscapeModule, fcoseModule]) => {
-      const fn = cytoscapeModule.default ?? cytoscapeModule
-      // fcose registers as CJS function (not .default)
-      const fcose = typeof fcoseModule === 'function'
-        ? fcoseModule
-        : fcoseModule.default ?? fcoseModule
-      try { fn.use(fcose) } catch (_) { /* already registered */ }
-      _cytoscapeFn = fn
-      return fn
-    })
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function nodeRadius(type: string): number {
+  if (type === 'hub') return 42
+  if (type === 'orchestrator') return 17
+  if (type === 'planner' || type === 'executor') return 13
+  return 10
+}
+
+function fontSizeForType(type: string): number {
+  if (type === 'hub') return 9
+  return 8
+}
+
+// ─── CyElement → D3 nodes/links converter ─────────────────────────────────────
+function convertToD3(elements: ReturnType<typeof useCytoscapeElements>) {
+  const nodeMap = new Map<string, D3Node>()
+  const links: D3Link[] = []
+
+  for (const el of elements) {
+    if (el.group === 'nodes') {
+      const d = el.data as { id: string; label: string; nodeType: string; color: string; status?: string }
+      nodeMap.set(d.id, {
+        id: d.id,
+        label: d.label,
+        nodeType: d.nodeType,
+        color: d.color,
+        status: d.status,
+        r: nodeRadius(d.nodeType),
+      })
+    }
   }
-  return _loadPromise
-}
 
-// Start loading immediately on module import (SSR-safe)
-if (typeof window !== 'undefined') {
-  getCytoscape()
-}
+  for (const el of elements) {
+    if (el.group === 'edges') {
+      const d = el.data as { id: string; source: string; target: string; color: string; opacity?: number }
+      if (nodeMap.has(d.source) && nodeMap.has(d.target)) {
+        links.push({
+          id: d.id,
+          source: d.source,
+          target: d.target,
+          color: d.color,
+          opacity: d.opacity,
+        })
+      }
+    }
+  }
 
-// ─── Cytoscape style ─────────────────────────────────────────────────────────
-const CY_STYLE: any[] = [
-  {
-    selector: 'node',
-    style: {
-      'background-color': '#1a1f2e',
-      'border-width': 2,
-      'border-color': '#2a3042',
-      'label': 'data(label)',
-      'color': '#9ca3af',
-      'font-size': 8,
-      'text-valign': 'bottom',
-      'text-halign': 'center',
-      'text-margin-y': 6,
-      'width': 24,
-      'height': 24,
-      'text-wrap': 'wrap',
-      'text-max-width': '60px',
-    },
-  },
-  {
-    selector: 'node[nodeType="hub"]',
-    style: {
-      'background-color': 'rgba(0, 255, 136, 0.15)',
-      'border-color': '#00ff88',
-      'border-width': 4,
-      'width': 90,
-      'height': 90,
-      'font-size': 9,
-      'font-weight': 'bold',
-      'color': '#00ff88',
-      'text-valign': 'center',
-      'text-halign': 'center',
-      'text-margin-y': 0,
-      'text-wrap': 'wrap',
-      'text-max-width': '70px',
-    },
-  },
-  {
-    selector: 'node[nodeType="orchestrator"]',
-    style: { 'border-color': '#ffd700', 'width': 36, 'height': 36, 'color': '#ffd700', 'font-weight': 'bold' },
-  },
-  { selector: 'node[nodeType="planner"]',      style: { 'border-color': '#8b5cf6', 'color': '#8b5cf6', 'width': 28, 'height': 28 } },
-  { selector: 'node[nodeType="executor"]',     style: { 'border-color': '#f59e0b', 'color': '#f59e0b', 'width': 28, 'height': 28 } },
-  { selector: 'node[nodeType="tool"]',         style: { 'border-color': '#06b6d4', 'color': '#06b6d4' } },
-  { selector: 'node[nodeType="verifier"], node[nodeType="verifier_tool"]', style: { 'border-color': '#10b981', 'color': '#10b981' } },
-  { selector: 'node[nodeType="browser"]',      style: { 'border-color': '#3b82f6', 'color': '#3b82f6' } },
-  { selector: 'node[nodeType="slack"]',        style: { 'border-color': '#e74c3c', 'color': '#e74c3c' } },
-  { selector: 'node[nodeType="filesystem"]',   style: { 'border-color': '#f59e0b', 'color': '#f59e0b' } },
-  { selector: 'node[nodeType="git"]',          style: { 'border-color': '#f97316', 'color': '#f97316' } },
-  { selector: 'node[nodeType="shell"]',        style: { 'border-color': '#06b6d4', 'color': '#06b6d4' } },
-  { selector: 'node[nodeType="knowledge"]',    style: { 'border-color': '#a855f7', 'color': '#a855f7' } },
-  { selector: 'node[nodeType="policy"]',       style: { 'border-color': '#ef4444', 'color': '#ef4444' } },
-  {
-    selector: 'node[status="working"], node[status="active"]',
-    style: { 'border-width': 3, 'background-color': 'rgba(0, 255, 136, 0.08)' },
-  },
-  {
-    selector: 'edge',
-    style: {
-      'line-color': '#2a3042',
-      'width': 1,
-      'curve-style': 'bezier',
-      'opacity': 0.5,
-      'target-arrow-shape': 'none',
-    },
-  },
-]
+  return { nodes: Array.from(nodeMap.values()), links }
+}
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export function DependencyGraphSection() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const cyRef = useRef<any>(null)
+  const svgRef = useRef<SVGSVGElement>(null)
+  const simRef = useRef<d3.Simulation<D3Node, D3Link> | null>(null)
   const { state } = useOrchestra()
   const elements = useCytoscapeElements(state)
   const isEmpty = elements.length === 0
 
-  // Single effect: drives everything — init + update
   useEffect(() => {
-    if (elements.length === 0) {
-      // No agents yet — clear if cy exists
-      if (cyRef.current) {
-        cyRef.current.elements().remove()
-      }
-      return
-    }
+    const svg = svgRef.current
+    if (!svg) return
 
-    let cancelled = false
+    // Clear previous
+    d3.select(svg).selectAll('*').remove()
 
-    getCytoscape().then((cytoscapeFn) => {
-      if (cancelled || !containerRef.current) return
+    if (elements.length === 0) return
 
-      // Create cy instance only once
-      if (!cyRef.current) {
-        cyRef.current = cytoscapeFn({
-          container: containerRef.current,
-          elements: [],
-          style: CY_STYLE,
-          layout: { name: 'preset' },
-          userZoomingEnabled: false,
-          userPanningEnabled: false,
-          boxSelectionEnabled: false,
-          autoungrabify: true,
-          autounselectify: true,
+    const { nodes, links } = convertToD3(elements)
+    const width = svg.clientWidth || 400
+    const height = svg.clientHeight || 300
+
+    const root = d3
+      .select(svg)
+      .attr('width', width)
+      .attr('height', height)
+
+    // Defs: arrow marker (unused but kept for future)
+    const defs = root.append('defs')
+    defs.append('filter')
+      .attr('id', 'glow')
+      .html(`
+        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      `)
+
+    // Link layer
+    const linkG = root.append('g').attr('class', 'links')
+    const linkSel = linkG
+      .selectAll<SVGLineElement, D3Link>('line')
+      .data(links, (d) => d.id)
+      .join('line')
+      .attr('stroke', (d) => d.color)
+      .attr('stroke-width', 1)
+      .attr('stroke-opacity', (d) => d.opacity ?? 0.35)
+
+    // Node layer
+    const nodeG = root.append('g').attr('class', 'nodes')
+    const nodeGrp = nodeG
+      .selectAll<SVGGElement, D3Node>('g')
+      .data(nodes, (d) => d.id)
+      .join('g')
+      .attr('cursor', 'default')
+
+    // Circle
+    nodeGrp
+      .append('circle')
+      .attr('r', (d) => d.r)
+      .attr('fill', (d) => {
+        if (d.nodeType === 'hub') return 'rgba(0,255,136,0.12)'
+        return '#1a1f2e'
+      })
+      .attr('stroke', (d) => d.color)
+      .attr('stroke-width', (d) => (d.nodeType === 'hub' ? 3 : d.status === 'active' || d.status === 'working' ? 2.5 : 1.5))
+      .attr('filter', (d) => (d.nodeType === 'hub' ? 'url(#glow)' : null))
+
+    // Hub multi-line text (SVG tspan)
+    nodeGrp.each(function (d) {
+      const g = d3.select(this)
+      if (d.nodeType === 'hub') {
+        const lines = d.label.split('\n')
+        const text = g.append('text')
+          .attr('text-anchor', 'middle')
+          .attr('dominant-baseline', 'middle')
+          .attr('fill', d.color)
+          .attr('font-size', fontSizeForType(d.nodeType))
+          .attr('font-weight', 'bold')
+          .attr('pointer-events', 'none')
+        lines.forEach((line, i) => {
+          text.append('tspan')
+            .attr('x', 0)
+            .attr('dy', i === 0 ? `${-(lines.length - 1) * 0.55}em` : '1.1em')
+            .text(line)
         })
-      }
-
-      const cy = cyRef.current
-
-      // Replace all elements
-      cy.elements().remove()
-      cy.add(elements.map((el: any) => ({ group: el.group, data: el.data })))
-
-      // Run layout — fcose with cose fallback
-      try {
-        cy.layout({
-          name: 'fcose',
-          quality: 'default',
-          randomize: true,
-          animate: true,
-          animationDuration: 700,
-          fit: true,
-          padding: 40,
-          nodeDimensionsIncludeLabels: true,
-          idealEdgeLength: () => 110,
-          edgeElasticity: () => 0.45,
-          nodeRepulsion: () => 9000,
-          gravity: 0.4,
-          gravityRange: 1.5,
-          numIter: 2500,
-          tile: false,
-        } as any).run()
-      } catch (_) {
-        // Fallback to built-in cose layout
-        cy.layout({
-          name: 'cose',
-          fit: true,
-          padding: 40,
-          animate: true,
-          animationDuration: 700,
-          randomize: true,
-          nodeRepulsion: () => 8000,
-          nodeOverlap: 20,
-          idealEdgeLength: () => 110,
-          gravity: 80,
-          numIter: 1000,
-        } as any).run()
       }
     })
 
-    return () => { cancelled = true }
+    // Label below (non-hub)
+    nodeGrp
+      .filter((d) => d.nodeType !== 'hub')
+      .append('text')
+      .attr('text-anchor', 'middle')
+      .attr('dy', (d) => d.r + 9)
+      .attr('fill', (d) => d.color)
+      .attr('font-size', (d) => fontSizeForType(d.nodeType))
+      .attr('pointer-events', 'none')
+      .text((d) => d.label.replace('\n', ' '))
+
+    // Stop previous simulation
+    if (simRef.current) {
+      simRef.current.stop()
+    }
+
+    // Force simulation
+    const simulation = d3
+      .forceSimulation<D3Node>(nodes)
+      .force(
+        'link',
+        d3
+          .forceLink<D3Node, D3Link>(links)
+          .id((d) => d.id)
+          .distance((link) => {
+            const src = link.source as D3Node
+            const tgt = link.target as D3Node
+            if (src.nodeType === 'hub' || tgt.nodeType === 'hub') return 110
+            return 80
+          })
+          .strength(0.4),
+      )
+      .force('charge', d3.forceManyBody().strength(-300))
+      .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('collision', d3.forceCollide<D3Node>().radius((d) => d.r + 6))
+
+    simRef.current = simulation
+
+    // Pin hub to center
+    const hubNode = nodes.find((n) => n.nodeType === 'hub')
+    if (hubNode) {
+      hubNode.fx = width / 2
+      hubNode.fy = height / 2
+    }
+
+    simulation.on('tick', () => {
+      linkSel
+        .attr('x1', (d) => (d.source as D3Node).x ?? 0)
+        .attr('y1', (d) => (d.source as D3Node).y ?? 0)
+        .attr('x2', (d) => (d.target as D3Node).x ?? 0)
+        .attr('y2', (d) => (d.target as D3Node).y ?? 0)
+
+      nodeGrp.attr('transform', (d) => `translate(${d.x ?? 0},${d.y ?? 0})`)
+    })
+
+    return () => {
+      simulation.stop()
+    }
   }, [elements])
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (cyRef.current) {
-        cyRef.current.destroy()
-        cyRef.current = null
-      }
+      simRef.current?.stop()
     }
   }, [])
 
@@ -214,7 +238,7 @@ export function DependencyGraphSection() {
       }}
     >
       <SectionHeader
-        title="Agent Dependency Graph (Cytoscape)"
+        title="Agent Dependency Graph (D3)"
         accentColor="#3b82f6"
         rightSlot={!isEmpty ? <GraphLegend /> : undefined}
       />
@@ -235,12 +259,13 @@ export function DependencyGraphSection() {
             </span>
           </div>
         )}
-        {/* position:absolute + inset:0 ensures Cytoscape gets real pixel dimensions */}
-        <div
-          ref={containerRef}
+        <svg
+          ref={svgRef}
           style={{
             position: 'absolute',
             inset: 0,
+            width: '100%',
+            height: '100%',
             opacity: isEmpty ? 0.3 : 1,
             transition: 'opacity 0.5s',
           }}

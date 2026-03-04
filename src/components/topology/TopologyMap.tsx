@@ -1,140 +1,11 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { OrchestraState } from '@/types/topology'
 import { AgentOrchestraProvider, useOrchestra } from '@/context/AgentOrchestraContext'
 import { useAgentSimulation } from '@/hooks/useAgentSimulation'
 import { resetNamePool } from '@/data/koreanNamePool'
-import ExecutionFlowSection from './ExecutionFlowSection'
-import DependencyGraphSection from './DependencyGraphSection'
 import AgentCreatePanel from './AgentCreatePanel'
-import { RightLegendPanel } from './RightLegendPanel'
-import LeftPanel from '@/components/left/LeftPanel'
-
-function DashboardHeader({ state }: { state: OrchestraState }) {
-  const [now, setNow] = useState(new Date())
-
-  useEffect(() => {
-    const timer = setInterval(() => setNow(new Date()), 1000)
-    return () => clearInterval(timer)
-  }, [])
-
-  const timeStr = now.toLocaleTimeString('ko-KR', { hour12: false })
-  const dateStr = now.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-
-  const runningCount = state.agents.filter(
-    (a) => a.status === 'active' || a.status === 'working',
-  ).length
-
-  return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '6px 14px',
-        background: 'rgba(10,14,26,0.98)',
-        borderBottom: '1px solid #1e2535',
-        flexShrink: 0,
-      }}
-    >
-      {/* Left: system name */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div
-          style={{
-            width: 6,
-            height: 6,
-            borderRadius: '50%',
-            background: state.phase === 'running' ? '#00ff88' : '#2a3042',
-            boxShadow: state.phase === 'running' ? '0 0 6px #00ff88' : 'none',
-            animation: state.phase === 'running' ? 'pulse-dot 1.5s ease-in-out infinite' : 'none',
-          }}
-        />
-        <span
-          style={{
-            fontSize: 10,
-            fontWeight: 700,
-            color: '#e2e8f0',
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            fontFamily: 'monospace',
-          }}
-        >
-          Agent Control Tower
-        </span>
-        <span
-          style={{
-            fontSize: 8,
-            color: '#4b5563',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-          }}
-        >
-          Observability &amp; Control Plane
-        </span>
-      </div>
-
-      {/* Center: phase indicator */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '2px 10px',
-            background: 'rgba(0,255,136,0.05)',
-            border: '1px solid #1e2535',
-            borderRadius: 4,
-          }}
-        >
-          <span style={{ fontSize: 7, color: '#4b5563', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-            PHASE
-          </span>
-          <span
-            style={{
-              fontSize: 8,
-              color: state.phase === 'running' ? '#00ff88' : state.phase === 'complete' ? '#6b7280' : '#374151',
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '0.05em',
-            }}
-          >
-            {state.phase.toUpperCase()}
-          </span>
-        </div>
-
-        {runningCount > 0 && (
-          <div
-            style={{
-              fontSize: 8,
-              color: '#00ff88',
-              fontFamily: 'monospace',
-              letterSpacing: '0.05em',
-            }}
-          >
-            {runningCount} ACTIVE
-          </div>
-        )}
-      </div>
-
-      {/* Right: datetime */}
-      <div
-        style={{
-          fontSize: 9,
-          color: '#6b7280',
-          fontFamily: 'monospace',
-          letterSpacing: '0.05em',
-        }}
-      >
-        {dateStr} {timeStr}
-      </div>
-    </div>
-  )
-}
+import NocDashboard from '@/components/noc/NocDashboard'
 
 
 type ActiveTab = 'manual' | 'auto' | 'test'
@@ -365,8 +236,6 @@ function TopologyController() {
 }
 
 function TopologyContent() {
-  const { state } = useOrchestra()
-
   return (
     <div
       style={{
@@ -378,28 +247,9 @@ function TopologyContent() {
         overflow: 'hidden',
       }}
     >
-      <DashboardHeader state={state} />
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-        {/* Left agent status + conversation log */}
-        <LeftPanel />
-
-        {/* Main graph area */}
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          <TopologyController />
-          <ExecutionFlowSection />
-          <DependencyGraphSection />
-        </div>
-
-        {/* Right legend panel */}
-        <RightLegendPanel state={state} />
+      <TopologyController />
+      <div style={{ flex: 1, overflow: 'hidden' }}>
+        <NocDashboard />
       </div>
     </div>
   )
