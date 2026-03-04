@@ -2,7 +2,14 @@
 
 import { useEffect, useState } from 'react'
 
-export default function Header() {
+export type TabType = 'dashboard' | 'settings' | 'terminal'
+
+interface HeaderProps {
+  activeTab: TabType
+  onTabChange: (tab: TabType) => void
+}
+
+export default function Header({ activeTab, onTabChange }: HeaderProps) {
   const [currentTime, setCurrentTime] = useState<string>('')
   const [currentDate, setCurrentDate] = useState<string>('')
 
@@ -99,17 +106,34 @@ export default function Header() {
             textShadow: '0 0 20px rgba(59, 130, 246, 0.3)',
           }}
         >
-          종합관제시스템
+          에이전트 관제 시스템
         </div>
-        <div
-          style={{
-            fontSize: 9,
-            color: '#4b5563',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-          }}
-        >
-          Agent Execution Monitoring Dashboard
+        {/* Tab Navigation */}
+        <div style={{ display: 'flex', gap: 2, marginTop: 2 }}>
+          {([
+            { key: 'dashboard' as TabType, label: '관제 대시보드' },
+            { key: 'settings' as TabType, label: '에이전트 설정' },
+            { key: 'terminal' as TabType, label: '프로젝트 시작' },
+          ]).map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => onTabChange(tab.key)}
+              style={{
+                padding: '2px 10px',
+                fontSize: 9,
+                fontWeight: activeTab === tab.key ? 700 : 400,
+                color: activeTab === tab.key ? '#00ff88' : '#6b7280',
+                background: activeTab === tab.key ? 'rgba(0,255,136,0.08)' : 'transparent',
+                border: `1px solid ${activeTab === tab.key ? 'rgba(0,255,136,0.3)' : 'transparent'}`,
+                borderRadius: 3,
+                cursor: 'pointer',
+                letterSpacing: '0.05em',
+                transition: 'all 0.2s',
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 

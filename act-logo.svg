@@ -1,0 +1,177 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" width="900" height="220">
+  <defs>
+    <!-- Green glow filter -->
+    <filter id="glow-green" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-strong" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- Radial gradient for badge bg -->
+    <radialGradient id="badge-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0a0e1a"/>
+    </radialGradient>
+    <!-- Green gradient for text -->
+    <linearGradient id="green-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00ff88"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <!-- Outer glow for hexagon -->
+    <filter id="hex-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ═══════════════ HEXAGON BADGE ═══════════════ -->
+  <!-- Hex: center at (110, 110), radius ~95 -->
+  <!-- Points for flat-top hexagon -->
+  <polygon points="110,15 196,62.5 196,157.5 110,205 24,157.5 24,62.5"
+    fill="url(#badge-bg)" stroke="#00ff88" stroke-width="2.5"
+    filter="url(#hex-glow)" opacity="0.95"/>
+
+  <!-- Inner hex ring -->
+  <polygon points="110,28 183,69 183,151 110,192 37,151 37,69"
+    fill="none" stroke="#00ff8820" stroke-width="1"/>
+
+  <!-- Dot grid inside hex (decorative) -->
+  <g fill="#00ff8820">
+    <circle cx="70" cy="75" r="1.5"/>  <circle cx="88" cy="75" r="1.5"/>
+    <circle cx="106" cy="75" r="1.5"/> <circle cx="124" cy="75" r="1.5"/>
+    <circle cx="142" cy="75" r="1.5"/>
+    <circle cx="61" cy="91" r="1.5"/>  <circle cx="79" cy="91" r="1.5"/>
+    <circle cx="97" cy="91" r="1.5"/>  <circle cx="115" cy="91" r="1.5"/>
+    <circle cx="133" cy="91" r="1.5"/> <circle cx="151" cy="91" r="1.5"/>
+    <circle cx="70" cy="107" r="1.5"/> <circle cx="88" cy="107" r="1.5"/>
+    <circle cx="106" cy="107" r="1.5"/><circle cx="124" cy="107" r="1.5"/>
+    <circle cx="142" cy="107" r="1.5"/>
+    <circle cx="61" cy="123" r="1.5"/> <circle cx="79" cy="123" r="1.5"/>
+    <circle cx="97" cy="123" r="1.5"/> <circle cx="115" cy="123" r="1.5"/>
+    <circle cx="133" cy="123" r="1.5"/><circle cx="151" cy="123" r="1.5"/>
+    <circle cx="70" cy="139" r="1.5"/> <circle cx="88" cy="139" r="1.5"/>
+    <circle cx="106" cy="139" r="1.5"/><circle cx="124" cy="139" r="1.5"/>
+    <circle cx="142" cy="139" r="1.5"/>
+  </g>
+
+  <!-- ── RADAR ARCS (3 concentric) ── -->
+  <!-- Arc center: (110, 145) — base of tower -->
+  <path d="M 55,108 A 55,55 0 0,1 165,108"
+    fill="none" stroke="#00ff88" stroke-width="1.5" stroke-dasharray="4,3"
+    opacity="0.5" filter="url(#glow-green)"/>
+  <path d="M 70,115 A 40,40 0 0,1 150,115"
+    fill="none" stroke="#00ff88" stroke-width="1.5" stroke-dasharray="4,3"
+    opacity="0.65" filter="url(#glow-green)"/>
+  <path d="M 85,122 A 25,25 0 0,1 135,122"
+    fill="none" stroke="#00ff88" stroke-width="1.5" stroke-dasharray="4,3"
+    opacity="0.8" filter="url(#glow-green)"/>
+
+  <!-- ── CONTROL TOWER SILHOUETTE ── -->
+  <!-- Base platform -->
+  <rect x="80" y="158" width="60" height="6" rx="1"
+    fill="#00ff88" filter="url(#glow-green)" opacity="0.9"/>
+  <!-- Tower legs -->
+  <line x1="90" y1="158" x2="82" y2="175" stroke="#00ff88" stroke-width="2" opacity="0.7"/>
+  <line x1="130" y1="158" x2="138" y2="175" stroke="#00ff88" stroke-width="2" opacity="0.7"/>
+  <!-- Tower body -->
+  <rect x="96" y="130" width="28" height="28" rx="2"
+    fill="#0a0e1a" stroke="#00ff88" stroke-width="1.5" opacity="0.9"/>
+  <!-- Tower window (screen) -->
+  <rect x="101" y="135" width="18" height="12" rx="1"
+    fill="#00ff8840" stroke="#00ff88" stroke-width="1"/>
+  <!-- Screen scanline -->
+  <line x1="101" y1="141" x2="119" y2="141" stroke="#00ff88" stroke-width="0.8" opacity="0.6"/>
+  <!-- Tower neck -->
+  <rect x="106" y="108" width="8" height="22" rx="1"
+    fill="#00ff88" filter="url(#glow-green)" opacity="0.85"/>
+  <!-- Antenna mast -->
+  <line x1="110" y1="108" x2="110" y2="75"
+    stroke="#00ff88" stroke-width="2.5" filter="url(#glow-strong)"/>
+  <!-- Antenna tip glow dot -->
+  <circle cx="110" cy="74" r="4"
+    fill="#00ff88" filter="url(#glow-strong)"/>
+  <!-- Antenna crossbars -->
+  <line x1="97" y1="88" x2="123" y2="88"
+    stroke="#00ff88" stroke-width="1.5" opacity="0.7"/>
+  <line x1="101" y1="97" x2="119" y2="97"
+    stroke="#00ff88" stroke-width="1.2" opacity="0.6"/>
+  <!-- Side antennas -->
+  <line x1="97" y1="88" x2="86" y2="80"
+    stroke="#00ff88" stroke-width="1" opacity="0.5"/>
+  <line x1="123" y1="88" x2="134" y2="80"
+    stroke="#00ff88" stroke-width="1" opacity="0.5"/>
+  <!-- Tip dots on side antennas -->
+  <circle cx="86" cy="80" r="2" fill="#06b6d4" filter="url(#glow-green)"/>
+  <circle cx="134" cy="80" r="2" fill="#06b6d4" filter="url(#glow-green)"/>
+
+  <!-- ── SIGNAL PULSE DOT (rotating beam effect) ── -->
+  <circle cx="148" cy="98" r="3" fill="#00ff88" opacity="0.8" filter="url(#glow-strong)"/>
+  <circle cx="60" cy="125" r="2" fill="#06b6d4" opacity="0.6" filter="url(#glow-green)"/>
+
+  <!-- Corner hex decoration nodes -->
+  <circle cx="24" cy="110" r="3" fill="#00ff88" filter="url(#glow-green)" opacity="0.7"/>
+  <circle cx="196" cy="110" r="3" fill="#00ff88" filter="url(#glow-green)" opacity="0.7"/>
+  <circle cx="67" cy="23" r="2" fill="#06b6d4" opacity="0.5"/>
+  <circle cx="153" cy="23" r="2" fill="#06b6d4" opacity="0.5"/>
+  <circle cx="67" cy="197" r="2" fill="#06b6d4" opacity="0.5"/>
+  <circle cx="153" cy="197" r="2" fill="#06b6d4" opacity="0.5"/>
+
+  <!-- ═══════════════ TEXT ═══════════════ -->
+  <!-- "AGENT" — large, dark for visibility on light/dark bg -->
+  <text x="232" y="85"
+    font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif"
+    font-size="68" font-weight="900"
+    fill="#1a2035"
+    letter-spacing="-1">AGENT</text>
+
+  <!-- "CONTROL TOWER" — green gradient, slightly smaller -->
+  <text x="234" y="137"
+    font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif"
+    font-size="46" font-weight="900"
+    fill="url(#green-grad)"
+    letter-spacing="2"
+    filter="url(#glow-green)">CONTROL TOWER</text>
+
+  <!-- Separator line -->
+  <line x1="232" y1="150" x2="870" y2="150"
+    stroke="#00ff8830" stroke-width="1"/>
+
+  <!-- Tagline -->
+  <text x="235" y="170"
+    font-family="'Courier New', Courier, monospace"
+    font-size="13" fill="#4b5563"
+    letter-spacing="3">AI AGENT OBSERVABILITY &amp; CONTROL PLATFORM</text>
+
+  <!-- Version badge -->
+  <rect x="720" y="178" width="48" height="18" rx="9"
+    fill="#00ff8815" stroke="#00ff8840" stroke-width="1"/>
+  <text x="744" y="191"
+    font-family="monospace" font-size="10" fill="#00ff88"
+    text-anchor="middle" letter-spacing="1">v1.0</text>
+
+  <!-- Tech stack tags -->
+  <g font-family="monospace" font-size="10" fill="#374151">
+    <rect x="234" y="180" width="52" height="16" rx="8" fill="#1f2937" stroke="#2a3042" stroke-width="1"/>
+    <text x="260" y="192" text-anchor="middle">Next.js</text>
+
+    <rect x="293" y="180" width="58" height="16" rx="8" fill="#1f2937" stroke="#2a3042" stroke-width="1"/>
+    <text x="322" y="192" text-anchor="middle">xterm.js</text>
+
+    <rect x="358" y="180" width="56" height="16" rx="8" fill="#1f2937" stroke="#2a3042" stroke-width="1"/>
+    <text x="386" y="192" text-anchor="middle">node-pty</text>
+
+    <rect x="421" y="180" width="66" height="16" rx="8" fill="#1f2937" stroke="#2a3042" stroke-width="1"/>
+    <text x="454" y="192" text-anchor="middle">React Flow</text>
+
+    <rect x="494" y="180" width="70" height="16" rx="8" fill="#1f2937" stroke="#2a3042" stroke-width="1"/>
+    <text x="529" y="192" text-anchor="middle">Cytoscape.js</text>
+
+    <rect x="571" y="180" width="64" height="16" rx="8" fill="#1f2937" stroke="#2a3042" stroke-width="1"/>
+    <text x="603" y="192" text-anchor="middle">TypeScript</text>
+
+    <rect x="642" y="180" width="62" height="16" rx="8" fill="#1f2937" stroke="#2a3042" stroke-width="1"/>
+    <text x="673" y="192" text-anchor="middle">WebSocket</text>
+  </g>
+</svg>

@@ -1,11 +1,12 @@
 'use client'
 
-import { BaseEdge, EdgeProps, getBezierPath } from '@xyflow/react'
+import { BaseEdge, type EdgeProps, getBezierPath } from '@xyflow/react'
 
 export type EdgeStatus = 'normal' | 'warning' | 'error'
 
 export interface CustomEdgeData {
   status?: EdgeStatus
+  dataRate?: number
 }
 
 const EDGE_COLORS: Record<EdgeStatus, string> = {
@@ -13,13 +14,6 @@ const EDGE_COLORS: Record<EdgeStatus, string> = {
   warning: '#fbbf24',
   error:   '#ef4444',
 }
-
-const ANIMATION_STYLE = `
-@keyframes flow-dash {
-  from { stroke-dashoffset: 24; }
-  to   { stroke-dashoffset: 0; }
-}
-`
 
 export function CustomEdge({
   id,
@@ -36,7 +30,7 @@ export function CustomEdge({
   const status: EdgeStatus = edgeData.status ?? 'normal'
   const color = EDGE_COLORS[status]
 
-  const [edgePath] = getBezierPath({
+  const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
     sourcePosition,
@@ -47,8 +41,6 @@ export function CustomEdge({
 
   return (
     <>
-      <style>{ANIMATION_STYLE}</style>
-
       {/* Static base stroke */}
       <BaseEdge
         id={id}
@@ -57,7 +49,7 @@ export function CustomEdge({
         style={{
           stroke: color,
           strokeWidth: 1.5,
-          opacity: 0.35,
+          opacity: 0.3,
         }}
       />
 
@@ -71,10 +63,35 @@ export function CustomEdge({
         strokeLinecap="round"
         style={{
           animation: 'flow-dash 2s linear infinite',
-          opacity: 0.9,
+          opacity: 0.85,
           filter: `drop-shadow(0 0 3px ${color})`,
         }}
       />
+
+      {/* Data rate label */}
+      {edgeData.dataRate != null && edgeData.dataRate > 0 && (
+        <foreignObject
+          x={labelX - 16}
+          y={labelY - 8}
+          width={32}
+          height={16}
+          style={{ overflow: 'visible' }}
+        >
+          <div
+            style={{
+              fontSize: 7,
+              color: '#6b7280',
+              fontFamily: 'monospace',
+              textAlign: 'center',
+              background: 'rgba(10,14,26,0.8)',
+              borderRadius: 3,
+              padding: '1px 3px',
+            }}
+          >
+            {edgeData.dataRate}t/s
+          </div>
+        </foreignObject>
+      )}
     </>
   )
 }

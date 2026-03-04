@@ -1,10 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import Header from '@/components/layout/Header'
+import type { TabType } from '@/components/layout/Header'
 import LeftPanel from '@/components/left/LeftPanel'
 
-// Placeholder rendered when other agents' panels are not yet available
 function PlaceholderPanel({ title, color }: { title: string; color: string }) {
   return (
     <div
@@ -33,88 +34,80 @@ function PlaceholderPanel({ title, color }: { title: string; color: string }) {
   )
 }
 
-// Dynamic import loader — wraps import() so TS doesn't fail on missing modules
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const safeImport = (path: string): Promise<any> => import(path)
-
-// Center: Topology Map (created by 꼬물이)
 const TopologyMap = dynamic(
-  async () => {
-    try {
-      const mod = await safeImport('@/components/topology/TopologyMap')
-      return mod.default
-    } catch {
-      return () => <PlaceholderPanel title="토폴로지 맵" color="#3b82f6" />
-    }
-  },
+  () =>
+    import('@/components/topology/TopologyMap')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="토폴로지 맵" color="#3b82f6" />),
   {
     ssr: false,
     loading: () => <PlaceholderPanel title="토폴로지 맵 로딩 중..." color="#3b82f6" />,
   }
 )
 
-// Right: Charts Panel (created by 쫄깃이)
 const RightPanel = dynamic(
-  async () => {
-    try {
-      const mod = await safeImport('@/components/right/RightPanel')
-      return mod.default
-    } catch {
-      return () => <PlaceholderPanel title="실시간 차트 패널" color="#a855f7" />
-    }
-  },
+  () =>
+    import('@/components/right/RightPanel')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="실시간 차트 패널" color="#a855f7" />),
   {
     ssr: false,
     loading: () => <PlaceholderPanel title="차트 로딩 중..." color="#a855f7" />,
   }
 )
 
-// Bottom: Event Log (created by 쫄깃이)
 const BottomPanel = dynamic(
-  async () => {
-    try {
-      const mod = await safeImport('@/components/bottom/BottomPanel')
-      return mod.default
-    } catch {
-      return () => <PlaceholderPanel title="이벤트 로그" color="#f59e0b" />
-    }
-  },
+  () =>
+    import('@/components/bottom/BottomPanel')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="이벤트 로그" color="#f59e0b" />),
   {
     ssr: false,
     loading: () => <PlaceholderPanel title="이벤트 로그 로딩 중..." color="#f59e0b" />,
   }
 )
 
-export default function DashboardPage() {
+const AgentSettingsPage = dynamic(
+  () =>
+    import('@/components/settings/AgentSettingsPage')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="에이전트 설정" color="#3b82f6" />),
+  {
+    ssr: false,
+    loading: () => <PlaceholderPanel title="에이전트 설정 로딩 중..." color="#3b82f6" />,
+  }
+)
+
+const TerminalDashboard = dynamic(
+  () =>
+    import('@/components/terminal/TerminalDashboard')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="터미널" color="#00ff88" />),
+  {
+    ssr: false,
+    loading: () => <PlaceholderPanel title="터미널 로딩 중..." color="#00ff88" />,
+  }
+)
+
+function DashboardView() {
   return (
     <div
       style={{
         display: 'grid',
-        gridTemplateRows: '48px 1fr 200px',
+        gridTemplateRows: '1fr 200px',
         gridTemplateColumns: '260px 1fr 280px',
         gridTemplateAreas: `
-          "header header header"
           "left   center right"
           "bottom bottom bottom"
         `,
-        height: '100vh',
-        width: '100vw',
+        flex: 1,
         overflow: 'hidden',
-        background: '#0a0e1a',
         gap: 0,
       }}
     >
-      {/* Header — spans all 3 columns */}
-      <div style={{ gridArea: 'header' }}>
-        <Header />
-      </div>
-
-      {/* Left Panel */}
       <div style={{ gridArea: 'left', overflow: 'hidden' }}>
         <LeftPanel />
       </div>
-
-      {/* Center: Topology Map */}
       <div
         style={{
           gridArea: 'center',
@@ -125,13 +118,9 @@ export default function DashboardPage() {
       >
         <TopologyMap />
       </div>
-
-      {/* Right Panel */}
       <div style={{ gridArea: 'right', overflow: 'hidden' }}>
         <RightPanel />
       </div>
-
-      {/* Bottom Panel — spans all 3 columns */}
       <div
         style={{
           gridArea: 'bottom',
@@ -140,6 +129,34 @@ export default function DashboardPage() {
         }}
       >
         <BottomPanel />
+      </div>
+    </div>
+  )
+}
+
+export default function DashboardPage() {
+  const [activeTab, setActiveTab] = useState<TabType>('dashboard')
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        width: '100vw',
+        overflow: 'hidden',
+        background: '#0a0e1a',
+      }}
+    >
+      <Header activeTab={activeTab} onTabChange={setActiveTab} />
+      <div style={{ display: activeTab === 'dashboard' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
+        <DashboardView />
+      </div>
+      <div style={{ display: activeTab === 'settings' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
+        <AgentSettingsPage />
+      </div>
+      <div style={{ display: activeTab === 'terminal' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
+        <TerminalDashboard isVisible={activeTab === 'terminal'} />
       </div>
     </div>
   )

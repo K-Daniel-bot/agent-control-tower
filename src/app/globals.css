@@ -147,3 +147,65 @@ body {
   border-color: rgba(0, 255, 136, 0.3);
   box-shadow: 0 0 8px rgba(0, 255, 136, 0.1), inset 0 0 8px rgba(0, 255, 136, 0.05);
 }
+
+/* ─── Topology Animations ─────────────────────────────────── */
+
+/* Agent spawn fade-in */
+@keyframes spawn-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Working agent border pulse */
+@keyframes working-pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.6), 0 0 40px rgba(0, 255, 136, 0.2);
+  }
+}
+
+/* Status dot pulse */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.7); }
+}
+
+/* Edge flow animation */
+@keyframes flow-dash {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Popover fade-in */
+@keyframes popover-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Terminal (xterm.js) Overrides ─────────────────────── */
+
+.xterm {
+  height: 100%;
+  padding: 4px;
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar {
+  width: 4px;
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar-track {
+  background: #0a0e1a;
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar-thumb {
+  background: #2a3042;
+  border-radius: 2px;
+}
