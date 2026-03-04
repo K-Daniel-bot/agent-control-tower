@@ -1,0 +1,149 @@
+@import 'tailwindcss';
+
+:root {
+  --noc-bg: #0a0e1a;
+  --noc-bg-secondary: #111827;
+  --noc-panel: #1a1f2e;
+  --noc-border: #2a3042;
+  --noc-text: #e5e7eb;
+  --noc-text-muted: #9ca3af;
+  --noc-green: #00ff88;
+  --noc-orange: #ff6b35;
+  --noc-blue: #3b82f6;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--noc-bg);
+  color: var(--noc-text);
+  font-family: system-ui, 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--noc-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--noc-border);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a4052;
+}
+
+/* Panel glassmorphism */
+.panel-glass {
+  background: rgba(26, 31, 46, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(42, 48, 66, 0.8);
+}
+
+/* Glowing text */
+.text-glow-green {
+  color: var(--noc-green);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+}
+
+.text-glow-orange {
+  color: var(--noc-orange);
+  text-shadow: 0 0 8px rgba(255, 107, 53, 0.5);
+}
+
+.text-glow-blue {
+  color: var(--noc-blue);
+  text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
+
+/* Animated pulse for active items */
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.pulse-green {
+  animation: pulse-green 2s ease-in-out infinite;
+}
+
+/* Status indicator */
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.active {
+  background-color: var(--noc-green);
+  box-shadow: 0 0 4px var(--noc-green);
+}
+
+.status-dot.warning {
+  background-color: var(--noc-orange);
+  box-shadow: 0 0 4px var(--noc-orange);
+}
+
+.status-dot.error {
+  background-color: #ef4444;
+  box-shadow: 0 0 4px #ef4444;
+}
+
+/* Progress bar base */
+.progress-bar {
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(42, 48, 66, 0.6);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.progress-bar-fill.green {
+  background: linear-gradient(90deg, #00cc6a, #00ff88);
+  box-shadow: 0 0 4px rgba(0, 255, 136, 0.4);
+}
+
+.progress-bar-fill.orange {
+  background: linear-gradient(90deg, #e55a25, #ff6b35);
+  box-shadow: 0 0 4px rgba(255, 107, 53, 0.4);
+}
+
+/* Section title */
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--noc-text-muted);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--noc-border);
+  margin-bottom: 8px;
+}
+
+/* Neon border glow */
+.border-glow-green {
+  border-color: rgba(0, 255, 136, 0.3);
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.1), inset 0 0 8px rgba(0, 255, 136, 0.05);
+}
