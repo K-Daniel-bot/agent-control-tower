@@ -1,294 +1,348 @@
 'use client'
 
-import { useMemo } from 'react'
-import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts'
-import { tokenUsageSummary, workflowMetrics, agentMetrics } from '@/data/mockData'
-import type { WorkflowMetric, AgentMetric } from '@/types'
+import { useEffect, useRef } from 'react'
+import { useOrchestra } from '@/context/AgentOrchestraContext'
+import type { AgentStatus, AgentMessage } from '@/types/topology'
 
-// ============================================================
-// Sub-components
-// ============================================================
-
-function SectionTitle({ title }: { title: string }) {
-  return (
-    <div
-      style={{
-        fontSize: 10,
-        fontWeight: 700,
-        letterSpacing: '0.1em',
-        textTransform: 'uppercase',
-        color: '#6b7280',
-        paddingBottom: 5,
-        borderBottom: '1px solid #2a3042',
-        marginBottom: 6,
-      }}
-    >
-      {title}
-    </div>
-  )
+// ── Status config ──────────────────────────────────────────────
+const STATUS_CONFIG: Record<AgentStatus, { color: string; label: string; pulse: boolean }> = {
+  spawning:  { color: '#6b7280', label: '초기화',  pulse: false },
+  active:    { color: '#3b82f6', label: '활성',    pulse: true  },
+  working:   { color: '#00ff88', label: '실행',    pulse: true  },
+  idle:      { color: '#4b5563', label: '대기',    pulse: false },
+  error:     { color: '#ef4444', label: '오류',    pulse: true  },
+  complete:  { color: '#374151', label: '완료',    pulse: false },
 }
 
-function ProgressBar({ percentage, isHigh }: { percentage: number; isHigh: boolean }) {
-  const color = isHigh ? '#ff6b35' : '#00ff88'
-  const shadow = isHigh ? 'rgba(255, 107, 53, 0.5)' : 'rgba(0, 255, 136, 0.4)'
+const TYPE_COLORS: Record<string, string> = {
+  orchestrator: '#ffd700',
+  planner:      '#8b5cf6',
+  executor:     '#3b82f6',
+  tool:         '#06b6d4',
+  verifier:     '#10b981',
+  result:       '#00ff88',
+}
+
+const MSG_TYPE_CONFIG = {
+  task:   { color: '#3b82f6', icon: '→' },
+  result: { color: '#00ff88', icon: '✓' },
+  error:  { color: '#ef4444', icon: '✗' },
+  system: { color: '#6b7280', icon: '◆' },
+}
+
+// ── Agent status row ────────────────────────────────────────────
+function AgentRow({ agent }: { agent: ReturnType<typeof useOrchestra>['state']['agents'][number] }) {
+  const cfg = STATUS_CONFIG[agent.status]
+  const typeColor = TYPE_COLORS[agent.identity.agentType] ?? '#6b7280'
 
   return (
     <div
       style={{
-        height: 3,
-        background: 'rgba(42, 48, 66, 0.8)',
-        borderRadius: 2,
-        overflow: 'hidden',
-        marginTop: 3,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 7,
+        padding: '5px 8px',
+        borderRadius: 4,
+        background: agent.status === 'error'
+          ? 'rgba(239,68,68,0.05)'
+          : agent.status === 'working' || agent.status === 'active'
+          ? 'rgba(0,255,136,0.03)'
+          : 'transparent',
+        border: `1px solid ${agent.status === 'error' ? 'rgba(239,68,68,0.2)' : '#1e2535'}`,
+        marginBottom: 3,
       }}
     >
+      {/* Status dot */}
       <div
         style={{
-          width: `${Math.min(percentage, 100)}%`,
-          height: '100%',
-          background: `linear-gradient(90deg, ${color}99, ${color})`,
-          boxShadow: `0 0 4px ${shadow}`,
-          borderRadius: 2,
-          transition: 'width 0.5s ease',
+          width: 6,
+          height: 6,
+          borderRadius: '50%',
+          background: cfg.color,
+          boxShadow: cfg.pulse ? `0 0 5px ${cfg.color}` : 'none',
+          flexShrink: 0,
+          animation: cfg.pulse ? 'pulse-dot 1.5s ease-in-out infinite' : 'none',
         }}
       />
-    </div>
-  )
-}
 
-function WorkflowRow({ metric, rank }: { metric: WorkflowMetric; rank: number }) {
-  const isHigh = metric.percentage >= 80
-
-  return (
-    <div
-      style={{
-        marginBottom: 8,
-        padding: '5px 6px',
-        borderRadius: 4,
-        background: 'rgba(42, 48, 66, 0.15)',
-        border: '1px solid rgba(42, 48, 66, 0.3)',
-      }}
-    >
-      {/* Rank + Name row */}
-      <div className="flex items-center justify-between" style={{ marginBottom: 2 }}>
-        <div className="flex items-center gap-1.5">
-          <span
-            style={{
-              fontSize: 9,
-              fontWeight: 700,
-              color: rank <= 2 ? '#00ff88' : '#6b7280',
-              minWidth: 12,
-            }}
-          >
-            {rank}
-          </span>
-          <span
-            style={{
-              fontSize: 11,
-              color: '#9ca3af',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              maxWidth: 120,
-            }}
-            title={metric.name}
-          >
-            {metric.name}
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span
-            style={{
-              fontSize: 11,
-              fontWeight: 700,
-              color: isHigh ? '#ff6b35' : '#e5e7eb',
-              fontVariantNumeric: 'tabular-nums',
-            }}
-          >
-            {metric.tokenPerSec.toLocaleString()}
-          </span>
-          <span style={{ fontSize: 9, color: '#6b7280' }}>T/s</span>
-        </div>
-      </div>
-
-      {/* Percentage + bar */}
-      <div className="flex items-center gap-2">
-        <div style={{ flex: 1 }}>
-          <ProgressBar percentage={metric.percentage} isHigh={isHigh} />
-        </div>
-        <span
+      {/* Name + type */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div
           style={{
             fontSize: 9,
-            color: isHigh ? '#ff6b35' : '#6b7280',
-            minWidth: 26,
-            textAlign: 'right',
-            fontVariantNumeric: 'tabular-nums',
+            fontWeight: 600,
+            color: typeColor,
+            letterSpacing: '0.03em',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
           }}
         >
-          {metric.percentage}%
+          {agent.identity.englishRole}
+        </div>
+        <div style={{ fontSize: 8, color: '#4b5563', letterSpacing: '0.02em' }}>
+          {cfg.label}
+          {agent.tokenRate > 0 && (
+            <span style={{ color: '#6b7280', marginLeft: 4 }}>
+              {agent.tokenRate}t/s
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Latency */}
+      {agent.latencyMs > 0 && agent.status !== 'complete' && (
+        <div
+          style={{
+            fontSize: 8,
+            color: agent.latencyMs > 500 ? '#f59e0b' : '#4b5563',
+            fontFamily: 'monospace',
+            flexShrink: 0,
+          }}
+        >
+          {agent.latencyMs}ms
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Conversation message row ────────────────────────────────────
+function MessageRow({ msg }: { msg: AgentMessage }) {
+  const cfg = MSG_TYPE_CONFIG[msg.type]
+  const time = new Date(msg.timestamp).toLocaleTimeString('ko-KR', {
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  })
+
+  return (
+    <div
+      style={{
+        padding: '5px 8px',
+        borderLeft: `2px solid ${cfg.color}40`,
+        marginBottom: 4,
+        background: `${cfg.color}05`,
+      }}
+    >
+      {/* Header row */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 4,
+          marginBottom: 2,
+        }}
+      >
+        <span style={{ fontSize: 8, color: cfg.color, fontWeight: 700 }}>
+          {cfg.icon}
+        </span>
+        <span style={{ fontSize: 8, color: cfg.color, fontWeight: 600 }}>
+          {msg.fromLabel}
+        </span>
+        {msg.toLabel !== 'ALL' && (
+          <>
+            <span style={{ fontSize: 7, color: '#374151' }}>→</span>
+            <span style={{ fontSize: 8, color: '#6b7280' }}>{msg.toLabel}</span>
+          </>
+        )}
+        <span style={{ marginLeft: 'auto', fontSize: 7, color: '#374151', fontFamily: 'monospace' }}>
+          {time}
         </span>
       </div>
-    </div>
-  )
-}
 
-function AgentRow({ metric, rank }: { metric: AgentMetric; rank: number }) {
-  const isHigh = metric.percentage >= 80
-  const typeColor: Record<string, string> = {
-    planner: '#a855f7',
-    executor: '#3b82f6',
-    verifier: '#00ff88',
-    tool: '#f59e0b',
-    coordinator: '#ff6b35',
-  }
-  const dotColor = typeColor[metric.type] ?? '#6b7280'
-
-  return (
-    <div
-      style={{
-        marginBottom: 7,
-        padding: '4px 6px',
-        borderRadius: 4,
-        background: 'rgba(42, 48, 66, 0.15)',
-        border: '1px solid rgba(42, 48, 66, 0.3)',
-      }}
-    >
-      <div className="flex items-center justify-between" style={{ marginBottom: 2 }}>
-        <div className="flex items-center gap-1.5">
-          <span style={{ fontSize: 9, fontWeight: 700, color: rank <= 2 ? '#00ff88' : '#6b7280', minWidth: 12 }}>
-            {rank}
-          </span>
-          <div
-            style={{
-              width: 5,
-              height: 5,
-              borderRadius: '50%',
-              background: dotColor,
-              boxShadow: `0 0 4px ${dotColor}`,
-              flexShrink: 0,
-            }}
-          />
-          <span
-            style={{ fontSize: 11, color: '#9ca3af', maxWidth: 110, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-            title={metric.name}
-          >
-            {metric.name}
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span style={{ fontSize: 11, fontWeight: 700, color: isHigh ? '#ff6b35' : '#e5e7eb', fontVariantNumeric: 'tabular-nums' }}>
-            {metric.tokenPerSec.toLocaleString()}
-          </span>
-          <span style={{ fontSize: 9, color: '#6b7280' }}>T/s</span>
-        </div>
-      </div>
-      <ProgressBar percentage={metric.percentage} isHigh={isHigh} />
-    </div>
-  )
-}
-
-// ============================================================
-// Token Usage Section (mini line chart)
-// ============================================================
-function TokenUsageSection() {
-  const chartData = useMemo(
-    () => tokenUsageSummary.chartData.map((d) => ({ value: d.value, t: d.timestamp })),
-    []
-  )
-
-  return (
-    <div style={{ marginBottom: 10 }}>
-      <SectionTitle title="토큰 사용량 (Token/sec)" />
-
-      {/* Big number */}
-      <div className="flex items-end justify-between" style={{ marginBottom: 6 }}>
-        <div>
-          <div
-            style={{
-              fontSize: 24,
-              fontWeight: 800,
-              color: '#00ff88',
-              textShadow: '0 0 12px rgba(0, 255, 136, 0.5)',
-              fontVariantNumeric: 'tabular-nums',
-              lineHeight: 1,
-            }}
-          >
-            {tokenUsageSummary.totalTokenPerSec.toLocaleString()}
-          </div>
-          <div style={{ fontSize: 9, color: '#6b7280', marginTop: 2 }}>
-            Token / sec · 최대 {tokenUsageSummary.peakTokenPerSec.toLocaleString()}
-          </div>
-        </div>
-        <div className="text-right">
-          <div style={{ fontSize: 11, color: '#9ca3af' }}>
-            워크플로우 <span style={{ color: '#00ff88', fontWeight: 700 }}>{tokenUsageSummary.activeWorkflows}</span>
-          </div>
-          <div style={{ fontSize: 11, color: '#9ca3af' }}>
-            에이전트 <span style={{ color: '#3b82f6', fontWeight: 700 }}>{tokenUsageSummary.activeAgents}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Mini chart */}
-      <div style={{ height: 48 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke="#00ff88"
-              strokeWidth={1.5}
-              dot={false}
-              strokeOpacity={0.9}
-            />
-            <Tooltip
-              contentStyle={{ background: '#1a1f2e', border: '1px solid #2a3042', fontSize: 10, borderRadius: 4 }}
-              labelStyle={{ display: 'none' }}
-              formatter={(v: number) => [`${Math.round(v).toLocaleString()} T/s`, '']}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+      {/* Message body */}
+      <div
+        style={{
+          fontSize: 9,
+          color: '#9ca3af',
+          lineHeight: 1.5,
+          wordBreak: 'break-word',
+        }}
+      >
+        {msg.message}
       </div>
     </div>
   )
 }
 
-// ============================================================
-// Main LeftPanel
-// ============================================================
+// ── Main LeftPanel ──────────────────────────────────────────────
 export default function LeftPanel() {
+  const { state } = useOrchestra()
+  const msgEndRef = useRef<HTMLDivElement>(null)
+
+  const activeAgents = state.agents.filter(
+    (a) => a.status !== 'complete',
+  )
+  const completedAgents = state.agents.filter((a) => a.status === 'complete')
+
+  // Auto-scroll conversation log to bottom
+  useEffect(() => {
+    msgEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [state.messages.length])
+
   return (
     <div
       style={{
-        width: '100%',
+        width: 220,
         height: '100%',
-        background: 'rgba(26, 31, 46, 0.85)',
-        borderRight: '1px solid #2a3042',
-        overflowY: 'auto',
-        padding: '10px 8px',
-        backdropFilter: 'blur(8px)',
         display: 'flex',
         flexDirection: 'column',
-        gap: 0,
+        background: 'rgba(10,14,26,0.97)',
+        borderRight: '1px solid #1e2535',
+        flexShrink: 0,
+        overflow: 'hidden',
       }}
     >
-      {/* ── Section 1: Token Usage ── */}
-      <TokenUsageSection />
+      {/* ── Agent Status Section ── */}
+      <div
+        style={{
+          flex: '0 0 auto',
+          maxHeight: '50%',
+          display: 'flex',
+          flexDirection: 'column',
+          borderBottom: '1px solid #1e2535',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '8px 10px 6px',
+            flexShrink: 0,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 8,
+              fontWeight: 700,
+              color: '#4b5563',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+            }}
+          >
+            에이전트 상태
+          </span>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            {state.agents.length > 0 && (
+              <>
+                <span style={{ fontSize: 8, color: '#00ff88', fontFamily: 'monospace' }}>
+                  {activeAgents.length}
+                </span>
+                <span style={{ fontSize: 7, color: '#374151' }}>/</span>
+                <span style={{ fontSize: 8, color: '#4b5563', fontFamily: 'monospace' }}>
+                  {state.agents.length}
+                </span>
+              </>
+            )}
+          </div>
+        </div>
 
-      {/* ── Section 2: Workflow TOP5 ── */}
-      <div style={{ marginBottom: 10 }}>
-        <SectionTitle title="백본 트래픽 TOP5 (워크플로우)" />
-        {workflowMetrics.map((m, i) => (
-          <WorkflowRow key={m.id} metric={m} rank={i + 1} />
-        ))}
+        {/* Agent list */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px 8px' }}>
+          {state.agents.length === 0 ? (
+            <div
+              style={{
+                padding: '16px 0',
+                textAlign: 'center',
+                fontSize: 9,
+                color: '#374151',
+                letterSpacing: '0.05em',
+              }}
+            >
+              에이전트 없음
+            </div>
+          ) : (
+            <>
+              {activeAgents.map((agent) => (
+                <AgentRow key={agent.identity.id} agent={agent} />
+              ))}
+              {completedAgents.length > 0 && (
+                <>
+                  <div
+                    style={{
+                      fontSize: 7,
+                      color: '#374151',
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      padding: '4px 2px 3px',
+                      marginTop: 4,
+                    }}
+                  >
+                    완료 ({completedAgents.length})
+                  </div>
+                  {completedAgents.map((agent) => (
+                    <AgentRow key={agent.identity.id} agent={agent} />
+                  ))}
+                </>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
-      {/* ── Section 3: Agent TOP5 ── */}
-      <div>
-        <SectionTitle title="장비 트래픽 TOP5 (에이전트)" />
-        {agentMetrics.map((m, i) => (
-          <AgentRow key={m.id} metric={m} rank={i + 1} />
-        ))}
+      {/* ── Conversation Log Section ── */}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '8px 10px 6px',
+            flexShrink: 0,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 8,
+              fontWeight: 700,
+              color: '#4b5563',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+            }}
+          >
+            대화 로그
+          </span>
+          {state.messages.length > 0 && (
+            <span style={{ fontSize: 8, color: '#374151', fontFamily: 'monospace' }}>
+              {state.messages.length}
+            </span>
+          )}
+        </div>
+
+        {/* Message list */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px 8px' }}>
+          {state.messages.length === 0 ? (
+            <div
+              style={{
+                padding: '16px 0',
+                textAlign: 'center',
+                fontSize: 9,
+                color: '#374151',
+                letterSpacing: '0.05em',
+              }}
+            >
+              대화 없음
+            </div>
+          ) : (
+            state.messages.map((m) => (
+              <MessageRow key={m.id} msg={m} />
+            ))
+          )}
+          <div ref={msgEndRef} />
+        </div>
       </div>
     </div>
   )

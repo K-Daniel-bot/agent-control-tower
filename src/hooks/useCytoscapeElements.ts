@@ -38,10 +38,6 @@ const TOOL_NODES = [
   { id: 'tool-verifier', label: 'VERIFIER', type: 'verifier_tool', angle: 315 },
 ]
 
-const HUB_X = 0
-const HUB_Y = 0
-const RING_RADIUS = 160
-const AGENT_RING_RADIUS = 100
 
 export function useCytoscapeElements(state: OrchestraState) {
   return useMemo((): CyElement[] => {
@@ -60,16 +56,10 @@ export function useCytoscapeElements(state: OrchestraState) {
         nodeType: 'hub',
         color: AGENT_COLORS.hub,
       },
-      position: { x: HUB_X, y: HUB_Y },
     })
 
-    // Agent nodes in inner ring
-    const agentCount = state.agents.length
-    state.agents.forEach((agent, i) => {
-      const angle = (2 * Math.PI * i) / agentCount - Math.PI / 2
-      const x = HUB_X + AGENT_RING_RADIUS * Math.cos(angle)
-      const y = HUB_Y + AGENT_RING_RADIUS * Math.sin(angle)
-
+    // Agent nodes — no position, fcose computes
+    state.agents.forEach((agent) => {
       elements.push({
         group: 'nodes',
         data: {
@@ -79,7 +69,6 @@ export function useCytoscapeElements(state: OrchestraState) {
           color: AGENT_COLORS[agent.identity.agentType] ?? '#6b7280',
           status: agent.status,
         },
-        position: { x, y },
       })
 
       // Edge from hub to agent
@@ -94,12 +83,8 @@ export function useCytoscapeElements(state: OrchestraState) {
       })
     })
 
-    // Tool/resource nodes in outer ring
+    // Tool/resource nodes — no position, fcose computes
     TOOL_NODES.forEach((tool) => {
-      const rad = (tool.angle * Math.PI) / 180
-      const x = HUB_X + RING_RADIUS * Math.cos(rad)
-      const y = HUB_Y + RING_RADIUS * Math.sin(rad)
-
       elements.push({
         group: 'nodes',
         data: {
@@ -108,7 +93,6 @@ export function useCytoscapeElements(state: OrchestraState) {
           nodeType: tool.type,
           color: AGENT_COLORS[tool.type] ?? '#6b7280',
         },
-        position: { x, y },
       })
     })
 

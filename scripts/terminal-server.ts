@@ -27,22 +27,26 @@ wss.on('connection', (ws: WebSocket) => {
   console.log('[terminal-server] New connection')
 
   // Spawn zsh as login shell (-l) so .zshrc + kaku integration loads
+  const spawnEnv: Record<string, string> = {
+    ...process.env,
+    HOME,
+    TERM: 'xterm-256color',
+    COLORTERM: 'truecolor',
+    LANG: process.env.LANG || 'en_US.UTF-8',
+    KAKU_ZSH_DIR,
+    PATH: `${KAKU_ZSH_DIR}/bin:${process.env.PATH || ''}`,
+    // Disable some features that cause issues in web terminals
+    KAKU_WEB_TERMINAL: '1',
+  } as Record<string, string>
+  // Unset CLAUDECODE so nested `claude` invocations work inside this terminal
+  delete spawnEnv.CLAUDECODE
+
   const ptyProcess = pty.spawn('/bin/zsh', ['--login'], {
     name: 'xterm-256color',
     cols: 120,
     rows: 30,
     cwd: HOME,
-    env: {
-      ...process.env,
-      HOME,
-      TERM: 'xterm-256color',
-      COLORTERM: 'truecolor',
-      LANG: process.env.LANG || 'en_US.UTF-8',
-      KAKU_ZSH_DIR,
-      PATH: `${KAKU_ZSH_DIR}/bin:${process.env.PATH || ''}`,
-      // Disable some features that cause issues in web terminals
-      KAKU_WEB_TERMINAL: '1',
-    } as Record<string, string>,
+    env: spawnEnv,
   })
 
   sessions.set(ws, ptyProcess)

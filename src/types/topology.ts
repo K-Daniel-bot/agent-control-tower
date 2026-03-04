@@ -67,11 +67,24 @@ export type ToolNodeType =
   | 'policy'
   | 'verifier_tool'
 
+/** A message exchanged between agents (for conversation log) */
+export interface AgentMessage {
+  id: string
+  fromId: string
+  toId: string
+  fromLabel: string
+  toLabel: string
+  message: string
+  timestamp: number
+  type: 'task' | 'result' | 'error' | 'system'
+}
+
 /** Global orchestra state */
 export interface OrchestraState {
   readonly agents: ReadonlyArray<AgentState>
   readonly executionEdges: ReadonlyArray<ExecutionEdge>
   readonly dependencyLinks: ReadonlyArray<DependencyLink>
+  readonly messages: ReadonlyArray<AgentMessage>
   readonly phase: 'idle' | 'running' | 'complete'
 }
 
@@ -86,6 +99,7 @@ export type OrchestraAction =
   | { type: 'REMOVE_AGENT'; payload: { id: string } }
   | { type: 'ADD_EXECUTION_EDGE'; payload: ExecutionEdge }
   | { type: 'ADD_DEPENDENCY_LINK'; payload: DependencyLink }
+  | { type: 'ADD_AGENT_MESSAGE'; payload: AgentMessage }
   | { type: 'SET_PHASE'; payload: OrchestraState['phase'] }
   | { type: 'RESET' }
 

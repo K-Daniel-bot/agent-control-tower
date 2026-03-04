@@ -112,8 +112,8 @@ export default function Header({ activeTab, onTabChange }: HeaderProps) {
         <div style={{ display: 'flex', gap: 2, marginTop: 2 }}>
           {([
             { key: 'dashboard' as TabType, label: '관제 대시보드' },
-            { key: 'settings' as TabType, label: '에이전트 설정' },
             { key: 'terminal' as TabType, label: '프로젝트 시작' },
+            { key: 'settings' as TabType, label: '에이전트 설정' },
           ]).map((tab) => (
             <button
               key={tab.key}

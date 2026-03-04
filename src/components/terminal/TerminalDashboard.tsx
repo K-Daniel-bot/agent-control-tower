@@ -25,6 +25,7 @@ export default function TerminalDashboard({ isVisible = true }: TerminalDashboar
   const { paneState, paneDispatch } = usePaneManager()
   const [showCustomizer, setShowCustomizer] = useState(false)
   const [connStatuses, setConnStatuses] = useState<ReadonlyMap<PaneId, ConnectionStatus>>(new Map())
+  const [savedProjectDir, setSavedProjectDir] = useState<string | null>(null)
   const commandSendersRef = useRef<Map<PaneId, (cmd: string) => void>>(new Map())
 
   const paneCount = useMemo(() => countLeaves(paneState.root), [paneState.root])
@@ -67,8 +68,20 @@ export default function TerminalDashboard({ isVisible = true }: TerminalDashboar
   }, [paneDispatch])
 
   const handleSelectDirectory = useCallback((dirPath: string) => {
+    setSavedProjectDir(dirPath)
     sendToActivePane(`cd ${JSON.stringify(dirPath)}`)
   }, [sendToActivePane])
+
+  const handleToolbarCommand = useCallback((command: string) => {
+    if (command === 'claude') {
+      const claudeCmd = savedProjectDir
+        ? `cd ${JSON.stringify(savedProjectDir)} && env -u CLAUDECODE claude`
+        : 'env -u CLAUDECODE claude'
+      sendToActivePane(claudeCmd)
+    } else {
+      sendToActivePane(command)
+    }
+  }, [sendToActivePane, savedProjectDir])
 
   const handleSplitH = useCallback(() => {
     paneDispatch({ type: 'SPLIT_PANE', paneId: paneState.activePaneId, direction: 'horizontal' })
@@ -134,7 +147,7 @@ export default function TerminalDashboard({ isVisible = true }: TerminalDashboar
           <div style={{ width: 1, height: 16, background: '#2a3042' }} />
 
           <ToolbarCommandButtons
-            onSendCommand={sendToActivePane}
+            onSendCommand={handleToolbarCommand}
             onSplitHorizontal={handleSplitH}
             onSplitVertical={handleSplitV}
             paneCount={paneCount}

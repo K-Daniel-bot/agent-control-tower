@@ -91,45 +91,8 @@ const TerminalDashboard = dynamic(
 
 function DashboardView() {
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateRows: '1fr 200px',
-        gridTemplateColumns: '260px 1fr 280px',
-        gridTemplateAreas: `
-          "left   center right"
-          "bottom bottom bottom"
-        `,
-        flex: 1,
-        overflow: 'hidden',
-        gap: 0,
-      }}
-    >
-      <div style={{ gridArea: 'left', overflow: 'hidden' }}>
-        <LeftPanel />
-      </div>
-      <div
-        style={{
-          gridArea: 'center',
-          overflow: 'hidden',
-          borderLeft: '1px solid #2a3042',
-          borderRight: '1px solid #2a3042',
-        }}
-      >
-        <TopologyMap />
-      </div>
-      <div style={{ gridArea: 'right', overflow: 'hidden' }}>
-        <RightPanel />
-      </div>
-      <div
-        style={{
-          gridArea: 'bottom',
-          overflow: 'hidden',
-          borderTop: '1px solid #2a3042',
-        }}
-      >
-        <BottomPanel />
-      </div>
+    <div style={{ flex: 1, overflow: 'hidden' }}>
+      <TopologyMap />
     </div>
   )
 }

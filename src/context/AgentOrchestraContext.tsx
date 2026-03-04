@@ -15,6 +15,7 @@ const INITIAL_STATE: OrchestraState = {
   agents: [],
   executionEdges: [],
   dependencyLinks: [],
+  messages: [],
   phase: 'idle',
 }
 
@@ -87,6 +88,13 @@ function orchestraReducer(
       return {
         ...state,
         dependencyLinks: [...state.dependencyLinks, action.payload],
+      }
+
+    case 'ADD_AGENT_MESSAGE':
+      return {
+        ...state,
+        // Keep latest 120 messages
+        messages: [...state.messages.slice(-119), action.payload],
       }
 
     case 'SET_PHASE':

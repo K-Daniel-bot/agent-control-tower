@@ -16,10 +16,14 @@ import { useOrchestra } from '@/context/AgentOrchestraContext'
 import { useExecutionFlowLayout } from '@/hooks/useExecutionFlowLayout'
 import { AgentNode } from './AgentNode'
 import { CustomEdge } from './CustomEdge'
+import { UserRequestNode } from './UserRequestNode'
+import { WarningNode } from './WarningNode'
 import SectionHeader from './SectionHeader'
 
 const nodeTypes: NodeTypes = {
   agentNode: AgentNode,
+  userRequestNode: UserRequestNode,
+  warningNode: WarningNode,
 }
 
 const edgeTypes: EdgeTypes = {

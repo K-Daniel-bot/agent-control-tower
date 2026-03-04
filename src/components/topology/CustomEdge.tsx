@@ -7,6 +7,7 @@ export type EdgeStatus = 'normal' | 'warning' | 'error'
 export interface CustomEdgeData {
   status?: EdgeStatus
   dataRate?: number
+  latencyLabel?: string
 }
 
 const EDGE_COLORS: Record<EdgeStatus, string> = {
@@ -68,11 +69,37 @@ export function CustomEdge({
         }}
       />
 
+      {/* Latency label */}
+      {edgeData.latencyLabel && (
+        <foreignObject
+          x={labelX - 40}
+          y={labelY - 14}
+          width={80}
+          height={16}
+          style={{ overflow: 'visible' }}
+        >
+          <div
+            style={{
+              fontSize: 7,
+              color: '#f59e0b',
+              fontFamily: 'monospace',
+              textAlign: 'center',
+              background: 'rgba(10,14,26,0.85)',
+              borderRadius: 3,
+              padding: '1px 4px',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {edgeData.latencyLabel}
+          </div>
+        </foreignObject>
+      )}
+
       {/* Data rate label */}
       {edgeData.dataRate != null && edgeData.dataRate > 0 && (
         <foreignObject
           x={labelX - 16}
-          y={labelY - 8}
+          y={labelY + 2}
           width={32}
           height={16}
           style={{ overflow: 'visible' }}
