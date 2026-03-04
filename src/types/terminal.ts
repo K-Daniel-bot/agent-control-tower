@@ -79,3 +79,5 @@ export interface PaneManagerState {
   readonly root: SplitNode
   readonly activePaneId: PaneId
 }
+
+export type RightPanelTab = 'skill' | 'note' | 'graph' | null

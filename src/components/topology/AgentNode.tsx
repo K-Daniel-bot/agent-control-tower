@@ -9,6 +9,7 @@ export interface AgentNodeData {
   title: string
   englishRole: string
   agentType: TopologyAgentType
+  icon?: string
   status: AgentStatus
   tokenRate?: number
   latencyMs?: number
@@ -106,7 +107,7 @@ export function AgentNode({ data }: NodeProps) {
       />
 
       {/* Icon */}
-      <span style={{ fontSize: 18, lineHeight: 1 }}>{config.icon}</span>
+      <span style={{ fontSize: 18, lineHeight: 1 }}>{nodeData.icon ?? config.icon}</span>
 
       {/* Korean name */}
       <span

@@ -27,6 +27,7 @@ export interface AgentIdentity {
   title: string
   englishRole: string
   agentType: TopologyAgentType
+  icon?: string
 }
 
 /** Runtime state of an agent */

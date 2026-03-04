@@ -35,6 +35,20 @@ export default function TerminalPane({
   const wsRef = useRef<WebSocket | null>(null)
   const resizeObserverRef = useRef<ResizeObserver | null>(null)
 
+  // Stable session ID per pane — persisted in localStorage so refresh reconnects to same PTY
+  const sessionId = useRef<string>('')
+  if (!sessionId.current && typeof window !== 'undefined') {
+    const key = `act-session-${paneId}`
+    const stored = localStorage.getItem(key)
+    if (stored) {
+      sessionId.current = stored
+    } else {
+      const newId = Math.random().toString(36).slice(2) + Date.now().toString(36)
+      localStorage.setItem(key, newId)
+      sessionId.current = newId
+    }
+  }
+
   const sendResize = useCallback(() => {
     const fit = fitAddonRef.current
     const ws = wsRef.current
@@ -110,6 +124,8 @@ export default function TerminalPane({
         if (disposed) return
         onConnectionChange(paneId, 'connected')
         try {
+          // Identify (or create) the server-side PTY session
+          ws!.send(JSON.stringify({ type: 'init', sessionId: sessionId.current }))
           fitAddon.fit()
           ws!.send(JSON.stringify({ type: 'resize', cols: terminal.cols, rows: terminal.rows }))
         } catch { /* ignore */ }

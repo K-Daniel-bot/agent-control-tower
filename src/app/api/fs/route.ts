@@ -9,6 +9,24 @@ interface DirEntry {
   isDirectory: boolean
 }
 
+export async function POST(request: Request) {
+  try {
+    const body = await request.json() as { path?: string }
+    const dirPath = body.path
+    if (!dirPath || typeof dirPath !== 'string') {
+      return NextResponse.json({ error: 'path required' }, { status: 400 })
+    }
+    const resolved = path.resolve(dirPath)
+    const stat = fs.statSync(resolved)
+    if (!stat.isDirectory()) {
+      return NextResponse.json({ error: 'Not a directory' }, { status: 400 })
+    }
+    return NextResponse.json({ path: resolved })
+  } catch {
+    return NextResponse.json({ error: 'Path not found' }, { status: 404 })
+  }
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const dirPath = searchParams.get('path') || os.homedir()
@@ -19,7 +37,7 @@ export async function GET(request: Request) {
   try {
     const entries = fs.readdirSync(resolved, { withFileTypes: true })
     const items: DirEntry[] = entries
-      .filter((e) => !e.name.startsWith('.'))
+      .filter((e) => !e.name.startsWith('.') || e.name === '.claude')
       .map((e) => ({
         name: e.name,
         path: path.join(resolved, e.name),

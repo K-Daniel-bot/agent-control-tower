@@ -3,12 +3,15 @@
 import { useState, useCallback, useRef, useMemo } from 'react'
 import { useTerminalConfig } from '@/hooks/useTerminalConfig'
 import { usePaneManager } from '@/hooks/usePaneManager'
-import { countLeaves } from '@/utils/splitTreeUtils'
-import type { PaneId, ConnectionStatus } from '@/types/terminal'
+import { countLeaves, collectLeafIds } from '@/utils/splitTreeUtils'
+import type { PaneId, ConnectionStatus, RightPanelTab } from '@/types/terminal'
 import SplitContainer from './SplitContainer'
 import TerminalCustomizer from './TerminalCustomizer'
 import DirectoryPanel from './DirectoryPanel'
 import ToolbarCommandButtons from './ToolbarCommandButtons'
+import SkillPanel from './SkillPanel'
+import AINotesPanel from './AINotesPanel'
+import NoteGraphPanel from './NoteGraphPanel'
 
 const STATUS_MAP: Record<ConnectionStatus, { color: string; label: string }> = {
   connected: { color: '#00ff88', label: '연결됨' },
@@ -18,9 +21,11 @@ const STATUS_MAP: Record<ConnectionStatus, { color: string; label: string }> = {
 
 interface TerminalDashboardProps {
   readonly isVisible?: boolean
+  readonly rightPanel?: RightPanelTab
+  readonly onTogglePanel?: (tab: 'skill' | 'note' | 'graph') => void
 }
 
-export default function TerminalDashboard({ isVisible = true }: TerminalDashboardProps) {
+export default function TerminalDashboard({ isVisible = true, rightPanel = null, onTogglePanel }: TerminalDashboardProps) {
   const { config, dispatch } = useTerminalConfig()
   const { paneState, paneDispatch } = usePaneManager()
   const [showCustomizer, setShowCustomizer] = useState(false)
@@ -30,7 +35,6 @@ export default function TerminalDashboard({ isVisible = true }: TerminalDashboar
 
   const paneCount = useMemo(() => countLeaves(paneState.root), [paneState.root])
 
-  // Aggregate connection status: connected if any, connecting if any pending, else disconnected
   const aggregateStatus = useMemo((): ConnectionStatus => {
     const statuses = Array.from(connStatuses.values())
     if (statuses.some((s) => s === 'connected')) return 'connected'
@@ -62,10 +66,13 @@ export default function TerminalDashboard({ isVisible = true }: TerminalDashboar
   }, [paneState.activePaneId])
 
   const handleGoHome = useCallback(() => {
+    collectLeafIds(paneState.root).forEach((id) => {
+      try { localStorage.removeItem(`act-session-${id}`) } catch { /* ignore */ }
+    })
     paneDispatch({ type: 'RESET_ALL' })
     setConnStatuses(new Map())
     commandSendersRef.current.clear()
-  }, [paneDispatch])
+  }, [paneDispatch, paneState.root])
 
   const handleSelectDirectory = useCallback((dirPath: string) => {
     setSavedProjectDir(dirPath)
@@ -104,6 +111,22 @@ export default function TerminalDashboard({ isVisible = true }: TerminalDashboar
     paneDispatch({ type: 'SET_ACTIVE_PANE', paneId })
   }, [paneDispatch])
 
+  const togglePanel = useCallback((tab: 'skill' | 'note' | 'graph') => {
+    onTogglePanel?.(tab)
+  }, [onTogglePanel])
+
+  const panelBtnStyle = (tab: 'skill' | 'note' | 'graph', color: string) => ({
+    padding: '3px 10px',
+    background: rightPanel === tab ? `${color}25` : `${color}0a`,
+    border: `1px solid ${rightPanel === tab ? `${color}66` : `${color}33`}`,
+    borderRadius: 4,
+    color,
+    fontSize: 9,
+    cursor: 'pointer' as const,
+    fontWeight: 600 as const,
+    transition: 'all 0.15s',
+  })
+
   return (
     <div
       style={{
@@ -127,7 +150,7 @@ export default function TerminalDashboard({ isVisible = true }: TerminalDashboar
           height: 32,
         }}
       >
-        {/* Left: status + label + command buttons */}
+        {/* Left: status + command buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <div
@@ -142,10 +165,7 @@ export default function TerminalDashboard({ isVisible = true }: TerminalDashboar
             />
             <span style={{ fontSize: 9, color: '#6b7280' }}>{status.label}</span>
           </div>
-
-          {/* Separator */}
           <div style={{ width: 1, height: 16, background: '#2a3042' }} />
-
           <ToolbarCommandButtons
             onSendCommand={handleToolbarCommand}
             onSplitHorizontal={handleSplitH}
@@ -154,8 +174,18 @@ export default function TerminalDashboard({ isVisible = true }: TerminalDashboar
           />
         </div>
 
-        {/* Right: buttons */}
-        <div style={{ display: 'flex', gap: 6 }}>
+        {/* Right: panel toggle buttons */}
+        <div style={{ display: 'flex', gap: 5 }}>
+          <button onClick={() => togglePanel('skill')} style={panelBtnStyle('skill', '#a855f7')}>
+            스킬
+          </button>
+          <button onClick={() => togglePanel('note')} style={panelBtnStyle('note', '#3b82f6')}>
+            AI노트
+          </button>
+          <button onClick={() => togglePanel('graph')} style={panelBtnStyle('graph', '#06b6d4')}>
+            그래프뷰
+          </button>
+          <div style={{ width: 1, height: 16, background: '#2a3042', alignSelf: 'center' }} />
           <button
             onClick={handleGoHome}
             style={{
@@ -170,7 +200,7 @@ export default function TerminalDashboard({ isVisible = true }: TerminalDashboar
               transition: 'all 0.15s',
             }}
           >
-            되돌아가기
+            전체삭제
           </button>
           <button
             onClick={() => setShowCustomizer((v) => !v)}
@@ -191,15 +221,16 @@ export default function TerminalDashboard({ isVisible = true }: TerminalDashboar
         </div>
       </div>
 
-      {/* Main area: directory panel + split terminals + optional customizer */}
+      {/* Main area */}
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
         <DirectoryPanel onSelectDirectory={handleSelectDirectory} />
 
-        <div style={{ flex: 1, overflow: 'hidden' }}>
+        {/* Terminal — hidden when graph view active, but always mounted */}
+        <div style={{ flex: 1, overflow: 'hidden', display: rightPanel === 'graph' ? 'none' : 'block' }}>
           <SplitContainer
             node={paneState.root}
             activePaneId={paneState.activePaneId}
-            isVisible={isVisible}
+            isVisible={isVisible && rightPanel !== 'graph'}
             config={config}
             totalLeaves={paneCount}
             onPaneClick={handlePaneClick}
@@ -210,12 +241,25 @@ export default function TerminalDashboard({ isVisible = true }: TerminalDashboar
           />
         </div>
 
+        {/* Graph view occupies main area — key forces remount to re-read localStorage */}
+        {rightPanel === 'graph' && (
+          <div style={{ flex: 1, overflow: 'hidden' }}>
+            <NoteGraphPanel />
+          </div>
+        )}
+
         {showCustomizer && (
           <TerminalCustomizer
             config={config}
             dispatch={dispatch}
             onClose={() => setShowCustomizer(false)}
           />
+        )}
+        {rightPanel === 'skill' && (
+          <SkillPanel onSendCommand={sendToActivePane} projectDir={savedProjectDir} />
+        )}
+        {rightPanel === 'note' && (
+          <AINotesPanel onSendCommand={sendToActivePane} />
         )}
       </div>
     </div>

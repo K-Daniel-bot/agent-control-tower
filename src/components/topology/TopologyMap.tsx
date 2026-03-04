@@ -208,13 +208,14 @@ function TopologyController() {
     <>
       <div
         style={{
-          position: 'absolute',
-          top: 8,
-          right: 12,
-          zIndex: 20,
           display: 'flex',
           gap: 6,
           alignItems: 'center',
+          justifyContent: 'flex-end',
+          padding: '5px 12px',
+          borderBottom: '1px solid #2a3042',
+          background: 'rgba(10,14,26,0.95)',
+          flexShrink: 0,
         }}
       >
         {/* Phase indicator */}

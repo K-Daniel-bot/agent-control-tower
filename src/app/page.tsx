@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import Header from '@/components/layout/Header'
 import type { TabType } from '@/components/layout/Header'
+import type { RightPanelTab } from '@/types/terminal'
 import LeftPanel from '@/components/left/LeftPanel'
 
 function PlaceholderPanel({ title, color }: { title: string; color: string }) {
@@ -99,6 +100,16 @@ function DashboardView() {
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard')
+  const [terminalPanel, setTerminalPanel] = useState<RightPanelTab>(null)
+
+  const handleTogglePanel = useCallback((tab: 'note' | 'graph') => {
+    setActiveTab('terminal')
+    setTerminalPanel(prev => prev === tab ? null : tab)
+  }, [])
+
+  const handleToggleTerminalPanel = useCallback((tab: 'skill' | 'note' | 'graph') => {
+    setTerminalPanel(prev => prev === tab ? null : tab)
+  }, [])
 
   return (
     <div
@@ -111,7 +122,12 @@ export default function DashboardPage() {
         background: '#0a0e1a',
       }}
     >
-      <Header activeTab={activeTab} onTabChange={setActiveTab} />
+      <Header
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        terminalPanel={terminalPanel}
+        onTogglePanel={handleTogglePanel}
+      />
       <div style={{ display: activeTab === 'dashboard' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
         <DashboardView />
       </div>
@@ -119,7 +135,11 @@ export default function DashboardPage() {
         <AgentSettingsPage />
       </div>
       <div style={{ display: activeTab === 'terminal' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
-        <TerminalDashboard isVisible={activeTab === 'terminal'} />
+        <TerminalDashboard
+          isVisible={activeTab === 'terminal'}
+          rightPanel={terminalPanel}
+          onTogglePanel={handleToggleTerminalPanel}
+        />
       </div>
     </div>
   )

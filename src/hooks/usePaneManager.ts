@@ -1,4 +1,4 @@
-import { useReducer } from 'react'
+import { useReducer, useEffect } from 'react'
 import type { PaneId, SplitDirection, PaneManagerState } from '@/types/terminal'
 import {
   createInitialPane,
@@ -10,6 +10,7 @@ import {
 } from '@/utils/splitTreeUtils'
 
 const MAX_PANES = 6
+const STORAGE_KEY = 'act-pane-layout'
 
 type PaneAction =
   | { readonly type: 'SPLIT_PANE'; readonly paneId: PaneId; readonly direction: SplitDirection }
@@ -17,9 +18,29 @@ type PaneAction =
   | { readonly type: 'SET_ACTIVE_PANE'; readonly paneId: PaneId }
   | { readonly type: 'RESET_ALL' }
 
-function createInitialState(): PaneManagerState {
+function freshState(): PaneManagerState {
   const pane = createInitialPane()
   return { root: pane, activePaneId: pane.id }
+}
+
+function loadFromStorage(): PaneManagerState | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as PaneManagerState
+    if (parsed?.root && parsed?.activePaneId) return parsed
+    return null
+  } catch {
+    return null
+  }
+}
+
+function createInitialState(): PaneManagerState {
+  if (typeof window !== 'undefined') {
+    const stored = loadFromStorage()
+    if (stored) return stored
+  }
+  return freshState()
 }
 
 function paneReducer(state: PaneManagerState, action: PaneAction): PaneManagerState {
@@ -52,7 +73,8 @@ function paneReducer(state: PaneManagerState, action: PaneAction): PaneManagerSt
     }
 
     case 'RESET_ALL': {
-      return createInitialState()
+      try { localStorage.removeItem(STORAGE_KEY) } catch { /* ignore */ }
+      return freshState()
     }
 
     default:
@@ -62,6 +84,14 @@ function paneReducer(state: PaneManagerState, action: PaneAction): PaneManagerSt
 
 export function usePaneManager() {
   const [paneState, paneDispatch] = useReducer(paneReducer, null, createInitialState)
+
+  // Persist layout to localStorage on every state change (except after RESET_ALL which clears it)
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(paneState))
+    } catch { /* ignore */ }
+  }, [paneState])
+
   return { paneState, paneDispatch } as const
 }
 

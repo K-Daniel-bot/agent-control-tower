@@ -77,6 +77,7 @@ export function useExecutionFlowLayout(state: OrchestraState) {
             title: agent.identity.title,
             englishRole: agent.identity.englishRole,
             agentType: agent.identity.agentType,
+            icon: agent.identity.icon,
             status: agent.status,
             tokenRate: agent.tokenRate,
             latencyMs: agent.latencyMs,

@@ -1,15 +1,18 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import type { RightPanelTab } from '@/types/terminal'
 
 export type TabType = 'dashboard' | 'settings' | 'terminal'
 
 interface HeaderProps {
   activeTab: TabType
   onTabChange: (tab: TabType) => void
+  terminalPanel?: RightPanelTab
+  onTogglePanel?: (tab: 'note' | 'graph') => void
 }
 
-export default function Header({ activeTab, onTabChange }: HeaderProps) {
+export default function Header({ activeTab, onTabChange, terminalPanel, onTogglePanel }: HeaderProps) {
   const [currentTime, setCurrentTime] = useState<string>('')
   const [currentDate, setCurrentDate] = useState<string>('')
 
@@ -26,7 +29,7 @@ export default function Header({ activeTab, onTabChange }: HeaderProps) {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
-        hour12: false,
+        hour12: true,
       })
       setCurrentDate(dateStr)
       setCurrentTime(timeStr)
@@ -36,6 +39,21 @@ export default function Header({ activeTab, onTabChange }: HeaderProps) {
     const interval = setInterval(updateTime, 1000)
     return () => clearInterval(interval)
   }, [])
+
+  const iconBtn = (active: boolean) => ({
+    width: 26,
+    height: 26,
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+    background: active ? 'rgba(0,255,136,0.12)' : 'transparent',
+    border: `1px solid ${active ? 'rgba(0,255,136,0.35)' : 'transparent'}`,
+    borderRadius: 5,
+    cursor: 'pointer' as const,
+    color: active ? '#00ff88' : '#6b7280',
+    transition: 'all 0.15s',
+    padding: 0,
+  })
 
   return (
     <header
@@ -47,28 +65,23 @@ export default function Header({ activeTab, onTabChange }: HeaderProps) {
       className="flex items-center justify-between px-4 h-12 flex-shrink-0"
     >
       {/* Left: Logo */}
-      <div className="flex items-center gap-2 min-w-[200px]">
-        <div
+      <div
+        className="flex items-center gap-2 min-w-[200px]"
+        style={{ cursor: 'pointer' }}
+        onClick={() => onTabChange('dashboard')}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/act-logo.png"
+          alt="ACT Logo"
           style={{
             width: 28,
             height: 28,
-            background: 'linear-gradient(135deg, #00ff88, #00cc6a)',
             borderRadius: 6,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 10px rgba(0, 255, 136, 0.4)',
+            objectFit: 'contain',
             flexShrink: 0,
           }}
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <circle cx="8" cy="4" r="2.5" fill="#0a0e1a" />
-            <circle cx="3" cy="12" r="2.5" fill="#0a0e1a" />
-            <circle cx="13" cy="12" r="2.5" fill="#0a0e1a" />
-            <line x1="8" y1="4" x2="3" y2="12" stroke="#0a0e1a" strokeWidth="1.5" />
-            <line x1="8" y1="4" x2="13" y2="12" stroke="#0a0e1a" strokeWidth="1.5" />
-          </svg>
-        </div>
+        />
         <div>
           <div
             style={{
@@ -95,7 +108,7 @@ export default function Header({ activeTab, onTabChange }: HeaderProps) {
         </div>
       </div>
 
-      {/* Center: Title */}
+      {/* Center: Title + Tab Navigation */}
       <div className="flex flex-col items-center flex-1">
         <div
           style={{
@@ -137,8 +150,101 @@ export default function Header({ activeTab, onTabChange }: HeaderProps) {
         </div>
       </div>
 
-      {/* Right: Date/Time + Status */}
+      {/* Right: Icons + Status + Time */}
       <div className="flex items-center gap-3 min-w-[200px] justify-end">
+        {/* Icon buttons: GitHub, AI note, Graph view */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          {/* GitHub */}
+          <a
+            href="https://github.com/K-Daniel-bot"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="GitHub @K-Daniel-bot"
+            style={{
+              ...iconBtn(false),
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.color = '#e5e7eb'
+              e.currentTarget.style.borderColor = 'rgba(229,231,235,0.2)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.color = '#6b7280'
+              e.currentTarget.style.borderColor = 'transparent'
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+          </a>
+
+          {/* AI Note icon */}
+          <button
+            onClick={() => {
+              onTabChange('terminal')
+              onTogglePanel?.('note')
+            }}
+            title="AI 노트"
+            style={iconBtn(terminalPanel === 'note' && activeTab === 'terminal')}
+            onMouseEnter={e => {
+              if (terminalPanel !== 'note' || activeTab !== 'terminal') {
+                e.currentTarget.style.color = '#3b82f6'
+                e.currentTarget.style.borderColor = 'rgba(59,130,246,0.3)'
+              }
+            }}
+            onMouseLeave={e => {
+              if (terminalPanel !== 'note' || activeTab !== 'terminal') {
+                e.currentTarget.style.color = '#6b7280'
+                e.currentTarget.style.borderColor = 'transparent'
+              }
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+              <line x1="4.5" y1="4.5" x2="9.5" y2="4.5" stroke="currentColor" strokeWidth="1.2" />
+              <line x1="4.5" y1="7" x2="9.5" y2="7" stroke="currentColor" strokeWidth="1.2" />
+              <line x1="4.5" y1="9.5" x2="7.5" y2="9.5" stroke="currentColor" strokeWidth="1.2" />
+            </svg>
+          </button>
+
+          {/* Graph view icon */}
+          <button
+            onClick={() => {
+              onTabChange('terminal')
+              onTogglePanel?.('graph')
+            }}
+            title="그래프 뷰"
+            style={iconBtn(terminalPanel === 'graph' && activeTab === 'terminal')}
+            onMouseEnter={e => {
+              if (terminalPanel !== 'graph' || activeTab !== 'terminal') {
+                e.currentTarget.style.color = '#06b6d4'
+                e.currentTarget.style.borderColor = 'rgba(6,182,212,0.3)'
+              }
+            }}
+            onMouseLeave={e => {
+              if (terminalPanel !== 'graph' || activeTab !== 'terminal') {
+                e.currentTarget.style.color = '#6b7280'
+                e.currentTarget.style.borderColor = 'transparent'
+              }
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <circle cx="7" cy="2.5" r="1.5" fill="currentColor" />
+              <circle cx="2.5" cy="11" r="1.5" fill="currentColor" />
+              <circle cx="11.5" cy="11" r="1.5" fill="currentColor" />
+              <line x1="7" y1="4" x2="2.5" y2="9.5" stroke="currentColor" strokeWidth="1.2" />
+              <line x1="7" y1="4" x2="11.5" y2="9.5" stroke="currentColor" strokeWidth="1.2" />
+              <line x1="4" y1="11" x2="10" y2="11" stroke="currentColor" strokeWidth="1.2" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Divider */}
+        <div style={{ width: 1, height: 24, background: '#2a3042' }} />
+
         {/* Status indicators */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
