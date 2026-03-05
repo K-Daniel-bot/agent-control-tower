@@ -195,14 +195,16 @@ export default function AgentServiceTopology() {
   }, [])
 
   return (
-    <svg
-      ref={svgRef}
-      style={{
-        position: 'absolute',
-        inset: 0,
-        width: '100%',
-        height: '100%',
-      }}
-    />
+    <div style={{ width: '100%', height: '100%', overflow: 'auto', display: 'flex' }}>
+      <svg
+        ref={svgRef}
+        style={{
+          position: 'relative',
+          minWidth: '800px',
+          width: 'auto',
+          height: '100%',
+        }}
+      />
+    </div>
   )
 }

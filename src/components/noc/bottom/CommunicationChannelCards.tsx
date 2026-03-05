@@ -1,18 +1,19 @@
 'use client'
 
-const MOCK_CHANNELS = [
-  { id: 'plan', name: 'PlanBot Simulator', icon: '◈', traffic: '226.65 k', inRate: '142.3 k', outRate: '84.35 k' },
-  { id: 'ath', name: 'Athon', icon: '◆', traffic: '40.55 k', inRate: '22.1 k', outRate: '18.45 k' },
-  { id: 'msw', name: 'MainSwitch-2', icon: '▣', traffic: '185.20 k', inRate: '98.7 k', outRate: '86.50 k' },
-  { id: 'sw7', name: 'switch7/5STS', icon: '▤', traffic: '12.88 k', inRate: '7.2 k', outRate: '5.68 k' },
-  { id: 'hub', name: 'AgentHub-Core', icon: '◉', traffic: '332.10 k', inRate: '180.5 k', outRate: '151.60 k' },
-] as const
+import { useMemo } from 'react'
+import { NocTheme } from '@/constants/nocTheme'
+import type { ExecutionEdge } from '@/types/topology'
+import { deriveChannelStatus } from '@/utils/nocDataTransform'
+
+interface CommunicationChannelCardsProps {
+  readonly edges: ReadonlyArray<ExecutionEdge>
+}
 
 const cardStyle: React.CSSProperties = {
   minWidth: 115,
   height: '100%',
   background: 'transparent',
-  border: '1px solid #333333',
+  border: `1px solid ${NocTheme.divider}`,
   borderRadius: 3,
   padding: '8px 10px',
   display: 'flex',
@@ -25,12 +26,12 @@ const cardStyle: React.CSSProperties = {
 
 const iconStyle: React.CSSProperties = {
   fontSize: 16,
-  color: '#3b82f6',
+  color: NocTheme.blue,
 }
 
 const nameStyle: React.CSSProperties = {
   fontSize: 9,
-  color: '#6b7280',
+  color: NocTheme.textTertiary,
   textAlign: 'center',
   whiteSpace: 'nowrap',
 }
@@ -38,7 +39,7 @@ const nameStyle: React.CSSProperties = {
 const trafficStyle: React.CSSProperties = {
   fontSize: 14,
   fontWeight: 700,
-  color: '#e6edf3',
+  color: NocTheme.textPrimary,
   letterSpacing: '0.02em',
 }
 
@@ -46,27 +47,47 @@ const rateRowStyle: React.CSSProperties = {
   display: 'flex',
   gap: 8,
   fontSize: 9,
-  color: '#6b7280',
+  color: NocTheme.textTertiary,
 }
 
-export default function CommunicationChannelCards() {
+const ICONS = ['◈', '◆', '▣', '▤', '◉', '◇']
+
+function formatRate(v: number): string {
+  if (v >= 1000) return `${(v / 1000).toFixed(1)} k`
+  return `${v.toFixed(0)}`
+}
+
+export default function CommunicationChannelCards({ edges }: CommunicationChannelCardsProps) {
+  const channels = useMemo(() => deriveChannelStatus(edges), [edges])
+
+  if (channels.length === 0) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: NocTheme.textMuted, fontSize: 11 }}>
+        채널 대기 중...
+      </div>
+    )
+  }
+
   return (
     <div style={{ display: 'flex', gap: 6, padding: '6px 8px', overflowX: 'auto', height: '100%', background: 'transparent', alignItems: 'center' }}>
-      {MOCK_CHANNELS.map((ch) => (
-        <div key={ch.id} style={cardStyle}>
-          <span style={iconStyle}>{ch.icon}</span>
-          <span style={nameStyle}>{ch.name}</span>
-          <span style={trafficStyle}>{ch.traffic}</span>
-          <div style={rateRowStyle}>
-            <span>
-              <span style={{ color: '#22c55e' }}>▲</span> {ch.inRate}
-            </span>
-            <span>
-              <span style={{ color: '#ef4444' }}>▼</span> {ch.outRate}
-            </span>
+      {channels.map((ch, idx) => {
+        const total = ch.inRate + ch.outRate
+        return (
+          <div key={ch.id} style={cardStyle}>
+            <span style={iconStyle}>{ICONS[idx % ICONS.length]}</span>
+            <span style={nameStyle}>{ch.label}</span>
+            <span style={trafficStyle}>{formatRate(total)}</span>
+            <div style={rateRowStyle}>
+              <span>
+                <span style={{ color: NocTheme.green }}>▲</span> {formatRate(ch.inRate)}
+              </span>
+              <span>
+                <span style={{ color: NocTheme.red }}>▼</span> {formatRate(ch.outRate)}
+              </span>
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }

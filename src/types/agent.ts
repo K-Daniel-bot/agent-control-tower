@@ -20,5 +20,6 @@ export interface SavedAgent {
   readonly inferredSummary: string
   readonly skills: readonly AgentSkill[]
   readonly icon?: string
+  readonly path?: string
   readonly createdAt: number
 }

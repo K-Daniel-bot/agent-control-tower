@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from 'react'
 import * as echarts from 'echarts'
+import { NocTheme } from '@/constants/nocTheme'
 
 interface GaugeChartProps {
   value: number
@@ -26,9 +27,9 @@ function buildGaugeOption(value: number, label: string): echarts.EChartsOption {
           lineStyle: {
             width: 6,
             color: [
-              [0.6, '#22c55e'],
-              [0.8, '#f59e0b'],
-              [1, '#ef4444'],
+              [0.6, NocTheme.green],
+              [0.8, NocTheme.orange],
+              [1, NocTheme.red],
             ],
           },
         },
@@ -40,14 +41,14 @@ function buildGaugeOption(value: number, label: string): echarts.EChartsOption {
           show: true,
           offsetCenter: [0, '20%'],
           fontSize: 8,
-          color: '#6b7280',
+          color: NocTheme.textTertiary,
         },
         detail: {
           show: true,
           offsetCenter: [0, '-15%'],
           fontSize: 11,
           fontWeight: 600,
-          color: '#e6edf3',
+          color: NocTheme.textPrimary,
           formatter: '{value}%',
         },
         data: [{ value, name: label }],

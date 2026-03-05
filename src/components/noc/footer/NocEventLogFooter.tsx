@@ -1,177 +1,82 @@
 'use client'
 
-interface EventEntry {
-  id: string
-  severity: 'critical' | 'warning' | 'caution' | 'info'
-  timestamp: string
-  source: string
-  target: string
-  description: string
+import { useMemo } from 'react'
+import { NocTheme } from '@/constants/nocTheme'
+import type { AgentMessage } from '@/types/topology'
+
+interface NocEventLogFooterProps {
+  readonly messages: ReadonlyArray<AgentMessage>
 }
 
-const SEVERITY_COLORS: Record<EventEntry['severity'], string> = {
-  critical: '#ef4444',
-  warning: '#ff6b35',
-  caution: '#f59e0b',
-  info: '#a855f7',
+const SEVERITY_COLORS: Record<string, string> = {
+  error: NocTheme.red,
+  task: NocTheme.orangeBright,
+  system: NocTheme.orange,
+  result: NocTheme.purple,
 }
 
-const MOCK_EVENTS: EventEntry[] = [
-  {
-    id: '1',
-    severity: 'critical',
-    timestamp: '2026-03-05 14:22:27',
-    source: 'Orchestrator',
-    target: 'Planner',
-    description: '[발생] 태스크 할당: Plan implementation for auth module',
-  },
-  {
-    id: '2',
-    severity: 'warning',
-    timestamp: '2026-03-05 14:21:15',
-    source: 'Executor',
-    target: 'ToolAgent',
-    description: '[발생] 토큰 임계치 초과 (85%): Context window approaching limit',
-  },
-  {
-    id: '3',
-    severity: 'caution',
-    timestamp: '2026-03-05 14:20:03',
-    source: 'Security',
-    target: 'Reviewer',
-    description: '[경고] 취약점 탐지: Potential SQL injection in query builder',
-  },
-  {
-    id: '4',
-    severity: 'info',
-    timestamp: '2026-03-05 14:18:44',
-    source: 'Planner',
-    target: 'Executor',
-    description: '[완료] 실행 계획 생성: 3-phase rollout strategy approved',
-  },
-  {
-    id: '5',
-    severity: 'critical',
-    timestamp: '2026-03-05 14:17:30',
-    source: 'ToolAgent',
-    target: 'Shell',
-    description: '[발생] 빌드 실패: TypeScript compilation error in utils/parser.ts',
-  },
-  {
-    id: '6',
-    severity: 'caution',
-    timestamp: '2026-03-05 14:16:12',
-    source: 'Reviewer',
-    target: 'Orchestrator',
-    description: '[경고] 코드 리뷰 이슈: 3 HIGH severity findings in PR #42',
-  },
-]
-
-const containerStyle: React.CSSProperties = {
-  height: 120,
-  background: 'transparent',
-  borderTop: '1px solid #333333',
-  display: 'flex',
-  flexDirection: 'column',
-  flexShrink: 0,
-  overflow: 'hidden',
+function formatTimestamp(ts: number): string {
+  const d = new Date(ts)
+  return d.toLocaleString('ko-KR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  })
 }
 
-const headerStyle: React.CSSProperties = {
-  height: 26,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: '0 10px',
-  borderBottom: '1px solid #333333',
-  background: 'transparent',
-  flexShrink: 0,
+function getSeverity(type: string): string {
+  if (type === 'error') return 'critical'
+  if (type === 'task') return 'warning'
+  if (type === 'system') return 'caution'
+  return 'info'
 }
 
-const titleStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 6,
-}
+export default function NocEventLogFooter({ messages }: NocEventLogFooterProps) {
+  const recentEvents = useMemo(() => {
+    return [...messages].reverse().slice(0, 8)
+  }, [messages])
 
-const listStyle: React.CSSProperties = {
-  flex: 1,
-  minHeight: 0,
-  overflowY: 'auto',
-  padding: '4px 0',
-  background: 'transparent',
-}
-
-const eventRowStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 8,
-  padding: '2px 10px',
-  fontSize: 11,
-  lineHeight: '18px',
-}
-
-const timestampStyle: React.CSSProperties = {
-  fontFamily: 'monospace',
-  fontSize: 11,
-  color: '#6b7280',
-  flexShrink: 0,
-}
-
-const sourceTargetStyle: React.CSSProperties = {
-  color: '#9ca3af',
-  fontWeight: 500,
-  flexShrink: 0,
-}
-
-const arrowStyle: React.CSSProperties = {
-  color: '#505661',
-  flexShrink: 0,
-}
-
-const descStyle: React.CSSProperties = {
-  color: '#9ca3af',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  minWidth: 0,
-}
-
-export default function NocEventLogFooter() {
   return (
-    <div style={containerStyle}>
-      <div style={headerStyle}>
-        <div style={titleStyle}>
-          <span style={{ color: '#ef4444', fontSize: 10 }}>&#9679;</span>
-          <span style={{ color: '#9ca3af', fontSize: 11, fontWeight: 500, letterSpacing: '0.02em' }}>
+    <div style={{ height: 120, background: 'transparent', borderTop: `1px solid ${NocTheme.divider}`, display: 'flex', flexDirection: 'column', flexShrink: 0, overflow: 'hidden' }}>
+      <div style={{ height: 26, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 10px', borderBottom: `1px solid ${NocTheme.divider}`, background: 'transparent', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ color: NocTheme.red, fontSize: 10 }}>&#9679;</span>
+          <span style={{ color: NocTheme.textSecondary, fontSize: 11, fontWeight: 500, letterSpacing: '0.02em' }}>
             이벤트 목록
           </span>
         </div>
-        <div style={{ display: 'flex', gap: 6, color: '#505661', fontSize: 10, cursor: 'default' }}>
+        <div style={{ display: 'flex', gap: 6, color: NocTheme.textMuted, fontSize: 10, cursor: 'default' }}>
           <span>&#9633;</span>
           <span>&#10005;</span>
         </div>
       </div>
-      <div style={listStyle}>
-        {MOCK_EVENTS.map((event) => (
-          <div key={event.id} style={eventRowStyle}>
-            <span
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: '50%',
-                background: SEVERITY_COLORS[event.severity],
-                flexShrink: 0,
-                display: 'inline-block',
-              }}
-            />
-            <span style={timestampStyle}>{event.timestamp}</span>
-            <span style={sourceTargetStyle}>{event.source}</span>
-            <span style={arrowStyle}>&gt;</span>
-            <span style={sourceTargetStyle}>{event.target}</span>
-            <span style={descStyle}>{event.description}</span>
+      <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '4px 0', background: 'transparent' }}>
+        {recentEvents.length === 0 && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: NocTheme.textMuted, fontSize: 11 }}>
+            이벤트 대기 중...
           </div>
-        ))}
+        )}
+        {recentEvents.map((event) => {
+          const severity = getSeverity(event.type)
+          const color = SEVERITY_COLORS[event.type] || NocTheme.purple
+          return (
+            <div key={event.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '2px 10px', fontSize: 11, lineHeight: '18px' }}>
+              <span style={{ width: 10, height: 10, borderRadius: '50%', background: color, flexShrink: 0, display: 'inline-block' }} />
+              <span style={{ fontFamily: 'monospace', fontSize: 11, color: NocTheme.textTertiary, flexShrink: 0 }}>
+                {formatTimestamp(event.timestamp)}
+              </span>
+              <span style={{ color: NocTheme.textSecondary, fontWeight: 500, flexShrink: 0 }}>{event.fromLabel}</span>
+              <span style={{ color: NocTheme.textMuted, flexShrink: 0 }}>&gt;</span>
+              <span style={{ color: NocTheme.textSecondary, fontWeight: 500, flexShrink: 0 }}>{event.toLabel}</span>
+              <span style={{ color: NocTheme.textSecondary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: 0 }}>
+                [{severity}] {event.message}
+              </span>
+            </div>
+          )
+        })}
       </div>
     </div>
   )

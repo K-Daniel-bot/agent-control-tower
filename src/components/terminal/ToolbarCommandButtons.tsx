@@ -9,29 +9,21 @@ interface ToolbarCommandButtonsProps {
 
 function ClaudeIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M16.5 3.5L12 12l4.5 8.5M7.5 3.5L12 12 7.5 20.5M3 8h18M3 16h18"
-        stroke="#d97706"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <img
+      src="/icon/icons8-클로드-아이-100.png"
+      alt="Claude"
+      style={{ width: 14, height: 14 }}
+    />
   )
 }
 
 function CodexIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke="#10b981" strokeWidth="1.8" />
-      <path
-        d="M8 12h8M12 8v8"
-        stroke="#10b981"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-    </svg>
+    <img
+      src="/icon/icons8-chatgpt-100.png"
+      alt="Codex"
+      style={{ width: 14, height: 14 }}
+    />
   )
 }
 

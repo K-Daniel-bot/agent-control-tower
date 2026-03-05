@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AgentOrchestraProvider, useOrchestra } from '@/context/AgentOrchestraContext'
 import { useAgentSimulation } from '@/hooks/useAgentSimulation'
+import { useAgentSSE } from '@/hooks/useAgentSSE'
 import { resetNamePool } from '@/data/koreanNamePool'
 import AgentCreatePanel from './AgentCreatePanel'
 import NocDashboard from '@/components/noc/NocDashboard'
@@ -13,6 +14,9 @@ type ActiveTab = 'manual' | 'auto' | 'test'
 function TopologyController() {
   const { state, dispatch } = useOrchestra()
   const { startSimulation, resetSimulation } = useAgentSimulation(dispatch)
+
+  // SSE 실시간 연동 (항상 활성)
+  useAgentSSE(dispatch)
   const [tab, setTab] = useState<ActiveTab>('manual')
   const [showCreatePanel, setShowCreatePanel] = useState(false)
   const hasAutoStartedRef = useRef(false)

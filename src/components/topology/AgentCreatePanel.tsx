@@ -145,28 +145,16 @@ export function AgentCreatePanel({ onClose }: AgentCreatePanelProps) {
       })
     }, 600)
 
-    // Persist to localStorage
+    // Persist to localStorage and save markdown file in ~/.claude/agents/
     const savedAt = Date.now()
-    const saved: SavedAgent = {
-      id: identity.id,
-      name: customName || identity.koreanName,
-      rank,
-      roleType,
-      roleDescription: description,
-      inferredSummary: inferred?.summary ?? roleMeta.label,
-      skills,
-      icon: selectedIcon,
-      createdAt: savedAt,
-    }
-    addAgent(saved)
+    const agentName = customName || identity.koreanName
 
-    // Also save as markdown file in ~/.claude/agents/
     void fetch('/api/agents/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         id: identity.id,
-        name: customName || identity.koreanName,
+        name: agentName,
         rank,
         roleType,
         roleLabel: roleMeta.label,
@@ -176,6 +164,34 @@ export function AgentCreatePanel({ onClose }: AgentCreatePanelProps) {
         icon: selectedIcon,
         createdAt: savedAt,
       }),
+    }).then(res => res.json()).then((data: { path?: string; error?: string }) => {
+      const saved: SavedAgent = {
+        id: identity.id,
+        name: agentName,
+        rank,
+        roleType,
+        roleDescription: description,
+        inferredSummary: inferred?.summary ?? roleMeta.label,
+        skills,
+        icon: selectedIcon,
+        path: data.path,
+        createdAt: savedAt,
+      }
+      addAgent(saved)
+    }).catch(() => {
+      // Fallback: save without path if API fails
+      const saved: SavedAgent = {
+        id: identity.id,
+        name: agentName,
+        rank,
+        roleType,
+        roleDescription: description,
+        inferredSummary: inferred?.summary ?? roleMeta.label,
+        skills,
+        icon: selectedIcon,
+        createdAt: savedAt,
+      }
+      addAgent(saved)
     })
 
     setName('')

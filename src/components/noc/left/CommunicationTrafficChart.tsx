@@ -2,17 +2,15 @@
 
 import { useRef, useEffect, useCallback } from 'react'
 import * as echarts from 'echarts'
+import { NocTheme } from '@/constants/nocTheme'
+import type { AgentMessage } from '@/types/topology'
+
+interface CommunicationTrafficChartProps {
+  readonly messages: ReadonlyArray<AgentMessage>
+}
 
 const POINT_COUNT = 30
 const UPDATE_INTERVAL = 2000
-
-function generateInitialSeries(): number[] {
-  const base = 50 + Math.random() * 30
-  return Array.from({ length: POINT_COUNT }, (_, i) => {
-    const trend = Math.sin(i * 0.35) * 15
-    return Math.max(0, base + trend + (Math.random() - 0.5) * 20)
-  })
-}
 
 function generateTimeLabels(): string[] {
   const now = Date.now()
@@ -31,7 +29,7 @@ function buildOption(times: string[], inData: number[], outData: number[]): echa
       show: true,
       top: 4,
       right: 8,
-      textStyle: { color: '#9ca3af', fontSize: 9 },
+      textStyle: { color: NocTheme.textSecondary, fontSize: 9 },
       itemWidth: 12,
       itemHeight: 2,
       itemGap: 12,
@@ -43,25 +41,25 @@ function buildOption(times: string[], inData: number[], outData: number[]): echa
     xAxis: {
       type: 'category',
       data: times,
-      axisLabel: { fontSize: 8, color: '#505661', interval: 9 },
-      axisLine: { lineStyle: { color: '#333333' } },
+      axisLabel: { fontSize: 8, color: NocTheme.textMuted, interval: 9 },
+      axisLine: { lineStyle: { color: NocTheme.divider } },
       axisTick: { show: false },
     },
     yAxis: {
       type: 'value',
       splitNumber: 3,
-      axisLabel: { fontSize: 8, color: '#505661', formatter: (v: number) => `${Math.round(v)}` },
+      axisLabel: { fontSize: 8, color: NocTheme.textMuted, formatter: (v: number) => `${Math.round(v)}` },
       axisLine: { show: false },
       axisTick: { show: false },
-      splitLine: { lineStyle: { color: '#333333', width: 1 } },
+      splitLine: { lineStyle: { color: NocTheme.divider, width: 1 } },
     },
     tooltip: {
       trigger: 'axis',
       backgroundColor: 'transparent',
-      borderColor: '#333333',
+      borderColor: NocTheme.divider,
       borderWidth: 1,
-      textStyle: { fontSize: 9, color: '#e6edf3' },
-      axisPointer: { lineStyle: { color: '#333333' } },
+      textStyle: { fontSize: 9, color: NocTheme.textPrimary },
+      axisPointer: { lineStyle: { color: NocTheme.divider } },
     },
     series: [
       {
@@ -70,12 +68,12 @@ function buildOption(times: string[], inData: number[], outData: number[]): echa
         data: inData,
         smooth: true,
         symbol: 'none',
-        lineStyle: { color: '#00ff88', width: 1.2 },
-        itemStyle: { color: '#00ff88' },
+        lineStyle: { color: NocTheme.greenBright, width: 1.2 },
+        itemStyle: { color: NocTheme.greenBright },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#00ff8830' },
-            { offset: 1, color: '#00ff8805' },
+            { offset: 0, color: NocTheme.greenBright + '30' },
+            { offset: 1, color: NocTheme.greenBright + '05' },
           ]),
         },
       },
@@ -85,12 +83,12 @@ function buildOption(times: string[], inData: number[], outData: number[]): echa
         data: outData,
         smooth: true,
         symbol: 'none',
-        lineStyle: { color: '#ff6b35', width: 1.2 },
-        itemStyle: { color: '#ff6b35' },
+        lineStyle: { color: NocTheme.orangeBright, width: 1.2 },
+        itemStyle: { color: NocTheme.orangeBright },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#ff6b3530' },
-            { offset: 1, color: '#ff6b3505' },
+            { offset: 0, color: NocTheme.orangeBright + '30' },
+            { offset: 1, color: NocTheme.orangeBright + '05' },
           ]),
         },
       },
@@ -98,13 +96,13 @@ function buildOption(times: string[], inData: number[], outData: number[]): echa
   }
 }
 
-export default function CommunicationTrafficChart() {
+export default function CommunicationTrafficChart({ messages }: CommunicationTrafficChartProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<echarts.ECharts | null>(null)
   const dataRef = useRef<{ times: string[]; inSeries: number[]; outSeries: number[] }>({
     times: generateTimeLabels(),
-    inSeries: generateInitialSeries(),
-    outSeries: generateInitialSeries(),
+    inSeries: Array.from({ length: POINT_COUNT }, () => 0),
+    outSeries: Array.from({ length: POINT_COUNT }, () => 0),
   })
 
   const updateChart = useCallback(() => {
@@ -125,18 +123,19 @@ export default function CommunicationTrafficChart() {
       const now = new Date()
       const label = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
       const prev = dataRef.current
-      const lastIn = prev.inSeries[prev.inSeries.length - 1]
-      const lastOut = prev.outSeries[prev.outSeries.length - 1]
+      const nowTs = Date.now()
+      const recentIn = messages.filter(m => nowTs - m.timestamp < 5000 && m.type !== 'system').length
+      const recentOut = messages.filter(m => nowTs - m.timestamp < 5000 && m.type === 'result').length
       dataRef.current = {
         times: [...prev.times.slice(1), label],
-        inSeries: [...prev.inSeries.slice(1), Math.max(0, lastIn + (Math.random() - 0.48) * 14)],
-        outSeries: [...prev.outSeries.slice(1), Math.max(0, lastOut + (Math.random() - 0.48) * 14)],
+        inSeries: [...prev.inSeries.slice(1), recentIn * 12],
+        outSeries: [...prev.outSeries.slice(1), recentOut * 8],
       }
       updateChart()
     }, UPDATE_INTERVAL)
 
     return () => clearInterval(timer)
-  }, [updateChart])
+  }, [updateChart, messages])
 
   useEffect(() => {
     const el = containerRef.current
@@ -159,18 +158,24 @@ export default function CommunicationTrafficChart() {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '0 8px',
-          borderBottom: '1px solid #333333',
+          borderBottom: `1px solid ${NocTheme.divider}`,
           background: 'transparent',
           flexShrink: 0,
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ color: '#f59e0b', fontSize: 10 }}>&#9650;</span>
-          <span style={{ color: '#9ca3af', fontSize: 11, fontWeight: 500, letterSpacing: '0.02em' }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={NocTheme.greenBright} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M2 20h20" />
+            <path d="M6 16V8" />
+            <path d="M10 16V4" />
+            <path d="M14 16v-4" />
+            <path d="M18 16V6" />
+          </svg>
+          <span style={{ color: NocTheme.textSecondary, fontSize: 11, fontWeight: 500, letterSpacing: '0.02em' }}>
             실시간 성능 차트 (Agent Traffic)
           </span>
         </div>
-        <span style={{ color: '#505661', fontSize: 12, cursor: 'default' }}>&#10005;</span>
+        <span style={{ color: NocTheme.textMuted, fontSize: 12, cursor: 'default' }}>&#10005;</span>
       </div>
       <div ref={containerRef} style={{ flex: 1, minHeight: 0 }} />
     </div>
