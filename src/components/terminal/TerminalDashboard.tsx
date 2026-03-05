@@ -228,12 +228,12 @@ export default function TerminalDashboard({ isVisible = true, rightPanel = null,
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
         <DirectoryPanel onSelectDirectory={handleSelectDirectory} />
 
-        {/* Terminal — hidden when graph view active, but always mounted */}
-        <div style={{ flex: 1, overflow: 'hidden', display: rightPanel === 'graph' ? 'none' : 'block' }}>
+        {/* Terminal */}
+        <div style={{ flex: 1, overflow: 'hidden' }}>
           <SplitContainer
             node={paneState.root}
             activePaneId={paneState.activePaneId}
-            isVisible={isVisible && rightPanel !== 'graph'}
+            isVisible={isVisible}
             config={config}
             totalLeaves={paneCount}
             onPaneClick={handlePaneClick}
@@ -244,13 +244,6 @@ export default function TerminalDashboard({ isVisible = true, rightPanel = null,
           />
         </div>
 
-        {/* Graph view occupies main area — key forces remount to re-read localStorage */}
-        {rightPanel === 'graph' && (
-          <div style={{ flex: 1, overflow: 'hidden' }}>
-            <NoteGraphPanel />
-          </div>
-        )}
-
         {showCustomizer && (
           <TerminalCustomizer
             config={config}
@@ -258,11 +251,122 @@ export default function TerminalDashboard({ isVisible = true, rightPanel = null,
             onClose={() => setShowCustomizer(false)}
           />
         )}
+
+        {/* Modal: Skill Panel */}
         {rightPanel === 'skill' && (
-          <SkillPanel onSendCommand={sendToActivePane} projectDir={savedProjectDir} />
+          <div
+            style={{
+              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)',
+              zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+            onClick={() => togglePanel('skill')}
+          >
+            <div
+              style={{
+                width: '80vw', maxWidth: 900, height: '80vh',
+                background: '#000000', border: '1px solid #333333', borderRadius: 8,
+                overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '10px 16px', borderBottom: '1px solid #333333',
+              }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: '#a855f7' }}>스킬</span>
+                <button
+                  onClick={() => togglePanel('skill')}
+                  style={{
+                    background: 'none', border: '1px solid #333', borderRadius: 4,
+                    color: '#6b7280', fontSize: 11, padding: '2px 8px', cursor: 'pointer',
+                  }}
+                >
+                  ESC
+                </button>
+              </div>
+              <div style={{ flex: 1, overflow: 'hidden' }}>
+                <SkillPanel onSendCommand={sendToActivePane} projectDir={savedProjectDir} />
+              </div>
+            </div>
+          </div>
         )}
+
+        {/* Modal: AI Notes Panel */}
         {rightPanel === 'note' && (
-          <AINotesPanel onSendCommand={sendToActivePane} />
+          <div
+            style={{
+              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)',
+              zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+            onClick={() => togglePanel('note')}
+          >
+            <div
+              style={{
+                width: '80vw', maxWidth: 900, height: '80vh',
+                background: '#000000', border: '1px solid #333333', borderRadius: 8,
+                overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '10px 16px', borderBottom: '1px solid #333333',
+              }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: '#3b82f6' }}>AI 노트</span>
+                <button
+                  onClick={() => togglePanel('note')}
+                  style={{
+                    background: 'none', border: '1px solid #333', borderRadius: 4,
+                    color: '#6b7280', fontSize: 11, padding: '2px 8px', cursor: 'pointer',
+                  }}
+                >
+                  ESC
+                </button>
+              </div>
+              <div style={{ flex: 1, overflow: 'hidden' }}>
+                <AINotesPanel onSendCommand={sendToActivePane} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal: Graph View */}
+        {rightPanel === 'graph' && (
+          <div
+            style={{
+              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)',
+              zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+            onClick={() => togglePanel('graph')}
+          >
+            <div
+              style={{
+                width: '85vw', maxWidth: 1100, height: '80vh',
+                background: '#000000', border: '1px solid #333333', borderRadius: 8,
+                overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '10px 16px', borderBottom: '1px solid #333333',
+              }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: '#06b6d4' }}>그래프 뷰</span>
+                <button
+                  onClick={() => togglePanel('graph')}
+                  style={{
+                    background: 'none', border: '1px solid #333', borderRadius: 4,
+                    color: '#6b7280', fontSize: 11, padding: '2px 8px', cursor: 'pointer',
+                  }}
+                >
+                  ESC
+                </button>
+              </div>
+              <div style={{ flex: 1, overflow: 'hidden' }}>
+                <NoteGraphPanel />
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

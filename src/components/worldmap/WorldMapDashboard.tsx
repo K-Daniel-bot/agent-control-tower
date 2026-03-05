@@ -2,270 +2,186 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import dynamic from 'next/dynamic'
-import type { AgentPin, ActivityEntry, WorldMapViewMode, BottomTabType, RegionId } from '@/types/worldmap'
-import { REGIONS } from '@/types/worldmap'
-import TerritoryMap2D from './TerritoryMap2D'
-import WorldMapBottomBar from './WorldMapBottomBar'
+import type { NeuralNode } from '@/types/worldmap'
+import { NEURAL_NODES, NEURAL_EDGES } from '@/data/worldmapNodes'
+import { NODE_TYPE_COLORS } from '@/types/worldmap'
+import NeuralGraphCanvas from './NeuralGraphCanvas'
+import FlowArchitecture from './FlowArchitecture'
+import MapInspector from './MapInspector'
+import ExternalViewDashboard from './ExternalViewDashboard'
 
-const GlobeView3D = dynamic(() => import('./GlobeView3D'), { ssr: false })
+const ParticleCluster3D = dynamic(() => import('./ParticleCluster3D'), { ssr: false })
 
-// Mock agent simulation data
-const MOCK_AGENTS: AgentPin[] = [
-  { id: 'a1', name: 'Planner', regionId: 'codebase', status: 'active', tokenRate: 12, role: 'planner', avatar: 'P' },
-  { id: 'a2', name: 'Executor', regionId: 'codebase', status: 'working', tokenRate: 28, role: 'executor', avatar: 'E' },
-  { id: 'a3', name: 'Reviewer', regionId: 'codebase', status: 'idle', tokenRate: 0, role: 'reviewer', avatar: 'R' },
-  { id: 'a4', name: 'API Agent', regionId: 'api_gateway', status: 'active', tokenRate: 8, role: 'tool', avatar: 'A' },
-  { id: 'a5', name: 'File Scanner', regionId: 'filesystem', status: 'working', tokenRate: 15, role: 'executor', avatar: 'F' },
-  { id: 'a6', name: 'Shell Runner', regionId: 'local_tools', status: 'active', tokenRate: 5, role: 'tool', avatar: 'S' },
-  { id: 'a7', name: 'Tester', regionId: 'local_tools', status: 'idle', tokenRate: 0, role: 'verifier', avatar: 'T' },
-  { id: 'a8', name: 'Coordinator', regionId: 'communication', status: 'active', tokenRate: 3, role: 'orchestrator', avatar: 'C' },
-]
+type ViewMode = 'internal' | 'external'
 
-const ACTIONS = [
-  'read file src/app/page.tsx',
-  'executed grep search',
-  'called external API',
-  'wrote test file',
-  'ran npm build',
-  'analyzed dependencies',
-  'sent message to Planner',
-  'completed code review',
-  'parsed JSON response',
-  'spawned subprocess',
-]
-
-function generateActivity(agents: AgentPin[]): ActivityEntry {
-  const agent = agents[Math.floor(Math.random() * agents.length)]
-  return {
-    id: `act-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-    agentId: agent.id,
-    agentName: agent.name,
-    regionId: agent.regionId,
-    action: ACTIONS[Math.floor(Math.random() * ACTIONS.length)],
-    timestamp: Date.now(),
-  }
-}
-
-function randomizeAgentStatus(agents: readonly AgentPin[]): AgentPin[] {
-  return agents.map((agent) => {
-    if (Math.random() > 0.85) {
-      const statuses = ['active', 'working', 'idle'] as const
-      const regionIds = REGIONS.map((r) => r.id)
-      return {
-        ...agent,
-        status: statuses[Math.floor(Math.random() * statuses.length)],
-        tokenRate: Math.floor(Math.random() * 30),
-        regionId: Math.random() > 0.9
-          ? regionIds[Math.floor(Math.random() * regionIds.length)]
-          : agent.regionId,
+function randomizeHealth(nodes: readonly NeuralNode[]): NeuralNode[] {
+  return nodes.map(n => {
+    if (Math.random() > 0.92) {
+      const healthOpts = ['ok', 'ok', 'ok', 'warn', 'idle'] as const
+      const newMetrics = {
+        ...n.metrics,
+        cpu: Math.max(0, Math.min(100, n.metrics.cpu + Math.floor((Math.random() - 0.5) * 20))),
+        tokenRate: Math.max(0, n.metrics.tokenRate + Math.floor((Math.random() - 0.5) * 8)),
+        queueDepth: Math.max(0, n.metrics.queueDepth + Math.floor((Math.random() - 0.5) * 3)),
       }
+      return { ...n, health: healthOpts[Math.floor(Math.random() * healthOpts.length)], metrics: newMetrics }
     }
-    return agent
+    return n
   })
 }
 
 export default function WorldMapDashboard() {
-  const [viewMode, setViewMode] = useState<WorldMapViewMode>('2d')
-  const [agents, setAgents] = useState<AgentPin[]>(MOCK_AGENTS)
-  const [activities, setActivities] = useState<ActivityEntry[]>([])
-  const [selectedAgent, setSelectedAgent] = useState<string | null>(null)
-  const [selectedRegion, setSelectedRegion] = useState<RegionId | null>(null)
-  const [bottomTab, setBottomTab] = useState<BottomTabType>('agents')
-  const [containerSize, setContainerSize] = useState({ width: 800, height: 500 })
-  const containerRef = useRef<HTMLDivElement>(null)
+  const [viewMode, setViewMode] = useState<ViewMode>('internal')
+  const [nodes, setNodes] = useState<NeuralNode[]>([...NEURAL_NODES])
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
+  const [leftSize, setLeftSize] = useState({ w: 800, h: 600 })
+  const [rightTopSize, setRightTopSize] = useState({ w: 400, h: 300 })
+  const [rightBottomSize, setRightBottomSize] = useState({ w: 400, h: 300 })
+  const leftRef = useRef<HTMLDivElement>(null)
+  const rtRef = useRef<HTMLDivElement>(null)
+  const rbRef = useRef<HTMLDivElement>(null)
 
-  // Resize observer
+  // Resize observers
   useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-
-    const ro = new ResizeObserver((entries) => {
-      const entry = entries[0]
-      if (entry) {
-        setContainerSize({
-          width: entry.contentRect.width,
-          height: entry.contentRect.height,
-        })
-      }
-    })
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [])
-
-  // Simulate agent movement and activity
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAgents((prev) => randomizeAgentStatus(prev))
-      setActivities((prev) => {
-        const newEntry = generateActivity(MOCK_AGENTS)
-        return [...prev.slice(-99), newEntry]
+    const observe = (el: HTMLElement | null, setter: (s: { w: number; h: number }) => void) => {
+      if (!el) return () => {}
+      const ro = new ResizeObserver(entries => {
+        const e = entries[0]
+        if (e) setter({ w: e.contentRect.width, h: e.contentRect.height })
       })
-    }, 3000)
-    return () => clearInterval(interval)
+      ro.observe(el)
+      return () => ro.disconnect()
+    }
+    const c1 = observe(leftRef.current, setLeftSize)
+    const c2 = observe(rtRef.current, setRightTopSize)
+    const c3 = observe(rbRef.current, setRightBottomSize)
+    return () => { c1(); c2(); c3() }
   }, [])
 
-  const handleSelectRegion = useCallback((id: RegionId | null) => {
-    setSelectedRegion(id)
-    if (id) setBottomTab('region')
+  // Simulate health changes
+  useEffect(() => {
+    const iv = setInterval(() => setNodes(prev => randomizeHealth(prev)), 3000)
+    return () => clearInterval(iv)
   }, [])
+
+  const handleSelectNode = useCallback((id: string | null) => setSelectedNodeId(id), [])
+
+  const selectedNode = useMemo(
+    () => nodes.find(n => n.id === selectedNodeId) ?? null,
+    [nodes, selectedNodeId]
+  )
 
   // Stats
-  const activeCount = useMemo(
-    () => agents.filter((a) => a.status === 'active' || a.status === 'working').length,
-    [agents]
-  )
-  const totalTokenRate = useMemo(
-    () => agents.reduce((sum, a) => sum + a.tokenRate, 0),
-    [agents]
-  )
+  const activeCount = useMemo(() => nodes.filter(n => n.health === 'ok').length, [nodes])
+  const totalTokenRate = useMemo(() => nodes.reduce((s, n) => s + n.metrics.tokenRate, 0), [nodes])
+  const warnCount = useMemo(() => nodes.filter(n => n.health === 'warn').length, [nodes])
 
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        background: '#000',
-        color: '#e5e7eb',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Toolbar */}
-      <div
-        style={{
-          padding: '10px 20px',
-          borderBottom: '1px solid #333333',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexShrink: 0,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <span style={{ fontSize: 15, fontWeight: 700, letterSpacing: '0.02em' }}>
-            Agent World Map
-          </span>
-          <div style={{ display: 'flex', gap: 12, fontSize: 11, color: '#6b7280' }}>
-            <span>
-              <span style={{ color: '#00ff88' }}>{activeCount}</span> active
-            </span>
-            <span>
-              <span style={{ color: '#f59e0b' }}>{totalTokenRate}</span> tok/s
-            </span>
-            <span>{agents.length} total</span>
-          </div>
-        </div>
-
+    <div style={{
+      width: '100%', height: '100%', background: '#060a12',
+      display: 'flex', flexDirection: 'column', overflow: 'hidden',
+      fontFamily: "'JetBrains Mono', monospace",
+    }}>
+      {/* Minimal status bar */}
+      <div style={{
+        height: 28, flexShrink: 0, display: 'flex', alignItems: 'center',
+        padding: '0 16px', borderBottom: '1px solid #0e1822',
+        gap: 20, fontSize: 10,
+      }}>
+        <span style={{ color: '#1e3050', fontWeight: 700, letterSpacing: '0.08em' }}>NEURAL OPS WORLD MAP</span>
         {/* View mode toggle */}
-        <div
-          style={{
-            display: 'flex',
-            background: '#0a0a0a',
-            borderRadius: 4,
-            border: '1px solid #333333',
-            overflow: 'hidden',
-          }}
-        >
-          {(['2d', 'globe'] as const).map((mode) => (
+        <div style={{ display: 'flex', gap: 2, background: '#0a0e18', borderRadius: 4, padding: 2 }}>
+          {([
+            { mode: 'internal' as const, label: '\uB0B4\uBD80\uBCF4\uAE30' },
+            { mode: 'external' as const, label: '\uC678\uBD80\uBCF4\uAE30' },
+          ]).map(({ mode, label }) => (
             <button
               key={mode}
               onClick={() => setViewMode(mode)}
               style={{
-                padding: '5px 14px',
-                background: viewMode === mode ? '#111111' : 'transparent',
-                border: 'none',
-                color: viewMode === mode ? '#e5e7eb' : '#555',
-                fontSize: 11,
+                padding: '2px 10px',
+                fontSize: 9,
                 fontWeight: 600,
+                fontFamily: 'inherit',
+                border: 'none',
+                borderRadius: 3,
                 cursor: 'pointer',
-                textTransform: 'uppercase',
+                background: viewMode === mode ? '#00d4ff22' : 'transparent',
+                color: viewMode === mode ? '#00d4ff' : '#1e3050',
+                transition: 'all 0.15s',
               }}
             >
-              {mode === '2d' ? '2D Territory' : '3D Globe'}
+              {label}
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Map view */}
-      <div ref={containerRef} style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
-        {viewMode === '2d' ? (
-          <TerritoryMap2D
-            agents={agents}
-            selectedAgent={selectedAgent}
-            selectedRegion={selectedRegion}
-            onSelectAgent={setSelectedAgent}
-            onSelectRegion={handleSelectRegion}
-            width={containerSize.width}
-            height={containerSize.height}
-          />
-        ) : (
-          <GlobeView3D
-            agents={agents}
-            selectedRegion={selectedRegion}
-            onSelectRegion={handleSelectRegion}
-          />
-        )}
-
-        {/* Region legend overlay */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 12,
-            right: 12,
-            background: '#000000cc',
-            border: '1px solid #333333',
-            borderRadius: 6,
-            padding: '8px 12px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 4,
-          }}
-        >
-          {REGIONS.map((r) => {
-            const count = agents.filter((a) => a.regionId === r.id).length
-            return (
-              <div
-                key={r.id}
-                onClick={() => handleSelectRegion(selectedRegion === r.id ? null : r.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  fontSize: 10,
-                  cursor: 'pointer',
-                  opacity: selectedRegion && selectedRegion !== r.id ? 0.4 : 1,
-                  transition: 'opacity 0.2s',
-                }}
-              >
-                <div
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: 2,
-                    background: r.color,
-                  }}
-                />
-                <span style={{ color: '#9ca3af' }}>{r.label}</span>
-                {count > 0 && (
-                  <span style={{ color: r.color, fontWeight: 600 }}>{count}</span>
-                )}
-              </div>
-            )
-          })}
+        <div style={{ width: 1, height: 14, background: '#0e1822' }} />
+        <span style={{ color: '#00ff8860' }}>{'\u25CF'} Active: {activeCount}</span>
+        <span style={{ color: '#f59e0b60' }}>{'\u25CF'} Warn: {warnCount}</span>
+        <span style={{ color: '#3b82f660' }}>{'\u25CF'} Nodes: {nodes.length}</span>
+        <span style={{ color: '#1e305080' }}>Token: {totalTokenRate} t/s</span>
+        <div style={{ flex: 1 }} />
+        {/* Node type legend */}
+        {viewMode === 'internal' && (
+        <div style={{ display: 'flex', gap: 10 }}>
+          {(['orchestrator', 'planner', 'executor', 'tool', 'service', 'database', 'external', 'automation'] as const).map(t => (
+            <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+              <div style={{ width: 5, height: 5, borderRadius: '50%', background: NODE_TYPE_COLORS[t] + '66' }} />
+              <span style={{ fontSize: 8, color: '#1e3050' }}>{t.slice(0, 3).toUpperCase()}</span>
+            </div>
+          ))}
         </div>
+        )}
       </div>
 
-      {/* Bottom bar */}
-      <WorldMapBottomBar
-        activeTab={bottomTab}
-        onTabChange={setBottomTab}
-        agents={agents}
-        activities={activities}
-        selectedRegion={selectedRegion}
-        onSelectRegion={handleSelectRegion}
-      />
+      {/* Main content */}
+      {viewMode === 'external' ? (
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          <ExternalViewDashboard />
+        </div>
+      ) : (
+        <div style={{ flex: 1, display: 'flex', overflow: 'hidden', position: 'relative' }}>
+          {/* Left: Neural Graph (55%) */}
+          <div ref={leftRef} style={{
+            flex: '0 0 55%', borderRight: '1px solid #0e1822',
+            overflow: 'hidden', position: 'relative',
+          }}>
+            <NeuralGraphCanvas
+              width={leftSize.w}
+              height={leftSize.h}
+              nodes={nodes}
+              edges={NEURAL_EDGES}
+              selectedNodeId={selectedNodeId}
+              onSelectNode={handleSelectNode}
+            />
+          </div>
+
+          {/* Right panels (45%) */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            {/* Top-right: 3D Particle Cluster */}
+            <div ref={rtRef} style={{
+              flex: 1, borderBottom: '1px solid #0e1822', overflow: 'hidden',
+            }}>
+              <ParticleCluster3D />
+            </div>
+
+            {/* Bottom-right: Flow Architecture */}
+            <div ref={rbRef} style={{ flex: 1, overflow: 'hidden' }}>
+              <FlowArchitecture width={rightBottomSize.w} height={rightBottomSize.h} />
+            </div>
+          </div>
+
+          {/* Inspector overlay */}
+          {selectedNode && (
+            <MapInspector
+              node={selectedNode}
+              edges={NEURAL_EDGES}
+              nodes={nodes}
+              onClose={() => setSelectedNodeId(null)}
+            />
+          )}
+        </div>
+      )}
     </div>
   )
 }

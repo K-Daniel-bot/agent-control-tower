@@ -1,53 +1,71 @@
-import type { AgentStatus } from './topology'
-
-export type RegionId =
-  | 'codebase'
-  | 'api_gateway'
-  | 'filesystem'
+export type NeuralNodeType =
+  | 'orchestrator'
+  | 'planner'
+  | 'executor'
+  | 'tool'
+  | 'service'
   | 'database'
-  | 'cloud'
-  | 'local_tools'
-  | 'communication'
+  | 'external'
+  | 'automation'
 
-export interface Region {
-  readonly id: RegionId
+export type NodeHealth = 'ok' | 'warn' | 'error' | 'idle'
+
+export type LayerName = 'ingest' | 'context' | 'plan' | 'execute' | 'verify' | 'document' | 'observe'
+
+export type EdgeKind = 'call' | 'depends' | 'dataflow' | 'trigger'
+
+export interface NeuralNode {
+  readonly id: string
+  readonly type: NeuralNodeType
   readonly label: string
-  readonly description: string
-  readonly color: string
-  readonly icon: string
-  readonly position: { readonly x: number; readonly y: number }
+  readonly shortLabel: string
+  readonly health: NodeHealth
+  readonly layer: LayerName
+  readonly metrics: {
+    readonly cpu: number
+    readonly tokenRate: number
+    readonly latency: number
+    readonly queueDepth: number
+  }
 }
 
-export interface AgentPin {
-  readonly id: string
-  readonly name: string
-  readonly regionId: RegionId
-  readonly status: AgentStatus
-  readonly tokenRate: number
-  readonly role: string
-  readonly avatar: string
+export interface NeuralEdge {
+  readonly source: string
+  readonly target: string
+  readonly kind: EdgeKind
+  readonly rate: number
+  readonly active: boolean
 }
 
-export interface ActivityEntry {
+export interface NeuralEvent {
   readonly id: string
-  readonly agentId: string
-  readonly agentName: string
-  readonly regionId: RegionId
-  readonly action: string
+  readonly type: string
+  readonly label: string
   readonly timestamp: number
-  readonly detail?: string
+  readonly nodeIds: readonly string[]
 }
 
-export type WorldMapViewMode = '2d' | 'globe'
+export const LAYERS: readonly LayerName[] = [
+  'ingest', 'context', 'plan', 'execute', 'verify', 'document', 'observe',
+]
 
-export type BottomTabType = 'agents' | 'activity' | 'region'
+export const LAYER_LABELS: Record<LayerName, string> = {
+  ingest: 'INGEST',
+  context: 'CONTEXT',
+  plan: 'PLAN',
+  execute: 'EXECUTE',
+  verify: 'VERIFY',
+  document: 'DOCUMENT',
+  observe: 'OBSERVE',
+}
 
-export const REGIONS: readonly Region[] = [
-  { id: 'codebase', label: 'Codebase', description: 'Source code read/write/analysis', color: '#3b82f6', icon: '{ }', position: { x: 0.2, y: 0.3 } },
-  { id: 'api_gateway', label: 'API Gateway', description: 'External API calls & integrations', color: '#8b5cf6', icon: '\u21C4', position: { x: 0.5, y: 0.2 } },
-  { id: 'filesystem', label: 'File System', description: 'File search, glob, grep operations', color: '#06b6d4', icon: '\u2603', position: { x: 0.8, y: 0.3 } },
-  { id: 'database', label: 'Database', description: 'SQL queries, schema management', color: '#f59e0b', icon: '\u229E', position: { x: 0.2, y: 0.7 } },
-  { id: 'cloud', label: 'Cloud Services', description: 'AWS, GCP, MCP server connections', color: '#ec4899', icon: '\u2601', position: { x: 0.5, y: 0.8 } },
-  { id: 'local_tools', label: 'Local Tools', description: 'Bash, terminal, npm, shell commands', color: '#10b981', icon: '>', position: { x: 0.8, y: 0.7 } },
-  { id: 'communication', label: 'Communication', description: 'Agent-to-agent messaging & events', color: '#ef4444', icon: '\u2B50', position: { x: 0.5, y: 0.5 } },
-] as const
+export const NODE_TYPE_COLORS: Record<NeuralNodeType, string> = {
+  orchestrator: '#ffcc00',
+  planner: '#00d4ff',
+  executor: '#00ff88',
+  tool: '#8b5cf6',
+  service: '#06b6d4',
+  database: '#f59e0b',
+  external: '#ec4899',
+  automation: '#3b82f6',
+}

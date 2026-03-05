@@ -367,7 +367,7 @@ export default function Header({
           <button
             onClick={() => { onTabChange('terminal'); onTogglePanel?.('note') }}
             title="AI 노트"
-            style={utilIconStyle(terminalPanel === 'note' && activeTab === 'terminal')}
+            style={utilIconStyle(terminalPanel === 'note')}
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
@@ -379,7 +379,7 @@ export default function Header({
           <button
             onClick={() => { onTabChange('terminal'); onTogglePanel?.('graph') }}
             title="그래프 뷰"
-            style={utilIconStyle(terminalPanel === 'graph' && activeTab === 'terminal')}
+            style={utilIconStyle(terminalPanel === 'graph')}
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <circle cx="7" cy="2.5" r="1.5" fill="currentColor" />
