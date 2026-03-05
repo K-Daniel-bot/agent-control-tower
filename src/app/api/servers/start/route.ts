@@ -1,59 +1,47 @@
 import { spawn } from 'child_process'
-import path from 'path'
+import { existsSync } from 'fs'
 
-// Store active processes
-const processes = new Map<string, NodeJS.Timeout>()
+export const dynamic = 'force-dynamic'
+
+// Track running PIDs in memory for this server instance
+const runningPids = new Map<string, number>()
 
 export async function POST(req: Request) {
   try {
-    const { name } = await req.json()
+    const body = await req.json()
+    const { id, name, command, cwd } = body
 
-    if (!name) {
-      return Response.json({ error: 'Server name required' }, { status: 400 })
+    if (!command) {
+      return Response.json({ error: 'command is required' }, { status: 400 })
     }
 
-    // Check if already running
-    if (processes.has(name)) {
-      return Response.json({ error: `${name} is already running` }, { status: 400 })
+    const workDir = cwd || process.cwd()
+
+    if (!existsSync(workDir)) {
+      return Response.json(
+        { error: `Working directory does not exist: ${workDir}` },
+        { status: 400 }
+      )
     }
 
-    const baseDir = path.join(process.cwd())
-    let command = ''
-    let args: string[] = []
-
-    switch (name) {
-      case 'Next.js App':
-        command = 'npm'
-        args = ['run', 'dev']
-        break
-      case 'Terminal Server':
-        command = 'npm'
-        args = ['run', 'dev:terminal']
-        break
-      default:
-        return Response.json({ error: 'Unknown server' }, { status: 400 })
-    }
-
-    // Start the process
-    const proc = spawn(command, args, {
-      cwd: baseDir,
+    const proc = spawn(command, [], {
+      cwd: workDir,
       stdio: 'ignore',
       detached: true,
+      shell: true,
     })
 
-    // Don't wait for process
+    if (proc.pid) {
+      runningPids.set(id ?? name, proc.pid)
+    }
+
     proc.unref()
 
-    // Store timeout to track it
-    const timeout = setTimeout(() => {
-      processes.delete(name)
-    }, 60000) // Remove from tracking after 1 minute
-
-    processes.set(name, timeout)
-
     return Response.json({
-      message: `${name} started`,
+      message: `${name || id} started`,
       status: 'starting',
+      pid: proc.pid,
+      cwd: workDir,
     })
   } catch (error) {
     return Response.json(

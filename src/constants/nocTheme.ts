@@ -6,12 +6,12 @@
 
 export const NocTheme = {
   // Base colors
-  background: '#0f1419',      // Main background - very dark blue-gray
-  surface: '#1a1f3a',         // Panel/UI surface
-  surfaceAlt: '#1e2640',      // Alternative surface
-  border: '#2a3f5f',          // Borders and dividers
-  borderLight: '#3a4a6a',     // Lighter borders
-  divider: '#333333',         // Simple dividers (existing)
+  background: '#000000',      // Main background - pure black
+  surface: '#000000',         // Panel/UI surface
+  surfaceAlt: '#0a0a0a',     // Alternative surface
+  border: '#333333',          // Borders and dividers
+  borderLight: '#444444',     // Lighter borders
+  divider: '#333333',         // Simple dividers
 
   // Text colors
   textPrimary: '#e5e7eb',     // Main text - light gray
@@ -45,14 +45,14 @@ export const NocTheme = {
   // Semantic colors
   active: '#a855f7',          // Active state
   inactive: '#6b7280',        // Inactive state
-  hover: '#2a3f5f',           // Hover state
+  hover: '#1a1a1a',           // Hover state
   success: '#10b981',         // Success
   warning: '#f59e0b',         // Warning
   error: '#ef4444',           // Error
   info: '#3b82f6',            // Information
 
   // Surface variants
-  surfaceLight: '#374151',    // Light surface (from summary total background)
+  surfaceLight: '#1a1a1a',    // Light surface
 
   // Chart colors (organized by type)
   chartColors: [

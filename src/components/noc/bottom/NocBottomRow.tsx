@@ -1,6 +1,6 @@
 'use client'
 
-import { NocTheme } from '@/constants/nocTheme'
+import { NocTheme, withAlpha } from '@/constants/nocTheme'
 import AgentStatusCards from './AgentStatusCards'
 import CommunicationChannelCards from './CommunicationChannelCards'
 import ToolResourceCards from './ToolResourceCards'
@@ -12,95 +12,121 @@ interface NocBottomRowProps {
   readonly links: ReadonlyArray<DependencyLink>
 }
 
-const containerStyle: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(3, 1fr)',
-  height: 180,
-  background: NocTheme.background,
-  borderTop: `1px solid ${NocTheme.divider}`,
-  flexShrink: 0,
-  overflow: 'hidden',
-}
-
-const sectionStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  borderRight: `1px solid ${NocTheme.divider}`,
-  minWidth: 0,
-}
-
-const lastSectionStyle: React.CSSProperties = {
-  ...sectionStyle,
-  borderRight: 'none',
-}
-
-const sectionHeaderStyle: React.CSSProperties = {
-  height: 26,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: '0 8px',
-  borderBottom: `1px solid ${NocTheme.divider}`,
-  background: 'transparent',
-  flexShrink: 0,
-}
-
-const sectionTitleStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 6,
-}
-
-const titleTextStyle: React.CSSProperties = {
-  color: NocTheme.textSecondary,
-  fontSize: 11,
-  fontWeight: 500,
-  letterSpacing: '0.02em',
-}
-
-const decorIconsStyle: React.CSSProperties = {
-  display: 'flex',
-  gap: 6,
-  color: NocTheme.textMuted,
-  fontSize: 10,
-  cursor: 'default',
-}
-
-const sectionContentStyle: React.CSSProperties = {
-  flex: 1,
-  minHeight: 0,
-  overflowY: 'auto',
-  overflowX: 'hidden',
-  background: 'transparent',
-}
-
-interface Section {
+interface SectionConfig {
   readonly title: string
+  readonly subtitle: string
+  readonly accentColor: string
+  readonly statusLabel: string
   readonly component: React.ReactNode
 }
 
 export default function NocBottomRow({ agents, edges, links }: NocBottomRowProps) {
-  const sections: readonly Section[] = [
-    { title: 'Agent', component: <AgentStatusCards agents={agents} /> },
-    { title: 'Communication', component: <CommunicationChannelCards edges={edges} /> },
-    { title: 'Tool', component: <ToolResourceCards agents={agents} links={links} /> },
+  const sections: readonly SectionConfig[] = [
+    {
+      title: 'AGENT OPERATIONS',
+      subtitle: 'Real-time agent resource monitoring',
+      accentColor: '#00ff88',
+      statusLabel: `${agents.length} ACTIVE`,
+      component: <AgentStatusCards agents={agents} />,
+    },
+    {
+      title: 'COMM CHANNELS',
+      subtitle: 'Inter-agent communication traffic',
+      accentColor: '#06b6d4',
+      statusLabel: `${edges.length} LINKS`,
+      component: <CommunicationChannelCards edges={edges} />,
+    },
+    {
+      title: 'TOOL RESOURCES',
+      subtitle: 'System tool utilization status',
+      accentColor: '#a855f7',
+      statusLabel: `${links.length} TOOLS`,
+      component: <ToolResourceCards agents={agents} links={links} />,
+    },
   ]
 
   return (
-    <div style={containerStyle}>
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        height: 190,
+        background: NocTheme.background,
+        borderTop: `1px solid ${NocTheme.divider}`,
+        flexShrink: 0,
+        overflow: 'hidden',
+      }}
+    >
       {sections.map((section, idx) => (
-        <div key={section.title} style={idx === sections.length - 1 ? lastSectionStyle : sectionStyle}>
-          <div style={sectionHeaderStyle}>
-            <div style={sectionTitleStyle}>
-              <span style={{ color: NocTheme.blue, fontSize: 10 }}>&#9654;</span>
-              <span style={titleTextStyle}>주요 에이전트 운영현황({section.title})</span>
+        <div
+          key={section.title}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            borderRight: idx < sections.length - 1 ? `1px solid ${NocTheme.divider}` : 'none',
+            minWidth: 0,
+          }}
+        >
+          {/* Premium section header */}
+          <div
+            style={{
+              height: 32,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '0 12px',
+              borderBottom: `1px solid ${NocTheme.divider}`,
+              background: withAlpha(section.accentColor, 0.03),
+              flexShrink: 0,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: '50%',
+                  background: section.accentColor,
+                  boxShadow: `0 0 8px ${withAlpha(section.accentColor, 0.6)}`,
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  color: section.accentColor,
+                }}
+              >
+                {section.title}
+              </span>
+              <div style={{ width: 1, height: 10, background: NocTheme.divider }} />
+              <span style={{ fontSize: 8, color: '#4a5568', letterSpacing: '0.03em' }}>
+                {section.subtitle}
+              </span>
             </div>
-            <div style={decorIconsStyle}>
-              <span>&#9633;</span>
-              <span>&#10005;</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span
+                style={{
+                  fontSize: 8,
+                  fontWeight: 700,
+                  color: section.accentColor,
+                  background: withAlpha(section.accentColor, 0.1),
+                  padding: '2px 6px',
+                  borderRadius: 2,
+                  border: `1px solid ${withAlpha(section.accentColor, 0.2)}`,
+                  letterSpacing: '0.05em',
+                }}
+              >
+                {section.statusLabel}
+              </span>
             </div>
           </div>
-          <div style={sectionContentStyle}>{section.component}</div>
+
+          {/* Content area */}
+          <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'hidden' }}>
+            {section.component}
+          </div>
         </div>
       ))}
     </div>

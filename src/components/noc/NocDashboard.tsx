@@ -21,6 +21,8 @@ export default function NocDashboard() {
         height: '100%',
         background: NocTheme.background,
         overflow: 'hidden',
+        fontFamily: "'JetBrains Mono', 'Fira Code', 'Menlo', monospace",
+        color: '#e5e7eb',
       }}
     >
       {/* Row 1: Left charts | Center isometric | Right event table + topology */}

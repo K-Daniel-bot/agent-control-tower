@@ -10,7 +10,7 @@ interface ToolbarCommandButtonsProps {
 function ClaudeIcon() {
   return (
     <img
-      src="/icon/icons8-클로드-아이-100.png"
+      src="/icons8-클로드-아이-100.png"
       alt="Claude"
       style={{ width: 14, height: 14 }}
     />
@@ -20,7 +20,7 @@ function ClaudeIcon() {
 function CodexIcon() {
   return (
     <img
-      src="/icon/icons8-chatgpt-100.png"
+      src="/icons8-chatgpt-100.png"
       alt="Codex"
       style={{ width: 14, height: 14 }}
     />

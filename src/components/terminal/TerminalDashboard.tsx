@@ -76,6 +76,9 @@ export default function TerminalDashboard({ isVisible = true, rightPanel = null,
 
   const handleSelectDirectory = useCallback((dirPath: string) => {
     setSavedProjectDir(dirPath)
+    try {
+      localStorage.setItem('act-project-dir', dirPath)
+    } catch { /* ignore */ }
     sendToActivePane(`cd ${JSON.stringify(dirPath)}`)
   }, [sendToActivePane])
 

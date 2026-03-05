@@ -73,8 +73,8 @@ export default function AgentEventCountTable({ agents, messages }: AgentEventCou
             const count = row[col.key]
             const isEmpty = count === 0
             return (
-              <div key={col.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 30, borderRadius: 3, background: isEmpty ? NocTheme.background : col.color, opacity: isEmpty ? 0.5 : 1, transition: 'opacity 0.2s' }}>
-                <span style={{ fontSize: 15, fontWeight: 700, color: isEmpty ? NocTheme.textMuted : NocTheme.textPrimary, textShadow: isEmpty ? 'none' : '0 1px 2px rgba(0,0,0,0.3)' }}>
+              <div key={col.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 24, borderRadius: 3, background: isEmpty ? NocTheme.background : col.color, opacity: isEmpty ? 0.5 : 1, transition: 'opacity 0.2s' }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: isEmpty ? NocTheme.textMuted : NocTheme.textPrimary, textShadow: isEmpty ? 'none' : '0 1px 2px rgba(0,0,0,0.3)' }}>
                   {count}
                 </span>
               </div>
@@ -90,8 +90,8 @@ export default function AgentEventCountTable({ agents, messages }: AgentEventCou
         {totalCounts.map((count, colIdx) => {
           const col = SEVERITY_COLUMNS[colIdx]
           return (
-            <div key={col.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 30, borderRadius: 3, background: `${col.color}88`, border: `1px solid ${col.color}44` }}>
-              <span style={{ fontSize: 14, fontWeight: 700, color: '#ffffff', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
+            <div key={col.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 24, borderRadius: 3, background: `${col.color}88`, border: `1px solid ${col.color}44` }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#ffffff', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
                 {count}
               </span>
             </div>

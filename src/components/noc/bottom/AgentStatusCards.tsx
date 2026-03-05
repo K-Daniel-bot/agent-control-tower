@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import { NocTheme } from '@/constants/nocTheme'
+import { NocTheme, withAlpha } from '@/constants/nocTheme'
 import GaugeChart from './GaugeChart'
 import type { AgentState } from '@/types/topology'
 import { deriveAgentStatusSummary } from '@/utils/nocDataTransform'
@@ -10,56 +10,22 @@ interface AgentStatusCardsProps {
   readonly agents: ReadonlyArray<AgentState>
 }
 
-const cardStyle: React.CSSProperties = {
-  minWidth: 130,
-  height: '100%',
-  background: 'transparent',
-  border: `1px solid ${NocTheme.divider}`,
-  borderRadius: 3,
-  padding: '6px 8px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: 2,
-  flexShrink: 0,
-  justifyContent: 'center',
+const AGENT_COLORS: Record<string, string> = {
+  orchestrator: '#00ff88',
+  planner: '#06b6d4',
+  executor: '#f59e0b',
+  tool: '#a855f7',
+  verifier: '#ec4899',
 }
 
-const nameStyle: React.CSSProperties = {
-  fontSize: 10,
-  color: NocTheme.textSecondary,
-  fontWeight: 500,
-  textAlign: 'center',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  width: '100%',
+function getAgentColor(type: string): string {
+  return AGENT_COLORS[type.toLowerCase()] ?? '#3b82f6'
 }
 
-const gaugeRowStyle: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'center',
-  gap: 2,
-  marginTop: 2,
-}
-
-const agentIconStyle: React.CSSProperties = {
-  fontSize: 28,
-  marginBottom: 4,
-  height: 32,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}
-
-function getAgentIcon(type: string): string {
-  const lowerType = type.toLowerCase()
-  if (lowerType === 'orchestrator') return '🤖'
-  if (lowerType === 'planner') return '🧠'
-  if (lowerType === 'executor') return '⚙️'
-  if (lowerType === 'tool') return '🔧'
-  if (lowerType === 'verifier') return '✅'
-  return '🎯'
+function getStatusColor(cpu: number): string {
+  if (cpu > 80) return NocTheme.red
+  if (cpu > 60) return NocTheme.orange
+  return '#00ff88'
 }
 
 export default function AgentStatusCards({ agents }: AgentStatusCardsProps) {
@@ -67,25 +33,103 @@ export default function AgentStatusCards({ agents }: AgentStatusCardsProps) {
 
   if (summaries.length === 0) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: NocTheme.textMuted, fontSize: 11 }}>
-        에이전트 대기 중...
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#333', fontSize: 9, letterSpacing: '0.1em' }}>
+        AWAITING AGENT INITIALIZATION...
       </div>
     )
   }
 
   return (
-    <div style={{ display: 'flex', gap: 6, padding: '6px 8px', overflowX: 'auto', height: '100%', background: 'transparent', alignItems: 'center' }}>
-      {summaries.map((agent) => (
-        <div key={agent.id} style={cardStyle}>
-          <div style={agentIconStyle}>{getAgentIcon(agent.type)}</div>
-          <div style={nameStyle}>[{agent.type.slice(0, 3).toUpperCase()}] {agent.name}</div>
-          <div style={gaugeRowStyle}>
-            <GaugeChart value={Math.round(agent.cpuUsage)} label="CPU" size={42} />
-            <GaugeChart value={Math.round(agent.memUsage)} label="MEM" size={42} />
-            <GaugeChart value={Math.round(agent.tokenRate)} label="TKN" size={42} />
+    <div style={{ display: 'flex', gap: 6, padding: '8px 10px', overflowX: 'auto', height: '100%', alignItems: 'center' }}>
+      {summaries.map((agent) => {
+        const accentColor = getAgentColor(agent.type)
+        const statusColor = getStatusColor(agent.cpuUsage)
+        return (
+          <div
+            key={agent.id}
+            style={{
+              minWidth: 140,
+              height: '100%',
+              background: withAlpha(accentColor, 0.03),
+              border: `1px solid ${withAlpha(accentColor, 0.15)}`,
+              borderRadius: 4,
+              padding: '8px 10px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 4,
+              flexShrink: 0,
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Top accent line */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 2,
+                background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)`,
+              }}
+            />
+
+            {/* Agent type badge + status */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, width: '100%', justifyContent: 'space-between' }}>
+              <span
+                style={{
+                  fontSize: 8,
+                  fontWeight: 700,
+                  color: accentColor,
+                  letterSpacing: '0.08em',
+                  background: withAlpha(accentColor, 0.1),
+                  padding: '1px 5px',
+                  borderRadius: 2,
+                }}
+              >
+                {agent.type.slice(0, 4).toUpperCase()}
+              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                <div
+                  style={{
+                    width: 5,
+                    height: 5,
+                    borderRadius: '50%',
+                    background: statusColor,
+                    boxShadow: `0 0 6px ${statusColor}`,
+                  }}
+                />
+                <span style={{ fontSize: 7, color: statusColor, fontWeight: 600 }}>LIVE</span>
+              </div>
+            </div>
+
+            {/* Agent name */}
+            <div
+              style={{
+                fontSize: 10,
+                color: NocTheme.textPrimary,
+                fontWeight: 600,
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                width: '100%',
+                letterSpacing: '0.02em',
+              }}
+            >
+              {agent.name}
+            </div>
+
+            {/* Gauges */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: 2 }}>
+              <GaugeChart value={Math.round(agent.cpuUsage)} label="CPU" size={42} />
+              <GaugeChart value={Math.round(agent.memUsage)} label="MEM" size={42} />
+              <GaugeChart value={Math.round(agent.tokenRate)} label="TKN" size={42} />
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }

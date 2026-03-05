@@ -37,14 +37,14 @@ function PanelHeader({ title }: { title: string }) {
 export default function NocRightPanel({ agents, messages }: NocRightPanelProps) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', background: NocTheme.background, overflow: 'hidden' }}>
-      <div style={{ flex: '0 0 45%', display: 'flex', flexDirection: 'column', overflow: 'hidden', borderBottom: `1px solid ${NocTheme.divider}` }}>
+      <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', borderBottom: `1px solid ${NocTheme.divider}` }}>
         <PanelHeader title="이벤트 개수 (프로파일)" />
-        <div style={{ flex: 1, overflow: 'auto', padding: '6px 8px', background: 'transparent' }}>
+        <div style={{ padding: '4px 8px', background: 'transparent' }}>
           <AgentEventCountTable agents={agents} messages={messages} />
         </div>
       </div>
-      <div style={{ flex: '1 1 55%', display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: 0 }}>
-        <PanelHeader title="에이전트 서비스별 (Bubble Style)" />
+      <div style={{ flex: '1 1 0', display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: 0 }}>
+        <PanelHeader title="에이전트 서비스 토폴로지" />
         <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
           <AgentServiceTopology />
         </div>

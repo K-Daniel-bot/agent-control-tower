@@ -2,7 +2,7 @@ import type { TerminalTheme, ThemeName, TerminalConfig } from '@/types/terminal'
 
 export const THEMES: Record<ThemeName, TerminalTheme> = {
   'kaku-dark': {
-    background: '#1a1e28',
+    background: '#000000',
     foreground: '#e5e7eb',
     cursor: '#00ff88',
     cursorAccent: '#1a1e28',
@@ -26,7 +26,7 @@ export const THEMES: Record<ThemeName, TerminalTheme> = {
   },
 
   'noc-green': {
-    background: '#1a1e28',
+    background: '#000000',
     foreground: '#00ff88',
     cursor: '#00ff88',
     cursorAccent: '#1a1e28',
@@ -50,7 +50,7 @@ export const THEMES: Record<ThemeName, TerminalTheme> = {
   },
 
   monokai: {
-    background: '#1e2230',
+    background: '#000000',
     foreground: '#f8f8f2',
     cursor: '#f8f8f0',
     cursorAccent: '#1e2230',
@@ -74,7 +74,7 @@ export const THEMES: Record<ThemeName, TerminalTheme> = {
   },
 
   dracula: {
-    background: '#222836',
+    background: '#000000',
     foreground: '#f8f8f2',
     cursor: '#f8f8f2',
     cursorAccent: '#222836',

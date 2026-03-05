@@ -90,6 +90,50 @@ const TerminalDashboard = dynamic(
   }
 )
 
+const ServerDashboard = dynamic(
+  () =>
+    import('@/components/server/ServerDashboard')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="서버 관리" color="#f59e0b" />),
+  {
+    ssr: false,
+    loading: () => <PlaceholderPanel title="서버 관리 로딩 중..." color="#f59e0b" />,
+  }
+)
+
+const WorldMapDashboard = dynamic(
+  () =>
+    import('@/components/worldmap/WorldMapDashboard')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="월드맵" color="#06b6d4" />),
+  {
+    ssr: false,
+    loading: () => <PlaceholderPanel title="월드맵 로딩 중..." color="#06b6d4" />,
+  }
+)
+
+const MemoryDashboard = dynamic(
+  () =>
+    import('@/components/memory/MemoryDashboard')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="메모리" color="#a855f7" />),
+  {
+    ssr: false,
+    loading: () => <PlaceholderPanel title="메모리 로딩 중..." color="#a855f7" />,
+  }
+)
+
+const NewsDashboard = dynamic(
+  () =>
+    import('@/components/news/NewsDashboard')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="뉴스" color="#ef4444" />),
+  {
+    ssr: false,
+    loading: () => <PlaceholderPanel title="뉴스 로딩 중..." color="#ef4444" />,
+  }
+)
+
 function DashboardView() {
   return (
     <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -140,6 +184,18 @@ export default function DashboardPage() {
           rightPanel={terminalPanel}
           onTogglePanel={handleToggleTerminalPanel}
         />
+      </div>
+      <div style={{ display: activeTab === 'server' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
+        <ServerDashboard />
+      </div>
+      <div style={{ display: activeTab === 'worldmap' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
+        <WorldMapDashboard />
+      </div>
+      <div style={{ display: activeTab === 'memory' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
+        <MemoryDashboard />
+      </div>
+      <div style={{ display: activeTab === 'news' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
+        <NewsDashboard />
       </div>
     </div>
   )
