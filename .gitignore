@@ -40,3 +40,9 @@ lerna-debug.log*
 # Misc
 .cache
 *.tgz
+
+.next/
+node_modules/
+tsconfig.tsbuildinfo
+dist/
+build/
