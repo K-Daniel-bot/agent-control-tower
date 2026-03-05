@@ -2,7 +2,6 @@
 
 import { useMemo } from 'react'
 import { NocTheme, withAlpha } from '@/constants/nocTheme'
-import GaugeChart from './GaugeChart'
 import type { AgentState, DependencyLink } from '@/types/topology'
 import { deriveToolStatus } from '@/utils/nocDataTransform'
 
@@ -98,9 +97,6 @@ export default function ToolResourceCards({ agents, links }: ToolResourceCardsPr
                 {status.label}
               </span>
             </div>
-
-            {/* Gauge */}
-            <GaugeChart value={usage} label="Usage" size={52} />
 
             {/* Usage bar */}
             <div style={{ width: '100%' }}>

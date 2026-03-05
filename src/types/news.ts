@@ -14,8 +14,10 @@ export interface NewsArticle {
   readonly id: string
   readonly title: string
   readonly summary: string
+  readonly content?: string
   readonly source: string
   readonly url: string
+  readonly originalUrl?: string
   readonly category: EventCategory
   readonly severity: NewsSeverity
   readonly publishedAt: string

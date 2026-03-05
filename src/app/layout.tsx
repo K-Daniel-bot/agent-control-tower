@@ -30,6 +30,21 @@ export default function RootLayout({
           fontFamily: "system-ui, 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif",
         }}
       >
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+              var origError = console.error;
+              console.error = function() {
+                var args = Array.from(arguments);
+                var msg = args.map(function(a) { return typeof a === 'string' ? a : (a && a.message ? a.message : String(a)); }).join(' ');
+                if (msg.length > 0) {
+                  console.warn('[ACT-INTERCEPT]', msg);
+                }
+                origError.apply(console, arguments);
+              };
+            })();`,
+          }}
+        />
         {children}
       </body>
     </html>

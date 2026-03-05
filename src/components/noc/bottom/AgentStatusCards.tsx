@@ -2,7 +2,6 @@
 
 import { useMemo } from 'react'
 import { NocTheme, withAlpha } from '@/constants/nocTheme'
-import GaugeChart from './GaugeChart'
 import type { AgentState } from '@/types/topology'
 import { deriveAgentStatusSummary } from '@/utils/nocDataTransform'
 
@@ -121,11 +120,20 @@ export default function AgentStatusCards({ agents }: AgentStatusCardsProps) {
               {agent.name}
             </div>
 
-            {/* Gauges */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: 2 }}>
-              <GaugeChart value={Math.round(agent.cpuUsage)} label="CPU" size={42} />
-              <GaugeChart value={Math.round(agent.memUsage)} label="MEM" size={42} />
-              <GaugeChart value={Math.round(agent.tokenRate)} label="TKN" size={42} />
+            {/* Status metrics */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 4, fontSize: 8, width: '100%' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ color: '#999' }}>CPU</div>
+                <div style={{ color: accentColor, fontWeight: 600 }}>{Math.round(agent.cpuUsage)}%</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ color: '#999' }}>MEM</div>
+                <div style={{ color: accentColor, fontWeight: 600 }}>{Math.round(agent.memUsage)}%</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ color: '#999' }}>TKN</div>
+                <div style={{ color: accentColor, fontWeight: 600 }}>{Math.round(agent.tokenRate)}</div>
+              </div>
             </div>
           </div>
         )

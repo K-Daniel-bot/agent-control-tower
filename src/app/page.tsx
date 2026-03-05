@@ -6,6 +6,7 @@ import Header from '@/components/layout/Header'
 import type { TabType } from '@/components/layout/Header'
 import type { RightPanelTab } from '@/types/terminal'
 import LeftPanel from '@/components/left/LeftPanel'
+import VoiceModal from '@/components/voice/VoiceModal'
 
 function PlaceholderPanel({ title, color }: { title: string; color: string }) {
   return (
@@ -134,6 +135,28 @@ const NewsDashboard = dynamic(
   }
 )
 
+const VoiceMeetingDashboard = dynamic(
+  () =>
+    import('@/components/voice/VoiceMeetingDashboard')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="보이스 회의" color="#ec4899" />),
+  {
+    ssr: false,
+    loading: () => <PlaceholderPanel title="보이스 회의 로딩 중..." color="#ec4899" />,
+  }
+)
+
+const CustomizePage = dynamic(
+  () =>
+    import('@/components/customize/CustomizePage')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="프로젝트 설정" color="#f59e0b" />),
+  {
+    ssr: false,
+    loading: () => <PlaceholderPanel title="프로젝트 설정 로딩 중..." color="#f59e0b" />,
+  }
+)
+
 function DashboardView() {
   return (
     <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -145,6 +168,8 @@ function DashboardView() {
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard')
   const [terminalPanel, setTerminalPanel] = useState<RightPanelTab>(null)
+  const [voiceModalOpen, setVoiceModalOpen] = useState(false)
+  const [kakaoModalOpen, setKakaoModalOpen] = useState(false)
 
   const handleTogglePanel = useCallback((tab: 'note' | 'graph') => {
     setActiveTab('terminal')
@@ -153,6 +178,22 @@ export default function DashboardPage() {
 
   const handleToggleTerminalPanel = useCallback((tab: 'skill' | 'note' | 'graph') => {
     setTerminalPanel(prev => prev === tab ? null : tab)
+  }, [])
+
+  const handleVoiceModalOpen = useCallback(() => {
+    setVoiceModalOpen(true)
+  }, [])
+
+  const handleVoiceModalClose = useCallback(() => {
+    setVoiceModalOpen(false)
+  }, [])
+
+  const handleKakaoModalOpen = useCallback(() => {
+    setKakaoModalOpen(true)
+  }, [])
+
+  const handleKakaoModalClose = useCallback(() => {
+    setKakaoModalOpen(false)
   }, [])
 
   return (
@@ -171,12 +212,17 @@ export default function DashboardPage() {
         onTabChange={setActiveTab}
         terminalPanel={terminalPanel}
         onTogglePanel={handleTogglePanel}
+        onVoiceModalOpen={handleVoiceModalOpen}
+        onKakaoModalOpen={handleKakaoModalOpen}
       />
       <div style={{ display: activeTab === 'dashboard' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
         <DashboardView />
       </div>
       <div style={{ display: activeTab === 'settings' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
         <AgentSettingsPage />
+      </div>
+      <div style={{ display: activeTab === 'customize' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
+        <CustomizePage />
       </div>
       <div style={{ display: activeTab === 'terminal' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
         <TerminalDashboard
@@ -197,6 +243,65 @@ export default function DashboardPage() {
       <div style={{ display: activeTab === 'news' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
         <NewsDashboard />
       </div>
+      <div style={{ display: activeTab === 'voice' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
+        <VoiceMeetingDashboard />
+      </div>
+
+      {/* Voice Modal */}
+      <VoiceModal isOpen={voiceModalOpen} onClose={handleVoiceModalClose} />
+
+      {/* KakaoTalk Modal (placeholder) */}
+      {kakaoModalOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 10000,
+          }}
+          onClick={handleKakaoModalClose}
+        >
+          <div
+            style={{
+              width: 400,
+              background: '#000000',
+              border: '1px solid #333333',
+              borderRadius: 8,
+              padding: 24,
+              color: '#e5e7eb',
+              fontFamily: "'JetBrains Mono', monospace",
+              textAlign: 'center',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ fontSize: 14, marginBottom: 16 }}>카카오톡 API</div>
+            <div style={{ fontSize: 12, color: '#aaaaaa', marginBottom: 20 }}>
+              카카오톡 통합 기능 준비 중입니다
+            </div>
+            <button
+              onClick={handleKakaoModalClose}
+              style={{
+                padding: '8px 16px',
+                background: '#00ff88',
+                border: 'none',
+                borderRadius: 4,
+                color: '#000000',
+                fontSize: 12,
+                cursor: 'pointer',
+                fontWeight: 600,
+              }}
+            >
+              닫기
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

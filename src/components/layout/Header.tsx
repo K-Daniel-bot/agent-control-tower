@@ -1,15 +1,18 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import type { RightPanelTab } from '@/types/terminal'
+import GitRepoModal from './GitRepoModal'
 
-export type TabType = 'dashboard' | 'terminal' | 'settings' | 'remote' | 'server' | 'customize' | 'worldmap' | 'memory' | 'logs' | 'automation' | 'news'
+export type TabType = 'dashboard' | 'terminal' | 'settings' | 'remote' | 'server' | 'customize' | 'worldmap' | 'memory' | 'logs' | 'automation' | 'news' | 'voice'
 
 interface HeaderProps {
   activeTab: TabType
   onTabChange: (tab: TabType) => void
   terminalPanel?: RightPanelTab
   onTogglePanel?: (tab: 'note' | 'graph') => void
+  onVoiceModalOpen?: () => void
+  onKakaoModalOpen?: () => void
 }
 
 const TABS: ReadonlyArray<{
@@ -19,7 +22,7 @@ const TABS: ReadonlyArray<{
 }> = [
   {
     key: 'dashboard',
-    label: 'EMS',
+    label: '관제센터',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <rect x="1.5" y="1.5" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.4" />
@@ -31,7 +34,7 @@ const TABS: ReadonlyArray<{
   },
   {
     key: 'terminal',
-    label: 'TERMINAL',
+    label: '터미널',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <rect x="1.5" y="2.5" width="15" height="13" rx="2" stroke="currentColor" strokeWidth="1.4" />
@@ -42,7 +45,7 @@ const TABS: ReadonlyArray<{
   },
   {
     key: 'server',
-    label: 'SERVER',
+    label: '서버',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <rect x="2" y="2" width="14" height="5" rx="1" stroke="currentColor" strokeWidth="1.4" />
@@ -54,7 +57,7 @@ const TABS: ReadonlyArray<{
   },
   {
     key: 'customize',
-    label: 'CUSTOMIZE',
+    label: '커스텀',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <path d="M9 2L12 8H6Z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -67,7 +70,7 @@ const TABS: ReadonlyArray<{
   },
   {
     key: 'worldmap',
-    label: 'WORLDMAP',
+    label: '세계지도',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <circle cx="9" cy="9" r="7.5" stroke="currentColor" strokeWidth="1.4" />
@@ -78,7 +81,7 @@ const TABS: ReadonlyArray<{
   },
   {
     key: 'memory',
-    label: 'MEMORY',
+    label: '메모리',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <rect x="2" y="4" width="14" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
@@ -91,7 +94,7 @@ const TABS: ReadonlyArray<{
   },
   {
     key: 'logs',
-    label: 'LOGS',
+    label: '로그',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <rect x="2" y="2" width="14" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
@@ -104,7 +107,7 @@ const TABS: ReadonlyArray<{
   },
   {
     key: 'news',
-    label: 'NEWS',
+    label: '뉴스',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <rect x="2" y="2" width="14" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
@@ -118,7 +121,7 @@ const TABS: ReadonlyArray<{
   },
   {
     key: 'automation',
-    label: 'AUTOMATION',
+    label: '자동화',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <path d="M3 8C3 5.24 5.24 3 8 3C10.76 3 13 5.24 13 8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
@@ -129,7 +132,7 @@ const TABS: ReadonlyArray<{
   },
   {
     key: 'remote',
-    label: 'REMOTE',
+    label: '원격',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <rect x="2" y="3" width="14" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
@@ -142,7 +145,7 @@ const TABS: ReadonlyArray<{
   },
   {
     key: 'settings',
-    label: 'SETTINGS',
+    label: '설정',
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <circle cx="9" cy="9" r="2.8" stroke="currentColor" strokeWidth="1.4" />
@@ -152,9 +155,35 @@ const TABS: ReadonlyArray<{
   },
 ]
 
-export default function Header({ activeTab, onTabChange, terminalPanel, onTogglePanel }: HeaderProps) {
+export default function Header({
+  activeTab,
+  onTabChange,
+  terminalPanel,
+  onTogglePanel,
+  onVoiceModalOpen,
+  onKakaoModalOpen,
+}: HeaderProps) {
   const [currentTime, setCurrentTime] = useState<string>('')
   const [currentDate, setCurrentDate] = useState<string>('')
+  const [showGitModal, setShowGitModal] = useState(false)
+
+  const handleGitClick = useCallback(() => {
+    setShowGitModal(true)
+  }, [])
+
+  const handleVoiceClick = useCallback(() => {
+    if (onVoiceModalOpen) {
+      onVoiceModalOpen()
+    } else {
+      onTabChange('voice')
+    }
+  }, [onVoiceModalOpen, onTabChange])
+
+  const handleKakaoClick = useCallback(() => {
+    if (onKakaoModalOpen) {
+      onKakaoModalOpen()
+    }
+  }, [onKakaoModalOpen])
 
   useEffect(() => {
     const updateTime = () => {
@@ -311,6 +340,7 @@ export default function Header({ activeTab, onTabChange, terminalPanel, onToggle
             </svg>
           </a>
           <button
+            onClick={handleGitClick}
             title="Git 리포지토리"
             style={utilIconStyle(false)}
           >
@@ -323,8 +353,9 @@ export default function Header({ activeTab, onTabChange, terminalPanel, onToggle
             </svg>
           </button>
           <button
+            onClick={handleVoiceClick}
             title="보이스 회의"
-            style={utilIconStyle(false)}
+            style={utilIconStyle(activeTab === 'voice')}
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M7 1C4.24 1 2 3.24 2 6C2 7.5 2.7 8.84 3.8 9.7L3.5 12C3.45 12.35 3.75 12.65 4.1 12.6L6.3 12C6.53 12.02 6.76 12.02 7 12C9.76 12 12 9.76 12 7C12 4.24 9.76 2 7 2Z" stroke="currentColor" strokeWidth="1.2" fill="none" />
@@ -360,6 +391,7 @@ export default function Header({ activeTab, onTabChange, terminalPanel, onToggle
             </svg>
           </button>
           <button
+            onClick={handleKakaoClick}
             title="카카오톡"
             style={utilIconStyle(false)}
           >
@@ -444,6 +476,7 @@ export default function Header({ activeTab, onTabChange, terminalPanel, onToggle
           </div>
         </div>
       </div>
+      <GitRepoModal isOpen={showGitModal} onClose={() => setShowGitModal(false)} />
     </header>
   )
 }

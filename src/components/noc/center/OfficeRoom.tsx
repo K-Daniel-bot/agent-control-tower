@@ -1,9 +1,66 @@
 'use client'
 
-import { Suspense, useRef, useEffect, useState, useMemo } from 'react'
+import { Suspense, useRef, useEffect, useState, useMemo, Component } from 'react'
+import type { ReactNode, ErrorInfo } from 'react'
 import { Canvas, useThree, useFrame } from '@react-three/fiber'
 import { OrbitControls, useGLTF, Text, useAnimations, Grid } from '@react-three/drei'
 import * as THREE from 'three'
+
+class R3FErrorBoundary extends Component<
+  { readonly children: ReactNode },
+  { readonly error: Error | null; readonly retryCount: number }
+> {
+  private retryTimer: ReturnType<typeof setTimeout> | null = null
+
+  constructor(props: { readonly children: ReactNode }) {
+    super(props)
+    this.state = { error: null, retryCount: 0 }
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { error }
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.warn('[OfficeRoom] 3D render error:', error.message, info.componentStack)
+    if (this.state.retryCount < 3) {
+      this.retryTimer = setTimeout(() => {
+        this.setState((prev) => ({ error: null, retryCount: prev.retryCount + 1 }))
+      }, 2000)
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.retryTimer) clearTimeout(this.retryTimer)
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{
+          width: '100%', height: '100%', display: 'flex',
+          flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          color: '#666', fontSize: 12, fontFamily: 'monospace', gap: 8,
+        }}>
+          <span>3D scene loading...</span>
+          {this.state.retryCount >= 3 && (
+            <button
+              onClick={() => this.setState({ error: null, retryCount: 0 })}
+              style={{
+                padding: '4px 12px', background: 'rgba(0,255,136,0.1)',
+                border: '1px solid #00ff88', borderRadius: 4,
+                color: '#00ff88', fontSize: 10, cursor: 'pointer',
+              }}
+            >
+              Retry
+            </button>
+          )}
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 
 interface Agent {
   agentId: string
@@ -339,12 +396,24 @@ export default function OfficeRoom({ agents }: OfficeRoomProps) {
         borderRadius: 4,
       }}
     >
-      <Canvas
-        camera={{ position: [0, 2, 5], fov: 50 }}
-        style={{ width: '100%', height: '100%' }}
-      >
-        <OfficeRoomContent agents={agents} setCoordinates={setCoordinates} />
-      </Canvas>
+      <R3FErrorBoundary>
+        <Canvas
+          camera={{ position: [0, 2, 5], fov: 50 }}
+          style={{ width: '100%', height: '100%' }}
+          onCreated={(state) => {
+            state.gl.setClearColor('#000000', 0)
+          }}
+          fallback={
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#444', fontSize: 11 }}>
+              WebGL initializing...
+            </div>
+          }
+        >
+          <Suspense fallback={null}>
+            <OfficeRoomContent agents={agents} setCoordinates={setCoordinates} />
+          </Suspense>
+        </Canvas>
+      </R3FErrorBoundary>
       <CoordinateDisplay />
     </div>
   )

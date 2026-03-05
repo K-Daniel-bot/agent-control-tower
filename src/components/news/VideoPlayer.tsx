@@ -180,7 +180,10 @@ export default function VideoPlayer({ articles }: VideoPlayerProps) {
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null)
 
   const videoArticles = useMemo(
-    () => articles.filter((a) => Boolean(a.videoUrl)),
+    () => articles.filter((a) => {
+      if (!a.videoUrl) return false
+      return extractYouTubeId(a.videoUrl) !== null
+    }),
     [articles],
   )
 

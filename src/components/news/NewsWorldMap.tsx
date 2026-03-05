@@ -122,9 +122,15 @@ export default function NewsWorldMap({ articles, onSelectArticle, onFlyTo }: New
     mapG.append('path').datum(borders).attr('d', pathGen as any)
       .attr('fill', 'none').attr('stroke', '#1a2a3a').attr('stroke-width', 0.4)
 
-    // Zoom behavior
+    // Zoom behavior - only wheel zoom allowed (no mouse drag pan)
     const zoom = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([1, 12])
+      .filter((event: Event) => {
+        // Allow wheel (zoom) events only
+        if (event.type === 'wheel') return true
+        // Block all mouse events (no panning)
+        return false
+      })
       .on('zoom', (event) => {
         root.attr('transform', event.transform.toString())
       })
@@ -162,11 +168,49 @@ export default function NewsWorldMap({ articles, onSelectArticle, onFlyTo }: New
     }
   }, [])
 
+  const mapRadius = Math.min(dims.width, dims.height) / 2.2
+
   return (
     <div ref={containerRef} style={{ position: 'relative', width: '100%', height: '100%', background: '#000000', overflow: 'hidden', cursor: 'grab' }}>
+      <style>{`
+        @keyframes scan-rotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .scan-beam {
+          animation: scan-rotate 8s linear infinite;
+          transform-origin: ${dims.width / 2}px ${dims.height / 2}px;
+        }
+      `}</style>
       <svg ref={svgRef} width={dims.width} height={dims.height} style={{ display: 'block' }}>
+        <defs>
+          <clipPath id="map-circle">
+            <circle cx={dims.width / 2} cy={dims.height / 2} r={mapRadius} />
+          </clipPath>
+          <linearGradient id="scan-beam" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#00ff8800" />
+            <stop offset="50%" stopColor="#00ff88" />
+            <stop offset="100%" stopColor="#00ff8800" />
+          </linearGradient>
+        </defs>
         <rect width={dims.width} height={dims.height} fill="#000000" />
-        <path d={pathGen({ type: 'Sphere' }) ?? ''} fill="#000508" stroke="#0d2137" strokeWidth={1} />
+        <g clipPath="url(#map-circle)">
+          <path d={pathGen({ type: 'Sphere' }) ?? ''} fill="#000508" stroke="#0d2137" strokeWidth={1} />
+        </g>
+      </svg>
+
+      {/* Scanning beam animation */}
+      <svg width={dims.width} height={dims.height} style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
+        <defs>
+          <linearGradient id="scan-beam-line" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#00ff8800" />
+            <stop offset="50%" stopColor="#00ff88" />
+            <stop offset="100%" stopColor="#00ff8800" />
+          </linearGradient>
+        </defs>
+        <g className="scan-beam">
+          <line x1={dims.width / 2} y1={dims.height / 2} x2={dims.width / 2} y2={dims.height / 2 - mapRadius} stroke="url(#scan-beam-line)" strokeWidth={2} opacity="0.6" />
+        </g>
       </svg>
 
       {/* Markers overlay (re-renders with React) */}
