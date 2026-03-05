@@ -1,0 +1,11 @@
+Model Information:
+* title:	Arm Stretching
+* source:	https://sketchfab.com/3d-models/arm-stretching-2f9e802798aa446f9d4e7106d7d81aa2
+* author:	Joe chakrapong (https://sketchfab.com/chakrapong)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Arm Stretching" (https://sketchfab.com/3d-models/arm-stretching-2f9e802798aa446f9d4e7106d7d81aa2) by Joe chakrapong (https://sketchfab.com/chakrapong) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

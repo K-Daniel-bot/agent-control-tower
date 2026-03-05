@@ -35,8 +35,8 @@ function AgentOperationsCenter({ agents }: AgentOperationsCenterProps) {
         borderRadius: 4,
       }}
     >
-      {/* 3D Office Room */}
-      <OfficeRoom />
+      {/* 3D Office Room with Agents */}
+      <OfficeRoom agents={agentData} />
     </div>
   )
 }
