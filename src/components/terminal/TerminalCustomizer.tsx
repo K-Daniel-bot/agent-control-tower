@@ -30,10 +30,10 @@ const labelStyle: React.CSSProperties = {
 const selectStyle: React.CSSProperties = {
   width: '100%',
   padding: '4px 6px',
-  background: 'rgba(10,14,26,0.8)',
-  border: '1px solid #2a3042',
+  background: 'transparent',
+  border: '1px solid #333333',
   borderRadius: 4,
-  color: '#e5e7eb',
+  color: '#e6edf3',
   fontSize: 10,
   outline: 'none',
 }
@@ -44,8 +44,8 @@ export default function TerminalCustomizer({ config, dispatch, onClose }: Termin
       style={{
         width: 220,
         height: '100%',
-        background: 'rgba(16,20,32,0.97)',
-        borderLeft: '1px solid #2a3042',
+        background: 'transparent',
+        borderLeft: '1px solid #333333',
         padding: 12,
         display: 'flex',
         flexDirection: 'column',
@@ -56,7 +56,7 @@ export default function TerminalCustomizer({ config, dispatch, onClose }: Termin
     >
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: '#e5e7eb' }}>터미널 설정</span>
+        <span style={{ fontSize: 11, fontWeight: 700, color: '#e6edf3' }}>터미널 설정</span>
         <button
           onClick={onClose}
           style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: 14, padding: 2 }}
@@ -65,7 +65,7 @@ export default function TerminalCustomizer({ config, dispatch, onClose }: Termin
         </button>
       </div>
 
-      <div style={{ height: 1, background: '#2a3042' }} />
+      <div style={{ height: 1, background: '#333333' }} />
 
       {/* Font size */}
       <div>
@@ -111,8 +111,8 @@ export default function TerminalCustomizer({ config, dispatch, onClose }: Termin
                   alignItems: 'center',
                   gap: 6,
                   padding: '4px 8px',
-                  background: isActive ? 'rgba(0,255,136,0.1)' : 'rgba(42,48,66,0.5)',
-                  border: `1px solid ${isActive ? 'rgba(0,255,136,0.4)' : '#2a3042'}`,
+                  background: isActive ? 'rgba(0,255,136,0.1)' : '#000000',
+                  border: `1px solid ${isActive ? 'rgba(0,255,136,0.4)' : '#333333'}`,
                   borderRadius: 4,
                   cursor: 'pointer',
                   transition: 'all 0.15s',
@@ -128,7 +128,7 @@ export default function TerminalCustomizer({ config, dispatch, onClose }: Termin
                         height: 8,
                         borderRadius: 2,
                         background: c,
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: '1px solid rgba(46,53,69,0.6)',
                       }}
                     />
                   ))}
@@ -152,8 +152,8 @@ export default function TerminalCustomizer({ config, dispatch, onClose }: Termin
                 flex: 1,
                 padding: '3px 6px',
                 fontSize: 9,
-                background: config.cursorStyle === s ? 'rgba(0,255,136,0.1)' : 'rgba(42,48,66,0.5)',
-                border: `1px solid ${config.cursorStyle === s ? 'rgba(0,255,136,0.4)' : '#2a3042'}`,
+                background: config.cursorStyle === s ? 'rgba(0,255,136,0.1)' : '#000000',
+                border: `1px solid ${config.cursorStyle === s ? 'rgba(0,255,136,0.4)' : '#333333'}`,
                 borderRadius: 4,
                 color: config.cursorStyle === s ? '#00ff88' : '#6b7280',
                 cursor: 'pointer',
@@ -174,7 +174,7 @@ export default function TerminalCustomizer({ config, dispatch, onClose }: Termin
             width: 36,
             height: 18,
             borderRadius: 9,
-            background: config.cursorBlink ? 'rgba(0,255,136,0.3)' : '#2a3042',
+            background: config.cursorBlink ? 'rgba(0,255,136,0.3)' : '#333333',
             border: 'none',
             cursor: 'pointer',
             position: 'relative',
@@ -224,7 +224,7 @@ export default function TerminalCustomizer({ config, dispatch, onClose }: Termin
         </select>
       </div>
 
-      <div style={{ height: 1, background: '#2a3042' }} />
+      <div style={{ height: 1, background: '#333333' }} />
 
       {/* Reset */}
       <button

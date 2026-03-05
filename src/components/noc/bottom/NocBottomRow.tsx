@@ -5,36 +5,50 @@ import CommunicationChannelCards from './CommunicationChannelCards'
 import ToolResourceCards from './ToolResourceCards'
 
 interface PanelSection {
-  title: string
-  component: React.ReactNode
+  readonly title: string
+  readonly component: React.ReactNode
 }
 
-const PANELS: PanelSection[] = [
-  { title: '주요 에이전트 운영현황(Agent)', component: <AgentStatusCards /> },
-  { title: '주요 에이전트 운영현황(Communication)', component: <CommunicationChannelCards /> },
-  { title: '주요 에이전트 운영현황(Tool)', component: <ToolResourceCards /> },
+const SECTIONS: readonly PanelSection[] = [
+  { title: 'Agent', component: <AgentStatusCards /> },
+  { title: 'Communication', component: <CommunicationChannelCards /> },
+  { title: 'Tool', component: <ToolResourceCards /> },
 ]
 
 const containerStyle: React.CSSProperties = {
-  display: 'flex',
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, 1fr)',
   height: 180,
-  background: 'rgba(8,12,22,0.95)',
-  borderTop: '1px solid #1e2535',
+  background: 'transparent',
+  borderTop: '1px solid #333333',
   flexShrink: 0,
+  overflow: 'hidden',
 }
 
-const panelHeaderStyle: React.CSSProperties = {
+const sectionStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  borderRight: '1px solid #333333',
+  minWidth: 0,
+}
+
+const lastSectionStyle: React.CSSProperties = {
+  ...sectionStyle,
+  borderRight: 'none',
+}
+
+const sectionHeaderStyle: React.CSSProperties = {
   height: 26,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
   padding: '0 8px',
-  borderBottom: '1px solid #1e2535',
-  background: 'rgba(15,20,35,0.95)',
+  borderBottom: '1px solid #333333',
+  background: 'transparent',
   flexShrink: 0,
 }
 
-const panelTitleStyle: React.CSSProperties = {
+const sectionTitleStyle: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   gap: 6,
@@ -50,43 +64,35 @@ const titleTextStyle: React.CSSProperties = {
 const decorIconsStyle: React.CSSProperties = {
   display: 'flex',
   gap: 6,
-  color: '#4b5563',
+  color: '#505661',
   fontSize: 10,
   cursor: 'default',
 }
 
-const panelContentStyle: React.CSSProperties = {
+const sectionContentStyle: React.CSSProperties = {
   flex: 1,
   minHeight: 0,
   overflowY: 'auto',
   overflowX: 'hidden',
+  background: 'transparent',
 }
 
 export default function NocBottomRow() {
   return (
     <div style={containerStyle}>
-      {PANELS.map((panel, idx) => (
-        <div
-          key={panel.title}
-          style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            borderRight: idx < PANELS.length - 1 ? '1px solid #1e2535' : 'none',
-            minWidth: 0,
-          }}
-        >
-          <div style={panelHeaderStyle}>
-            <div style={panelTitleStyle}>
+      {SECTIONS.map((section, idx) => (
+        <div key={section.title} style={idx === SECTIONS.length - 1 ? lastSectionStyle : sectionStyle}>
+          <div style={sectionHeaderStyle}>
+            <div style={sectionTitleStyle}>
               <span style={{ color: '#3b82f6', fontSize: 10 }}>&#9654;</span>
-              <span style={titleTextStyle}>{panel.title}</span>
+              <span style={titleTextStyle}>주요 에이전트 운영현황({section.title})</span>
             </div>
             <div style={decorIconsStyle}>
               <span>&#9633;</span>
               <span>&#10005;</span>
             </div>
           </div>
-          <div style={panelContentStyle}>{panel.component}</div>
+          <div style={sectionContentStyle}>{section.component}</div>
         </div>
       ))}
     </div>

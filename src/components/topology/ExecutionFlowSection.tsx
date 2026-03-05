@@ -49,14 +49,14 @@ function EmptyState() {
           width: 8,
           height: 8,
           borderRadius: '50%',
-          background: '#2a3042',
+          background: '#333333',
           animation: 'pulse-dot 2s ease-in-out infinite',
         }}
       />
       <span
         style={{
           fontSize: 11,
-          color: '#4b5563',
+          color: '#505661',
           letterSpacing: '0.05em',
         }}
       >
@@ -104,7 +104,7 @@ function FlowContent() {
       >
         <Background
           variant={BackgroundVariant.Dots}
-          color="#1e2535"
+          color="#333333"
           gap={20}
           size={1}
         />

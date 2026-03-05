@@ -218,7 +218,7 @@ export default function TerminalPane({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        border: isActive ? '1px solid rgba(0,255,136,0.5)' : '1px solid rgba(42,48,66,0.5)',
+        border: isActive ? '1px solid rgba(0,255,136,0.5)' : '1px solid #000000',
         borderRadius: 2,
         overflow: 'hidden',
         transition: 'border-color 0.15s',
@@ -232,12 +232,12 @@ export default function TerminalPane({
           justifyContent: 'space-between',
           padding: '0 8px',
           height: 20,
-          background: isActive ? 'rgba(0,255,136,0.08)' : 'rgba(16,20,32,0.95)',
-          borderBottom: '1px solid rgba(42,48,66,0.5)',
+          background: isActive ? 'rgba(0,255,136,0.08)' : '#000000',
+          borderBottom: '1px solid #000000',
           flexShrink: 0,
         }}
       >
-        <span style={{ fontSize: 8, color: isActive ? '#00ff88' : '#4b5563', fontFamily: 'monospace' }}>
+        <span style={{ fontSize: 8, color: isActive ? '#00ff88' : '#505661', fontFamily: 'monospace' }}>
           PANE {paneNumber}
         </span>
         {showCloseButton && (

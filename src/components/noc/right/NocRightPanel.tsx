@@ -16,8 +16,8 @@ function PanelHeader({ title }: { title: string }) {
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '4px 10px',
-        background: 'linear-gradient(90deg, #151b2e 0%, #0e1220 100%)',
-        borderBottom: '1px solid #1e2535',
+        background: 'transparent',
+        borderBottom: '1px solid #333333',
         minHeight: 28,
       }}
     >
@@ -25,7 +25,7 @@ function PanelHeader({ title }: { title: string }) {
         style={{
           fontSize: 11,
           fontWeight: 600,
-          color: '#94a3b8',
+          color: '#8b95a5',
           letterSpacing: '0.04em',
           textTransform: 'uppercase',
         }}
@@ -48,7 +48,7 @@ export default function NocRightPanel() {
         flexDirection: 'column',
         width: '100%',
         height: '100%',
-        background: 'rgba(10,14,26,0.97)',
+        background: 'transparent',
         overflow: 'hidden',
       }}
     >
@@ -59,11 +59,11 @@ export default function NocRightPanel() {
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          borderBottom: '1px solid #1e2535',
+          borderBottom: '1px solid #333333',
         }}
       >
         <PanelHeader title="이벤트 개수 (프로파일)" />
-        <div style={{ flex: 1, overflow: 'auto', padding: '6px 8px' }}>
+        <div style={{ flex: 1, overflow: 'auto', padding: '6px 8px', background: 'transparent' }}>
           <AgentEventCountTable />
         </div>
       </div>

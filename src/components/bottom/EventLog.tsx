@@ -27,7 +27,7 @@ const LEVEL_COLORS: Record<LogLevel, { bg: string; text: string; border: string;
   INFO: {
     bg: 'transparent',
     text: '#9ca3af',
-    border: 'rgba(255, 255, 255, 0.03)',
+    border: 'rgba(46, 53, 69, 0.4)',
     indicator: '#3b82f6',
   },
 }
@@ -221,8 +221,8 @@ export default function EventLog() {
           display: 'grid',
           gridTemplateColumns: '68px 80px 110px 110px 1fr',
           padding: '4px 12px',
-          borderBottom: '1px solid #1e2a3a',
-          backgroundColor: 'rgba(10, 14, 26, 0.6)',
+          borderBottom: '1px solid #333333',
+          backgroundColor: '#000000',
           flexShrink: 0,
         }}
       >
@@ -231,7 +231,7 @@ export default function EventLog() {
             key={col}
             style={{
               fontSize: '9px',
-              color: '#4a5568',
+              color: '#505661',
               textTransform: 'uppercase',
               letterSpacing: '0.06em',
               fontWeight: 600,
@@ -308,7 +308,7 @@ export default function EventLog() {
               <span
                 style={{
                   fontSize: '11px',
-                  color: '#a0aec0',
+                  color: '#9ca3af',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
@@ -321,7 +321,7 @@ export default function EventLog() {
               <span
                 style={{
                   fontSize: '11px',
-                  color: '#7c8db5',
+                  color: '#8b95a5',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',

@@ -66,24 +66,24 @@ export default function MetricsChart({ title, data, color, type, unit = 'ms' }: 
       yAxis: {
         type: 'value',
         splitNumber: 2,
-        axisLabel: { fontSize: 9, color: '#4a5568', formatter: (v: number) => Math.round(v).toString() },
+        axisLabel: { fontSize: 9, color: '#505661', formatter: (v: number) => Math.round(v).toString() },
         axisLine: { show: false },
         axisTick: { show: false },
-        splitLine: { lineStyle: { color: '#1e2535', width: 1 } },
+        splitLine: { lineStyle: { color: '#333333', width: 1 } },
       },
       tooltip: {
         trigger: 'axis',
-        backgroundColor: '#0d1117',
-        borderColor: '#2a3042',
+        backgroundColor: 'transparent',
+        borderColor: '#333333',
         borderWidth: 1,
-        textStyle: { fontSize: 10, color: '#e2e8f0' },
+        textStyle: { fontSize: 10, color: '#e6edf3' },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         formatter: (params: any) => {
           const arr = Array.isArray(params) ? params : [params]
           const v = (arr[0]?.value as number) ?? 0
           return `${v.toFixed(1)}${unit}`
         },
-        axisPointer: { lineStyle: { color: '#2a3042' } },
+        axisPointer: { lineStyle: { color: '#333333' } },
       },
       series: [seriesBase as echarts.SeriesOption],
     }

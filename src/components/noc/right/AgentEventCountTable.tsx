@@ -36,10 +36,10 @@ const AGENT_ROWS: readonly AgentRow[] = [
 function CountIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-      <rect x="1" y="1" width="5" height="5" rx="1" fill="#4b5563" />
-      <rect x="8" y="1" width="5" height="5" rx="1" fill="#4b5563" />
-      <rect x="1" y="8" width="5" height="5" rx="1" fill="#4b5563" />
-      <rect x="8" y="8" width="5" height="5" rx="1" fill="#4b5563" />
+      <rect x="1" y="1" width="5" height="5" rx="1" fill="#505661" />
+      <rect x="8" y="1" width="5" height="5" rx="1" fill="#505661" />
+      <rect x="1" y="8" width="5" height="5" rx="1" fill="#505661" />
+      <rect x="8" y="8" width="5" height="5" rx="1" fill="#505661" />
     </svg>
   )
 }
@@ -71,7 +71,7 @@ export default function AgentEventCountTable() {
             alignItems: 'center',
             justifyContent: 'center',
             padding: '4px 0',
-            background: '#111827',
+            background: 'transparent',
             borderRadius: 3,
           }}
         >
@@ -89,7 +89,7 @@ export default function AgentEventCountTable() {
               fontSize: 10,
               fontWeight: 600,
               color: col.color,
-              background: '#111827',
+              background: 'transparent',
               borderRadius: 3,
               letterSpacing: '0.03em',
             }}
@@ -120,7 +120,7 @@ export default function AgentEventCountTable() {
               fontSize: 10,
               fontWeight: 600,
               color: '#6b7280',
-              background: '#111827',
+              background: 'transparent',
               borderRadius: 3,
               letterSpacing: '0.02em',
             }}
@@ -142,7 +142,7 @@ export default function AgentEventCountTable() {
                   justifyContent: 'center',
                   minHeight: 30,
                   borderRadius: 3,
-                  background: isEmpty ? '#1a1f2e' : col.color,
+                  background: isEmpty ? '#000000' : col.color,
                   opacity: isEmpty ? 0.5 : 1,
                   transition: 'opacity 0.2s',
                 }}
@@ -170,7 +170,7 @@ export default function AgentEventCountTable() {
           gridTemplateColumns: '56px repeat(5, 1fr)',
           gap: 2,
           marginTop: 4,
-          borderTop: '1px solid #1e2535',
+          borderTop: '1px solid #333333',
           paddingTop: 4,
         }}
       >
@@ -183,7 +183,7 @@ export default function AgentEventCountTable() {
             fontSize: 10,
             fontWeight: 700,
             color: '#9ca3af',
-            background: '#111827',
+            background: 'transparent',
             borderRadius: 3,
           }}
         >

@@ -69,11 +69,12 @@ const MOCK_EVENTS: EventEntry[] = [
 
 const containerStyle: React.CSSProperties = {
   height: 120,
-  background: 'rgba(8,12,22,0.95)',
-  borderTop: '1px solid #1e2535',
+  background: 'transparent',
+  borderTop: '1px solid #333333',
   display: 'flex',
   flexDirection: 'column',
   flexShrink: 0,
+  overflow: 'hidden',
 }
 
 const headerStyle: React.CSSProperties = {
@@ -82,8 +83,8 @@ const headerStyle: React.CSSProperties = {
   alignItems: 'center',
   justifyContent: 'space-between',
   padding: '0 10px',
-  borderBottom: '1px solid #1e2535',
-  background: 'rgba(15,20,35,0.95)',
+  borderBottom: '1px solid #333333',
+  background: 'transparent',
   flexShrink: 0,
 }
 
@@ -98,6 +99,7 @@ const listStyle: React.CSSProperties = {
   minHeight: 0,
   overflowY: 'auto',
   padding: '4px 0',
+  background: 'transparent',
 }
 
 const eventRowStyle: React.CSSProperties = {
@@ -123,12 +125,12 @@ const sourceTargetStyle: React.CSSProperties = {
 }
 
 const arrowStyle: React.CSSProperties = {
-  color: '#4b5563',
+  color: '#505661',
   flexShrink: 0,
 }
 
 const descStyle: React.CSSProperties = {
-  color: '#d1d5db',
+  color: '#9ca3af',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -145,7 +147,7 @@ export default function NocEventLogFooter() {
             이벤트 목록
           </span>
         </div>
-        <div style={{ display: 'flex', gap: 6, color: '#4b5563', fontSize: 10, cursor: 'default' }}>
+        <div style={{ display: 'flex', gap: 6, color: '#505661', fontSize: 10, cursor: 'default' }}>
           <span>&#9633;</span>
           <span>&#10005;</span>
         </div>

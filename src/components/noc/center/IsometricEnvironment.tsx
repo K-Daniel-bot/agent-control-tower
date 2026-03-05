@@ -28,11 +28,11 @@ function StatusBox({ label, value, unit, borderColor, textColor }: StatusBoxProp
         padding: '6px 14px',
         borderRadius: 4,
         border: `1px solid ${borderColor}`,
-        background: 'rgba(10, 14, 26, 0.85)',
+        background: 'transparent',
         minWidth: 100,
       }}
     >
-      <span style={{ color: '#8892a8', fontSize: 11, fontWeight: 500 }}>
+      <span style={{ color: '#8b95a5', fontSize: 11, fontWeight: 500 }}>
         {label}
       </span>
       <span style={{ color: textColor, fontSize: 14, fontWeight: 700, fontFamily: 'monospace' }}>
@@ -46,29 +46,7 @@ function StatusBox({ label, value, unit, borderColor, textColor }: StatusBoxProp
 }
 
 function CeilingLights() {
-  return (
-    <g>
-      <defs>
-        {CEILING_LIGHTS.map((light, i) => (
-          <radialGradient key={i} id={`ceilingLight${i}`} cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#1aff8c" stopOpacity={0.08} />
-            <stop offset="40%" stopColor="#1aff8c" stopOpacity={0.03} />
-            <stop offset="100%" stopColor="#1aff8c" stopOpacity={0} />
-          </radialGradient>
-        ))}
-      </defs>
-      {CEILING_LIGHTS.map((light, i) => (
-        <ellipse
-          key={i}
-          cx={light.cx}
-          cy={light.cy}
-          rx={light.r}
-          ry={light.r * 0.5}
-          fill={`url(#ceilingLight${i})`}
-        />
-      ))}
-    </g>
-  )
+  return null
 }
 
 function TitleOverlay() {
@@ -86,7 +64,7 @@ function TitleOverlay() {
     >
       <span
         style={{
-          color: '#ffffff',
+          color: '#e6edf3',
           fontSize: 16,
           fontWeight: 700,
           letterSpacing: 2,
@@ -123,7 +101,7 @@ function LogoOverlay() {
       />
       <span
         style={{
-          color: '#6b7fa8',
+          color: '#8b95a5',
           fontSize: 10,
           fontWeight: 600,
           letterSpacing: 1,

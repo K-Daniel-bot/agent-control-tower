@@ -59,7 +59,7 @@ function NoteNode({ data }: NodeProps) {
   const containerStyle: React.CSSProperties = {
     width: 160,
     minHeight: 80,
-    background: highlighted ? '#1e3a5f' : '#162942',
+    background: highlighted ? '#000000' : '#000000',
     border: `2px solid ${highlighted ? '#60a5fa' : '#3b82f6'}`,
     borderRadius: 8,
     padding: '8px 10px',
@@ -85,7 +85,7 @@ function NoteNode({ data }: NodeProps) {
         style={{
           fontSize: 11,
           fontWeight: 700,
-          color: highlighted ? '#93c5fd' : '#e5e7eb',
+          color: highlighted ? '#93c5fd' : '#e6edf3',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -274,7 +274,7 @@ function buildLayout(
         source: `note-${note.id}`,
         target: tagNodeId,
         style: {
-          stroke: isHighlighted ? '#60a5fa' : '#2a3042',
+          stroke: isHighlighted ? '#60a5fa' : '#333333',
           strokeWidth: isHighlighted ? 2 : 1,
           opacity: isHighlighted ? 0.9 : 0.5,
         },
@@ -331,27 +331,27 @@ function GraphContent({ notes }: { notes: readonly Note[] }) {
         }}
         onNodeClick={handleNodeClick}
         proOptions={{ hideAttribution: true }}
-        style={{ background: '#0a0e1a' }}
+        style={{ background: 'transparent' }}
       >
         <Background
           variant={BackgroundVariant.Dots}
-          color="#1e2535"
+          color="#333333"
           gap={20}
           size={1}
         />
         <MiniMap
           style={{
-            background: 'rgba(10,14,26,0.9)',
-            border: '1px solid #2a3042',
+            background: 'transparent',
+            border: '1px solid #333333',
           }}
           nodeColor={(node) => {
             if (node.type === 'tagNode') return '#00ff88'
             return '#3b82f6'
           }}
-          maskColor="rgba(10,14,26,0.6)"
+          maskColor="#000000"
         />
         <Controls
-          style={{ background: 'rgba(16,20,32,0.9)', border: '1px solid #2a3042' }}
+          style={{ background: 'transparent', border: '1px solid #333333' }}
         />
       </ReactFlow>
     </div>
@@ -369,7 +369,7 @@ export default function NoteGraphPanel() {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    background: '#0a0e1a',
+    background: 'transparent',
     overflow: 'hidden',
     minWidth: 0,
   }
@@ -379,8 +379,8 @@ export default function NoteGraphPanel() {
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '6px 12px',
-    borderBottom: '1px solid #2a3042',
-    background: 'rgba(16,20,32,0.9)',
+    borderBottom: '1px solid #333333',
+    background: 'transparent',
     flexShrink: 0,
   }
 
@@ -394,7 +394,7 @@ export default function NoteGraphPanel() {
               width: 6,
               height: 6,
               borderRadius: '50%',
-              background: isEmpty ? '#2a3042' : '#3b82f6',
+              background: isEmpty ? '#333333' : '#3b82f6',
               boxShadow: isEmpty ? 'none' : '0 0 6px #3b82f6',
             }}
           />
@@ -445,13 +445,13 @@ export default function NoteGraphPanel() {
                 width: 8,
                 height: 8,
                 borderRadius: '50%',
-                background: '#2a3042',
+                background: '#333333',
               }}
             />
             <span
               style={{
                 fontSize: 11,
-                color: '#4b5563',
+                color: '#505661',
                 textAlign: 'center',
                 maxWidth: 260,
                 lineHeight: 1.5,

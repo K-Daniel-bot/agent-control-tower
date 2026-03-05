@@ -60,8 +60,8 @@ function AgentProfileModal({ agent, onClose }: { agent: SavedAgent; onClose: () 
       <div
         style={{
           width: 420,
-          background: 'rgba(16,20,32,0.98)',
-          border: '1px solid #2a3042',
+          background: 'transparent',
+          border: '1px solid #333333',
           borderRadius: 12,
           padding: 20,
           boxShadow: '0 20px 60px rgba(0,0,0,0.7)',
@@ -90,7 +90,7 @@ function AgentProfileModal({ agent, onClose }: { agent: SavedAgent; onClose: () 
               {roleMeta.icon}
             </div>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#e5e7eb' }}>{agent.name}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#e6edf3' }}>{agent.name}</div>
               <div style={{ display: 'flex', gap: 5, alignItems: 'center', marginTop: 2 }}>
                 <span style={{ fontSize: 9, color: rankColor, fontWeight: 600, padding: '1px 5px', background: `${rankColor}15`, borderRadius: 3, border: `1px solid ${rankColor}40` }}>
                   {agent.rank}
@@ -115,14 +115,14 @@ function AgentProfileModal({ agent, onClose }: { agent: SavedAgent; onClose: () 
         {/* Description */}
         {agent.roleDescription && (
           <div>
-            <div style={{ fontSize: 9, color: '#4b5563', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 4 }}>역할 설명</div>
+            <div style={{ fontSize: 9, color: '#505661', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 4 }}>역할 설명</div>
             <div style={{ fontSize: 10, color: '#9ca3af', lineHeight: 1.6 }}>{agent.roleDescription}</div>
           </div>
         )}
 
         {/* Skills */}
         <div>
-          <div style={{ fontSize: 9, color: '#4b5563', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 5 }}>
+          <div style={{ fontSize: 9, color: '#505661', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 5 }}>
             스킬 ({agent.skills.length}개)
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
@@ -148,10 +148,10 @@ function AgentProfileModal({ agent, onClose }: { agent: SavedAgent; onClose: () 
         </div>
 
         {/* Meta */}
-        <div style={{ display: 'flex', gap: 16, paddingTop: 6, borderTop: '1px solid #1e2535' }}>
+        <div style={{ display: 'flex', gap: 16, paddingTop: 6, borderTop: '1px solid #333333' }}>
           <div>
             <div style={{ fontSize: 8, color: '#374151', letterSpacing: '0.05em' }}>ID</div>
-            <div style={{ fontSize: 8, color: '#4b5563', fontFamily: 'monospace' }}>{agent.id.slice(0, 20)}...</div>
+            <div style={{ fontSize: 8, color: '#505661', fontFamily: 'monospace' }}>{agent.id.slice(0, 20)}...</div>
           </div>
           <div>
             <div style={{ fontSize: 8, color: '#374151', letterSpacing: '0.05em' }}>생성일</div>
@@ -199,7 +199,7 @@ function AgentRow({ agent, onDelete, onProfile }: { agent: SavedAgent; onDelete:
       {/* Info */}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 2 }}>
-          <span style={{ fontSize: 11, fontWeight: 600, color: '#e5e7eb' }}>{agent.name}</span>
+          <span style={{ fontSize: 11, fontWeight: 600, color: '#e6edf3' }}>{agent.name}</span>
           <span style={{ fontSize: 8, color: rankColor, padding: '0 4px', background: `${rankColor}12`, borderRadius: 3, border: `1px solid ${rankColor}30` }}>
             {agent.rank}
           </span>
@@ -276,14 +276,14 @@ export default function AgentRegistryPanel() {
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        background: '#0a0e1a',
+        background: 'transparent',
       }}
     >
       {/* Header */}
       <div
         style={{
           padding: '10px 14px',
-          borderBottom: '1px solid #1e2535',
+          borderBottom: '1px solid #333333',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -291,10 +291,10 @@ export default function AgentRegistryPanel() {
         }}
       >
         <div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: '#e5e7eb', letterSpacing: '0.04em' }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: '#e6edf3', letterSpacing: '0.04em' }}>
             에이전트 현황
           </div>
-          <div style={{ fontSize: 9, color: '#4b5563', marginTop: 1 }}>
+          <div style={{ fontSize: 9, color: '#505661', marginTop: 1 }}>
             영구 저장된 에이전트 — 관제 대시보드에서 추가
           </div>
         </div>
@@ -328,7 +328,7 @@ export default function AgentRegistryPanel() {
             }}
           >
             <div style={{ fontSize: 32 }}>🤖</div>
-            <div style={{ fontSize: 11, color: '#4b5563' }}>저장된 에이전트 없음</div>
+            <div style={{ fontSize: 11, color: '#505661' }}>저장된 에이전트 없음</div>
             <div style={{ fontSize: 9, color: '#374151', lineHeight: 1.5 }}>
               관제 대시보드 &gt; 수동 탭 &gt;<br />+ 에이전트 추가로 생성하세요
             </div>
@@ -347,7 +347,7 @@ export default function AgentRegistryPanel() {
 
       {/* Filesystem agents section */}
       {(fsAgents.length > 0 || fsDir) && (
-        <div style={{ borderTop: '1px solid #1e2535', flexShrink: 0 }}>
+        <div style={{ borderTop: '1px solid #333333', flexShrink: 0 }}>
           <div
             style={{
               padding: '8px 14px 4px',
@@ -395,7 +395,7 @@ export default function AgentRegistryPanel() {
                   key={a.fileName}
                   style={{
                     padding: '5px 14px',
-                    borderBottom: '1px solid rgba(42,48,66,0.4)',
+                    borderBottom: '1px solid #000000',
                     display: 'flex',
                     alignItems: 'center',
                     gap: 8,
@@ -403,10 +403,10 @@ export default function AgentRegistryPanel() {
                 >
                   <span style={{ fontSize: 14 }}>🤖</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 9, fontWeight: 600, color: '#e5e7eb', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div style={{ fontSize: 9, fontWeight: 600, color: '#e6edf3', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {a.name}
                     </div>
-                    <div style={{ fontSize: 7, color: '#4b5563', fontFamily: 'monospace', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={a.path}>
+                    <div style={{ fontSize: 7, color: '#505661', fontFamily: 'monospace', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={a.path}>
                       {a.fileName}
                     </div>
                   </div>

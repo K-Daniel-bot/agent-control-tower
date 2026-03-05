@@ -24,9 +24,9 @@ export function GraphLegend() {
         flexDirection: 'column',
         gap: 4,
         padding: '8px 10px',
-        background: 'rgba(10, 14, 26, 0.8)',
+        background: 'transparent',
         borderRadius: 6,
-        border: '1px solid #2a3042',
+        border: '1px solid #333333',
       }}
     >
       {LEGEND_ITEMS.map((item) => (

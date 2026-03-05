@@ -75,8 +75,8 @@ export default function DirectoryPanel({ onSelectDirectory }: DirectoryPanelProp
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          background: 'rgba(16,20,32,0.97)',
-          borderRight: '1px solid #2a3042',
+          background: 'transparent',
+          borderRight: '1px solid #333333',
           overflow: 'hidden',
         }}
       >
@@ -84,7 +84,7 @@ export default function DirectoryPanel({ onSelectDirectory }: DirectoryPanelProp
         <div
           style={{
             padding: '8px 10px',
-            borderBottom: '1px solid #2a3042',
+            borderBottom: '1px solid #333333',
             display: 'flex',
             flexDirection: 'column',
             gap: 4,
@@ -115,7 +115,7 @@ export default function DirectoryPanel({ onSelectDirectory }: DirectoryPanelProp
           <div
             style={{
               fontSize: 8,
-              color: '#4b5563',
+              color: '#505661',
               fontFamily: 'monospace',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
@@ -134,7 +134,7 @@ export default function DirectoryPanel({ onSelectDirectory }: DirectoryPanelProp
             padding: '4px 10px',
             background: 'transparent',
             border: 'none',
-            borderBottom: '1px solid rgba(42,48,66,0.5)',
+            borderBottom: '1px solid #000000',
             color: '#6b7280',
             fontSize: 9,
             cursor: 'pointer',
@@ -152,7 +152,7 @@ export default function DirectoryPanel({ onSelectDirectory }: DirectoryPanelProp
         {/* Entries */}
         <div style={{ flex: 1, overflow: 'auto', padding: '2px 0' }}>
           {loading && (
-            <div style={{ padding: '12px 10px', fontSize: 9, color: '#4b5563', textAlign: 'center' }}>
+            <div style={{ padding: '12px 10px', fontSize: 9, color: '#505661', textAlign: 'center' }}>
               로딩 중...
             </div>
           )}
@@ -177,7 +177,7 @@ export default function DirectoryPanel({ onSelectDirectory }: DirectoryPanelProp
               <span
                 style={{
                   fontSize: 9,
-                  color: entry.isDirectory ? '#e5e7eb' : '#6b7280',
+                  color: entry.isDirectory ? '#e6edf3' : '#6b7280',
                   flex: 1,
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
@@ -216,7 +216,7 @@ export default function DirectoryPanel({ onSelectDirectory }: DirectoryPanelProp
         {/* Quick access */}
         <div
           style={{
-            borderTop: '1px solid #2a3042',
+            borderTop: '1px solid #333333',
             padding: '6px 10px',
             display: 'flex',
             flexDirection: 'column',
@@ -224,7 +224,7 @@ export default function DirectoryPanel({ onSelectDirectory }: DirectoryPanelProp
             flexShrink: 0,
           }}
         >
-          <span style={{ fontSize: 8, color: '#4b5563', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+          <span style={{ fontSize: 8, color: '#505661', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
             바로가기
           </span>
           {['Home', 'Desktop'].map((label) => {

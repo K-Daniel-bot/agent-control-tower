@@ -129,7 +129,7 @@ export function useCytoscapeElements(state: OrchestraState) {
           id: `hub-${tool.id}`,
           source: 'hub',
           target: tool.id,
-          color: AGENT_COLORS[tool.type] ?? '#2a3042',
+          color: AGENT_COLORS[tool.type] ?? '#2e3545',
           opacity: 0.3,
         },
       })

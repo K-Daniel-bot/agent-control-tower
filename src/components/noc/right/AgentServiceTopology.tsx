@@ -77,7 +77,7 @@ export default function AgentServiceTopology() {
       .selectAll<SVGLineElement, TopoLink>('line')
       .data(links, (d) => d.id)
       .join('line')
-      .attr('stroke', '#2a3042')
+      .attr('stroke', '#333333')
       .attr('stroke-width', 1.2)
       .attr('stroke-opacity', 0.5)
 
@@ -95,7 +95,7 @@ export default function AgentServiceTopology() {
       .attr('r', (d) => d.r)
       .attr('fill', (d) => {
         if (d.id === 'orchestrator') return 'rgba(255,215,0,0.12)'
-        return '#0e1220'
+        return '#000000'
       })
       .attr('stroke', (d) => d.color)
       .attr('stroke-width', (d) => (d.id === 'orchestrator' ? 2.5 : 1.8))

@@ -109,7 +109,7 @@ export default function AgentInfraMap() {
         position: 'relative',
         background: `
           radial-gradient(ellipse 80% 60% at 50% 50%, rgba(59,130,246,0.06) 0%, transparent 70%),
-          linear-gradient(180deg, #0a0e1a 0%, #0d1220 100%)
+          linear-gradient(180deg, #000000 0%, #000000 100%)
         `,
         overflow: 'hidden',
         cursor: dragRef.current ? 'grabbing' : 'grab',
@@ -143,8 +143,8 @@ export default function AgentInfraMap() {
           width: 28,
           height: 28,
           borderRadius: '50%',
-          background: 'rgba(26,31,46,0.8)',
-          border: '1px solid #2a3042',
+          background: 'transparent',
+          border: '1px solid #333333',
           color: '#6b7280',
           fontSize: 12,
           cursor: 'pointer',
@@ -167,8 +167,8 @@ export default function AgentInfraMap() {
           width: 28,
           height: 28,
           borderRadius: '50%',
-          background: 'rgba(26,31,46,0.8)',
-          border: '1px solid #2a3042',
+          background: 'transparent',
+          border: '1px solid #333333',
           color: '#6b7280',
           fontSize: 12,
           cursor: 'pointer',
@@ -226,7 +226,7 @@ export default function AgentInfraMap() {
           cy={CENTER_Y}
           r={ORBIT_RADIUS}
           fill="none"
-          stroke="#2a3042"
+          stroke="#333333"
           strokeWidth={1}
           strokeDasharray="6,6"
           style={{ animation: 'orbit-dash 3s linear infinite' }}
@@ -237,7 +237,7 @@ export default function AgentInfraMap() {
           cy={CENTER_Y}
           r={ORBIT_RADIUS + 20}
           fill="none"
-          stroke="#1a2035"
+          stroke="#333333"
           strokeWidth={0.5}
           strokeDasharray="3,8"
           opacity={0.5}
@@ -255,7 +255,7 @@ export default function AgentInfraMap() {
               y1={CENTER_Y}
               x2={pos.x}
               y2={pos.y}
-              stroke={isHov ? node.color : '#2a3042'}
+              stroke={isHov ? node.color : '#333333'}
               strokeWidth={isHov ? 1.5 : 0.6}
               strokeDasharray="4,4"
               opacity={isHov ? 0.9 : 0.3}
@@ -291,7 +291,7 @@ export default function AgentInfraMap() {
           cx={CENTER_X}
           cy={CENTER_Y}
           r={38}
-          fill="rgba(10,14,26,0.95)"
+          fill="transparent"
           stroke="rgba(0,255,136,0.15)"
           strokeWidth={1}
         />
@@ -385,7 +385,7 @@ export default function AgentInfraMap() {
                 y={pos.y + 16}
                 textAnchor="middle"
                 fontSize={7}
-                fill={isHov ? '#e5e7eb' : node.color}
+                fill={isHov ? '#e6edf3' : node.color}
                 fontWeight={700}
                 letterSpacing="0.04em"
                 style={{ pointerEvents: 'none', transition: 'fill 0.3s' }}

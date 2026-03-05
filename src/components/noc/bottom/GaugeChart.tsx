@@ -47,7 +47,7 @@ function buildGaugeOption(value: number, label: string): echarts.EChartsOption {
           offsetCenter: [0, '-15%'],
           fontSize: 11,
           fontWeight: 600,
-          color: '#e2e8f0',
+          color: '#e6edf3',
           formatter: '{value}%',
         },
         data: [{ value, name: label }],

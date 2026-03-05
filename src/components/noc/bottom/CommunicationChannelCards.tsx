@@ -10,8 +10,9 @@ const MOCK_CHANNELS = [
 
 const cardStyle: React.CSSProperties = {
   minWidth: 115,
-  background: 'rgba(15,20,35,0.9)',
-  border: '1px solid #1e2535',
+  height: '100%',
+  background: 'transparent',
+  border: '1px solid #333333',
   borderRadius: 3,
   padding: '8px 10px',
   display: 'flex',
@@ -19,6 +20,7 @@ const cardStyle: React.CSSProperties = {
   alignItems: 'center',
   gap: 4,
   flexShrink: 0,
+  justifyContent: 'center',
 }
 
 const iconStyle: React.CSSProperties = {
@@ -36,7 +38,7 @@ const nameStyle: React.CSSProperties = {
 const trafficStyle: React.CSSProperties = {
   fontSize: 14,
   fontWeight: 700,
-  color: '#e2e8f0',
+  color: '#e6edf3',
   letterSpacing: '0.02em',
 }
 
@@ -49,7 +51,7 @@ const rateRowStyle: React.CSSProperties = {
 
 export default function CommunicationChannelCards() {
   return (
-    <div style={{ display: 'flex', gap: 6, padding: '6px 8px', overflowX: 'auto' }}>
+    <div style={{ display: 'flex', gap: 6, padding: '6px 8px', overflowX: 'auto', height: '100%', background: 'transparent', alignItems: 'center' }}>
       {MOCK_CHANNELS.map((ch) => (
         <div key={ch.id} style={cardStyle}>
           <span style={iconStyle}>{ch.icon}</span>

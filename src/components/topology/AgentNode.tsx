@@ -59,8 +59,8 @@ export function AgentNode({ data }: NodeProps) {
       style={{
         width: 100,
         minHeight: 70,
-        background: 'rgba(26,31,46,0.95)',
-        border: `1.5px solid ${glowing ? config.color : '#2a3042'}`,
+        background: 'transparent',
+        border: `1.5px solid ${glowing ? config.color : '#333333'}`,
         borderRadius: 10,
         display: 'flex',
         flexDirection: 'column',

@@ -80,8 +80,8 @@ export function RightLegendPanel({ state }: Props) {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        background: 'rgba(10,14,26,0.97)',
-        borderLeft: '1px solid #2a3042',
+        background: 'transparent',
+        borderLeft: '1px solid #333333',
         flexShrink: 0,
         overflow: 'hidden',
       }}
@@ -91,13 +91,13 @@ export function RightLegendPanel({ state }: Props) {
         style={{
           flex: '0 0 auto',
           padding: '12px 14px',
-          borderBottom: '1px solid #1e2535',
+          borderBottom: '1px solid #333333',
         }}
       >
         <div
           style={{
             fontSize: 8,
-            color: '#4b5563',
+            color: '#505661',
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
             marginBottom: 10,
@@ -118,13 +118,13 @@ export function RightLegendPanel({ state }: Props) {
         style={{
           flex: '0 0 auto',
           padding: '12px 14px',
-          borderBottom: '1px solid #1e2535',
+          borderBottom: '1px solid #333333',
         }}
       >
         <div
           style={{
             fontSize: 8,
-            color: '#4b5563',
+            color: '#505661',
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
             marginBottom: 10,
@@ -145,7 +145,7 @@ export function RightLegendPanel({ state }: Props) {
         <div
           style={{
             fontSize: 8,
-            color: '#4b5563',
+            color: '#505661',
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
             marginBottom: 10,
@@ -180,13 +180,13 @@ export function RightLegendPanel({ state }: Props) {
         </div>
 
         {/* Separator */}
-        <div style={{ height: 1, background: '#1e2535', margin: '14px 0' }} />
+        <div style={{ height: 1, background: '#333333', margin: '14px 0' }} />
 
         {/* Status filter chips */}
         <div
           style={{
             fontSize: 8,
-            color: '#4b5563',
+            color: '#505661',
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
             marginBottom: 8,

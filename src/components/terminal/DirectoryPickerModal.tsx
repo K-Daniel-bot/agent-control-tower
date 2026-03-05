@@ -104,8 +104,8 @@ export default function DirectoryPickerModal({ onSelect, onClose }: DirectoryPic
         style={{
           width: 500,
           maxHeight: '80vh',
-          background: '#111827',
-          border: '1px solid #2a3042',
+          background: '#000000',
+          border: '1px solid #333333',
           borderRadius: 10,
           display: 'flex',
           flexDirection: 'column',
@@ -117,7 +117,7 @@ export default function DirectoryPickerModal({ onSelect, onClose }: DirectoryPic
         <div
           style={{
             padding: '14px 16px',
-            borderBottom: '1px solid #2a3042',
+            borderBottom: '1px solid #333333',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -125,8 +125,8 @@ export default function DirectoryPickerModal({ onSelect, onClose }: DirectoryPic
           }}
         >
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#e5e7eb' }}>프로젝트 폴더 선택</div>
-            <div style={{ fontSize: 9, color: '#4b5563', marginTop: 2 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#e6edf3' }}>프로젝트 폴더 선택</div>
+            <div style={{ fontSize: 9, color: '#505661', marginTop: 2 }}>
               폴더를 탐색하거나 경로를 직접 입력하세요
             </div>
           </div>
@@ -149,7 +149,7 @@ export default function DirectoryPickerModal({ onSelect, onClose }: DirectoryPic
         </div>
 
         {/* Path input */}
-        <div style={{ padding: '10px 14px', borderBottom: '1px solid #1e2535', flexShrink: 0 }}>
+        <div style={{ padding: '10px 14px', borderBottom: '1px solid #333333', flexShrink: 0 }}>
           <div style={{ display: 'flex', gap: 6 }}>
             <input
               ref={inputRef}
@@ -163,10 +163,10 @@ export default function DirectoryPickerModal({ onSelect, onClose }: DirectoryPic
               style={{
                 flex: 1,
                 padding: '6px 10px',
-                background: 'rgba(10,14,26,0.8)',
-                border: `1px solid ${error ? '#ef4444' : '#2a3042'}`,
+                background: 'transparent',
+                border: `1px solid ${error ? '#ef4444' : '#333333'}`,
                 borderRadius: 5,
-                color: '#e5e7eb',
+                color: '#e6edf3',
                 fontSize: 11,
                 outline: 'none',
                 fontFamily: 'monospace',
@@ -200,7 +200,7 @@ export default function DirectoryPickerModal({ onSelect, onClose }: DirectoryPic
             gap: 2,
             alignItems: 'center',
             flexWrap: 'wrap',
-            borderBottom: '1px solid #1e2535',
+            borderBottom: '1px solid #333333',
             flexShrink: 0,
           }}
         >
@@ -218,7 +218,7 @@ export default function DirectoryPickerModal({ onSelect, onClose }: DirectoryPic
                   onClick={() => loadDir(path)}
                   style={{
                     fontSize: 9,
-                    color: i === currentSegments.length - 1 ? '#e5e7eb' : '#6b7280',
+                    color: i === currentSegments.length - 1 ? '#e6edf3' : '#6b7280',
                     background: 'none', border: 'none', cursor: 'pointer',
                     fontWeight: i === currentSegments.length - 1 ? 600 : 400,
                     padding: '0 2px',
@@ -237,7 +237,7 @@ export default function DirectoryPickerModal({ onSelect, onClose }: DirectoryPic
         {/* Directory listing */}
         <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
           {loading && (
-            <div style={{ padding: '20px', textAlign: 'center', fontSize: 10, color: '#4b5563' }}>
+            <div style={{ padding: '20px', textAlign: 'center', fontSize: 10, color: '#505661' }}>
               로딩 중...
             </div>
           )}
@@ -252,7 +252,7 @@ export default function DirectoryPickerModal({ onSelect, onClose }: DirectoryPic
                 alignItems: 'center',
                 gap: 8,
                 cursor: 'pointer',
-                borderBottom: '1px solid rgba(42,48,66,0.4)',
+                borderBottom: '1px solid #000000',
                 color: '#6b7280',
               }}
             >
@@ -278,7 +278,7 @@ export default function DirectoryPickerModal({ onSelect, onClose }: DirectoryPic
               onClick={() => loadDir(entry.path)}
             >
               <span style={{ fontSize: 14, flexShrink: 0 }}>📁</span>
-              <span style={{ fontSize: 10, color: '#e5e7eb', flex: 1 }}>{entry.name}</span>
+              <span style={{ fontSize: 10, color: '#e6edf3', flex: 1 }}>{entry.name}</span>
               <button
                 onClick={e => { e.stopPropagation(); void handleConfirm(entry.path) }}
                 style={{
@@ -306,15 +306,15 @@ export default function DirectoryPickerModal({ onSelect, onClose }: DirectoryPic
         <div
           style={{
             padding: '12px 14px',
-            borderTop: '1px solid #2a3042',
+            borderTop: '1px solid #333333',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             flexShrink: 0,
-            background: 'rgba(10,14,26,0.5)',
+            background: '#000000',
           }}
         >
-          <div style={{ fontSize: 9, color: '#4b5563', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <div style={{ fontSize: 9, color: '#505661', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {dir?.current && <span style={{ fontFamily: 'monospace' }}>{dir.current}</span>}
           </div>
           <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
@@ -322,8 +322,8 @@ export default function DirectoryPickerModal({ onSelect, onClose }: DirectoryPic
               onClick={onClose}
               style={{
                 padding: '6px 14px',
-                background: 'rgba(42,48,66,0.5)',
-                border: '1px solid #2a3042',
+                background: '#000000',
+                border: '1px solid #333333',
                 borderRadius: 5,
                 color: '#6b7280',
                 fontSize: 10,

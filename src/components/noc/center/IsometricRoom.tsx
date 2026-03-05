@@ -50,16 +50,8 @@ function IsometricRoom({ agents }: IsometricRoomProps) {
       style={{ display: 'block' }}
     >
       {/* Background */}
-      <rect width="800" height="500" fill="#080b14" />
+      <rect width="800" height="500" fill="transparent" />
 
-      {/* Ambient glow at center */}
-      <defs>
-        <radialGradient id="ambientGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#0a2a1a" stopOpacity={0.4} />
-          <stop offset="100%" stopColor="#080b14" stopOpacity={0} />
-        </radialGradient>
-      </defs>
-      <rect width="800" height="500" fill="url(#ambientGlow)" />
 
       {/* Layer 1: Floor and walls */}
       <IsometricFloor />

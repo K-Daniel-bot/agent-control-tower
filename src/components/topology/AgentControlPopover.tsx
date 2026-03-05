@@ -34,7 +34,7 @@ const STATUS_COLORS: Record<AgentStatus, string> = {
   working: '#00ff88',
   idle: '#6b7280',
   error: '#ef4444',
-  complete: '#4b5563',
+  complete: '#505661',
 }
 
 export function AgentControlPopover({ agent, position, onClose }: AgentControlPopoverProps) {
@@ -96,8 +96,8 @@ export function AgentControlPopover({ agent, position, onClose }: AgentControlPo
           top: position.y,
           zIndex: 50,
           width: 200,
-          background: 'rgba(26,31,46,0.97)',
-          border: '1px solid #2a3042',
+          background: 'transparent',
+          border: '1px solid #333333',
           borderRadius: 8,
           padding: 10,
           display: 'flex',
@@ -118,7 +118,7 @@ export function AgentControlPopover({ agent, position, onClose }: AgentControlPo
               boxShadow: `0 0 4px ${statusColor}`,
             }}
           />
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#e5e7eb' }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: '#e6edf3' }}>
             {getDisplayLabel(agent.identity)}
           </span>
         </div>
@@ -135,7 +135,7 @@ export function AgentControlPopover({ agent, position, onClose }: AgentControlPo
         </div>
 
         {/* Divider */}
-        <div style={{ height: 1, background: '#2a3042' }} />
+        <div style={{ height: 1, background: '#333333' }} />
 
         {/* Status transitions */}
         {availableTransitions.length > 0 && (

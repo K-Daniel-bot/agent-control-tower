@@ -48,25 +48,25 @@ function buildOption(times: string[], seriesData: number[][]): echarts.EChartsOp
     xAxis: {
       type: 'category',
       data: times,
-      axisLabel: { fontSize: 8, color: '#4b5563', interval: 9 },
-      axisLine: { lineStyle: { color: '#1e2535' } },
+      axisLabel: { fontSize: 8, color: '#505661', interval: 9 },
+      axisLine: { lineStyle: { color: '#333333' } },
       axisTick: { show: false },
     },
     yAxis: {
       type: 'value',
       splitNumber: 3,
-      axisLabel: { fontSize: 8, color: '#4b5563', formatter: (v: number) => `${Math.round(v)}` },
+      axisLabel: { fontSize: 8, color: '#505661', formatter: (v: number) => `${Math.round(v)}` },
       axisLine: { show: false },
       axisTick: { show: false },
-      splitLine: { lineStyle: { color: '#1e2535', width: 1 } },
+      splitLine: { lineStyle: { color: '#333333', width: 1 } },
     },
     tooltip: {
       trigger: 'axis',
-      backgroundColor: '#0d1117',
-      borderColor: '#2a3042',
+      backgroundColor: 'transparent',
+      borderColor: '#333333',
       borderWidth: 1,
-      textStyle: { fontSize: 9, color: '#e2e8f0' },
-      axisPointer: { lineStyle: { color: '#2a3042' } },
+      textStyle: { fontSize: 9, color: '#e6edf3' },
+      axisPointer: { lineStyle: { color: '#333333' } },
     },
     series: SERIES_CONFIG.map((cfg, idx) => ({
       name: cfg.name,
@@ -133,7 +133,7 @@ export default function TokenRateChart() {
   }, [])
 
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', background: 'transparent' }}>
       <div
         style={{
           height: 28,
@@ -141,8 +141,8 @@ export default function TokenRateChart() {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '0 8px',
-          borderBottom: '1px solid #1e2535',
-          background: 'rgba(15,20,35,0.95)',
+          borderBottom: '1px solid #333333',
+          background: 'transparent',
           flexShrink: 0,
         }}
       >
@@ -152,7 +152,7 @@ export default function TokenRateChart() {
             실시간 성능 차트 (Agent Token Rate)
           </span>
         </div>
-        <span style={{ color: '#4b5563', fontSize: 12, cursor: 'default' }}>&#10005;</span>
+        <span style={{ color: '#505661', fontSize: 12, cursor: 'default' }}>&#10005;</span>
       </div>
       <div ref={containerRef} style={{ flex: 1, minHeight: 0 }} />
     </div>

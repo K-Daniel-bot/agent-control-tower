@@ -17,7 +17,7 @@ function PlaceholderPanel({ title, color }: { title: string; color: string }) {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'rgba(26, 31, 46, 0.5)',
+        background: 'transparent',
         gap: 8,
       }}
     >
@@ -119,7 +119,7 @@ export default function DashboardPage() {
         height: '100vh',
         width: '100vw',
         overflow: 'hidden',
-        background: '#0a0e1a',
+        background: 'transparent',
       }}
     >
       <Header

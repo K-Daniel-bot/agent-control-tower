@@ -35,8 +35,8 @@ export default function RightPanel() {
         minWidth: '240px',
         maxWidth: '280px',
         height: '100%',
-        background: 'rgba(10, 14, 26, 0.85)',
-        borderLeft: '1px solid #1e2a3a',
+        background: 'transparent',
+        borderLeft: '1px solid #333333',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
@@ -46,7 +46,7 @@ export default function RightPanel() {
       <div
         style={{
           padding: '10px 12px 8px',
-          borderBottom: '1px solid #1e2a3a',
+          borderBottom: '1px solid #333333',
           display: 'flex',
           alignItems: 'center',
           gap: '6px',
@@ -67,7 +67,7 @@ export default function RightPanel() {
           style={{
             fontSize: '11px',
             fontWeight: 600,
-            color: '#e2e8f0',
+            color: '#e6edf3',
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
           }}
@@ -96,7 +96,7 @@ export default function RightPanel() {
           unit="ms"
         />
 
-        <div style={{ height: '1px', background: '#1e2a3a', margin: '2px 0' }} />
+        <div style={{ height: '1px', background: '#333333', margin: '2px 0' }} />
 
         {/* LLM Response Time */}
         <MetricsChart
@@ -107,7 +107,7 @@ export default function RightPanel() {
           unit="ms"
         />
 
-        <div style={{ height: '1px', background: '#1e2a3a', margin: '2px 0' }} />
+        <div style={{ height: '1px', background: '#333333', margin: '2px 0' }} />
 
         {/* Tool Latency */}
         <MetricsChart
@@ -118,7 +118,7 @@ export default function RightPanel() {
           unit="ms"
         />
 
-        <div style={{ height: '1px', background: '#1e2a3a', margin: '2px 0' }} />
+        <div style={{ height: '1px', background: '#333333', margin: '2px 0' }} />
 
         {/* Workflow Duration */}
         <MetricsChart
@@ -134,13 +134,13 @@ export default function RightPanel() {
       <div
         style={{
           padding: '6px 12px',
-          borderTop: '1px solid #1e2a3a',
+          borderTop: '1px solid #333333',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
         }}
       >
-        <span style={{ fontSize: '9px', color: '#4a5568' }}>갱신 주기: 10초</span>
+        <span style={{ fontSize: '9px', color: '#505661' }}>갱신 주기: 10초</span>
         <span style={{ fontSize: '9px', color: '#00ff88' }}>● LIVE</span>
       </div>
     </aside>

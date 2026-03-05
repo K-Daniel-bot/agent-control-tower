@@ -21,7 +21,7 @@ function BarChart({ data, valueKey, label, color }: {
           padding: '8px 10px 4px',
           letterSpacing: '0.05em',
           textTransform: 'uppercase',
-          borderBottom: '1px solid #1a2035',
+          borderBottom: '1px solid #333333',
         }}
       >
         <span style={{ color }}>{label}</span> Top5
@@ -35,7 +35,7 @@ function BarChart({ data, valueKey, label, color }: {
               </span>
               <span style={{ fontFamily: 'monospace', color }}>{item.value.toFixed(1)}%</span>
             </div>
-            <div style={{ height: 4, background: '#1a1f2e', borderRadius: 2, overflow: 'hidden' }}>
+            <div style={{ height: 4, background: '#000000', borderRadius: 2, overflow: 'hidden' }}>
               <div
                 style={{
                   height: '100%',
@@ -74,7 +74,7 @@ export default function AgentResourcePanel() {
   return (
     <>
       <BarChart data={cpuData} valueKey="cpu" label="CPU Used" color="#00ff88" />
-      <div style={{ height: 1, background: '#1a2035' }} />
+      <div style={{ height: 1, background: '#333333' }} />
       <BarChart data={memData} valueKey="mem" label="MEM Used" color="#3b82f6" />
     </>
   )

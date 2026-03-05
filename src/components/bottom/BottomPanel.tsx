@@ -13,8 +13,8 @@ export default function BottomPanel() {
         height: '170px',
         minHeight: '150px',
         maxHeight: '180px',
-        background: 'rgba(8, 12, 22, 0.9)',
-        borderTop: '1px solid #1e2a3a',
+        background: 'transparent',
+        borderTop: '1px solid #333333',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
@@ -27,9 +27,9 @@ export default function BottomPanel() {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '6px 14px',
-          borderBottom: '1px solid #1e2a3a',
+          borderBottom: '1px solid #333333',
           flexShrink: 0,
-          background: 'rgba(10, 14, 26, 0.5)',
+          background: '#000000',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -37,7 +37,7 @@ export default function BottomPanel() {
             style={{
               fontSize: '11px',
               fontWeight: 600,
-              color: '#e2e8f0',
+              color: '#e6edf3',
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
             }}

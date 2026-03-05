@@ -19,11 +19,11 @@ export default function RequestStatusPanel() {
     .sort((a, b) => b.requestCount - a.requestCount)
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, borderTop: '1px solid #1a2035' }}>
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, borderTop: '1px solid #333333' }}>
       <div
         style={{
           padding: '8px 10px',
-          borderBottom: '1px solid #1a2035',
+          borderBottom: '1px solid #333333',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -32,7 +32,7 @@ export default function RequestStatusPanel() {
         <span style={{ fontSize: 10, fontWeight: 700, color: '#9ca3af', letterSpacing: '0.05em' }}>
           요청현황
         </span>
-        <span style={{ fontSize: 8, color: '#4b5563', fontFamily: 'monospace' }}>
+        <span style={{ fontSize: 8, color: '#505661', fontFamily: 'monospace' }}>
           Total: {totalRequests === 1 ? 0 : totalRequests}
         </span>
       </div>
@@ -48,7 +48,7 @@ export default function RequestStatusPanel() {
                 </span>
                 <span style={{ fontFamily: 'monospace', color: '#3b82f6' }}>{pct}%</span>
               </div>
-              <div style={{ height: 3, background: '#1a1f2e', borderRadius: 2, overflow: 'hidden' }}>
+              <div style={{ height: 3, background: '#000000', borderRadius: 2, overflow: 'hidden' }}>
                 <div
                   style={{
                     height: '100%',

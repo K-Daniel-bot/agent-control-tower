@@ -9,7 +9,7 @@ const STATUS_CONFIG: Record<AgentStatus, { color: string; label: string; pulse: 
   spawning:  { color: '#6b7280', label: '초기화',  pulse: false },
   active:    { color: '#3b82f6', label: '활성',    pulse: true  },
   working:   { color: '#00ff88', label: '실행',    pulse: true  },
-  idle:      { color: '#4b5563', label: '대기',    pulse: false },
+  idle:      { color: '#505661', label: '대기',    pulse: false },
   error:     { color: '#ef4444', label: '오류',    pulse: true  },
   complete:  { color: '#374151', label: '완료',    pulse: false },
 }
@@ -48,7 +48,7 @@ function AgentRow({ agent }: { agent: ReturnType<typeof useOrchestra>['state']['
           : agent.status === 'working' || agent.status === 'active'
           ? 'rgba(0,255,136,0.03)'
           : 'transparent',
-        border: `1px solid ${agent.status === 'error' ? 'rgba(239,68,68,0.2)' : '#1e2535'}`,
+        border: `1px solid ${agent.status === 'error' ? 'rgba(239,68,68,0.2)' : '#333333'}`,
         marginBottom: 3,
       }}
     >
@@ -80,7 +80,7 @@ function AgentRow({ agent }: { agent: ReturnType<typeof useOrchestra>['state']['
         >
           {agent.identity.englishRole}
         </div>
-        <div style={{ fontSize: 8, color: '#4b5563', letterSpacing: '0.02em' }}>
+        <div style={{ fontSize: 8, color: '#505661', letterSpacing: '0.02em' }}>
           {cfg.label}
           {agent.tokenRate > 0 && (
             <span style={{ color: '#6b7280', marginLeft: 4 }}>
@@ -95,7 +95,7 @@ function AgentRow({ agent }: { agent: ReturnType<typeof useOrchestra>['state']['
         <div
           style={{
             fontSize: 8,
-            color: agent.latencyMs > 500 ? '#f59e0b' : '#4b5563',
+            color: agent.latencyMs > 500 ? '#f59e0b' : '#505661',
             fontFamily: 'monospace',
             flexShrink: 0,
           }}
@@ -189,8 +189,8 @@ export default function LeftPanel() {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        background: 'rgba(10,14,26,0.97)',
-        borderRight: '1px solid #1e2535',
+        background: 'transparent',
+        borderRight: '1px solid #333333',
         flexShrink: 0,
         overflow: 'hidden',
       }}
@@ -202,7 +202,7 @@ export default function LeftPanel() {
           maxHeight: '50%',
           display: 'flex',
           flexDirection: 'column',
-          borderBottom: '1px solid #1e2535',
+          borderBottom: '1px solid #333333',
           overflow: 'hidden',
         }}
       >
@@ -220,7 +220,7 @@ export default function LeftPanel() {
             style={{
               fontSize: 8,
               fontWeight: 700,
-              color: '#4b5563',
+              color: '#505661',
               letterSpacing: '0.1em',
               textTransform: 'uppercase',
             }}
@@ -234,7 +234,7 @@ export default function LeftPanel() {
                   {activeAgents.length}
                 </span>
                 <span style={{ fontSize: 7, color: '#374151' }}>/</span>
-                <span style={{ fontSize: 8, color: '#4b5563', fontFamily: 'monospace' }}>
+                <span style={{ fontSize: 8, color: '#505661', fontFamily: 'monospace' }}>
                   {state.agents.length}
                 </span>
               </>
@@ -308,7 +308,7 @@ export default function LeftPanel() {
             style={{
               fontSize: 8,
               fontWeight: 700,
-              color: '#4b5563',
+              color: '#505661',
               letterSpacing: '0.1em',
               textTransform: 'uppercase',
             }}

@@ -104,7 +104,7 @@ export default function ToolbarCommandButtons({
       ))}
 
       {/* Separator */}
-      <div style={{ width: 1, height: 16, background: '#2a3042', margin: '0 2px' }} />
+      <div style={{ width: 1, height: 16, background: '#333333', margin: '0 2px' }} />
 
       {/* Split buttons */}
       <button
@@ -116,7 +116,7 @@ export default function ToolbarCommandButtons({
           alignItems: 'center',
           gap: 2,
           padding: '2px 6px',
-          background: 'rgba(156,163,175,0.06)',
+          background: 'rgba(46,53,69,0.3)',
           border: '1px solid rgba(156,163,175,0.2)',
           borderRadius: 4,
           color: paneCount >= 6 ? '#374151' : '#9ca3af',
@@ -137,7 +137,7 @@ export default function ToolbarCommandButtons({
           alignItems: 'center',
           gap: 2,
           padding: '2px 6px',
-          background: 'rgba(156,163,175,0.06)',
+          background: 'rgba(46,53,69,0.3)',
           border: '1px solid rgba(156,163,175,0.2)',
           borderRadius: 4,
           color: paneCount >= 6 ? '#374151' : '#9ca3af',
@@ -151,7 +151,7 @@ export default function ToolbarCommandButtons({
 
       {/* Pane count */}
       {paneCount > 1 && (
-        <span style={{ fontSize: 8, color: '#4b5563', fontFamily: 'monospace' }}>
+        <span style={{ fontSize: 8, color: '#505661', fontFamily: 'monospace' }}>
           {paneCount}/6
         </span>
       )}

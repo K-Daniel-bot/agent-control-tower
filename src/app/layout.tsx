@@ -22,8 +22,8 @@ export default function RootLayout({
         style={{
           margin: 0,
           padding: 0,
-          background: '#0a0e1a',
-          color: '#e5e7eb',
+          background: 'transparent',
+          color: '#e6edf3',
           height: '100vh',
           width: '100vw',
           overflow: 'hidden',

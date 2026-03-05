@@ -1,12 +1,12 @@
 @import 'tailwindcss';
 
 :root {
-  --noc-bg: #0a0e1a;
-  --noc-bg-secondary: #111827;
-  --noc-panel: #1a1f2e;
-  --noc-border: #2a3042;
-  --noc-text: #e5e7eb;
-  --noc-text-muted: #9ca3af;
+  --noc-bg: #000000;
+  --noc-bg-secondary: #000000;
+  --noc-panel: #000000;
+  --noc-border: #333333;
+  --noc-text: #e6edf3;
+  --noc-text-muted: #8b95a5;
   --noc-green: #00ff88;
   --noc-orange: #ff6b35;
   --noc-blue: #3b82f6;
@@ -46,15 +46,15 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a4052;
+  background: #343a45;
 }
 
 /* Panel glassmorphism */
 .panel-glass {
-  background: rgba(26, 31, 46, 0.85);
+  background: rgba(30, 33, 40, 0.95);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(42, 48, 66, 0.8);
+  border: 1px solid rgba(42, 48, 56, 0.8);
 }
 
 /* Glowing text */
@@ -202,10 +202,10 @@ body {
 }
 
 .xterm .xterm-viewport::-webkit-scrollbar-track {
-  background: #0a0e1a;
+  background: #000000;
 }
 
 .xterm .xterm-viewport::-webkit-scrollbar-thumb {
-  background: #2a3042;
+  background: #333333;
   border-radius: 2px;
 }

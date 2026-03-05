@@ -1,13 +1,7 @@
 'use client'
 
 import { memo, useMemo } from 'react'
-import IsometricRoom from './IsometricRoom'
-import type { IsometricAgent } from './IsometricRoom'
-import {
-  IsometricTitleOverlay,
-  IsometricLogoOverlay,
-  IsometricStatusOverlays,
-} from './IsometricEnvironment'
+import OfficeRoom from './OfficeRoom'
 import type { AgentState } from '@/types/topology'
 import { useIsometricLayout } from '@/hooks/useIsometricLayout'
 
@@ -19,14 +13,12 @@ interface AgentOperationsCenterProps {
 function AgentOperationsCenter({ agents }: AgentOperationsCenterProps) {
   const podPositions = useIsometricLayout(agents)
 
-  const isometricAgents: ReadonlyArray<IsometricAgent> = useMemo(() => {
+  const agentData = useMemo(() => {
     return podPositions.map((pod) => ({
       agentId: pod.agentId,
       name: pod.name,
       agentType: pod.agentType,
       status: pod.status,
-      isoX: pod.isoX,
-      isoY: pod.isoY,
       color: pod.color,
       tokenRate: pod.tokenRate,
     }))
@@ -38,18 +30,13 @@ function AgentOperationsCenter({ agents }: AgentOperationsCenterProps) {
         position: 'relative',
         width: '100%',
         height: '100%',
-        background: '#080b14',
+        background: 'transparent',
         overflow: 'hidden',
         borderRadius: 4,
       }}
     >
-      {/* SVG isometric room */}
-      <IsometricRoom agents={isometricAgents} />
-
-      {/* HTML overlays */}
-      <IsometricTitleOverlay />
-      <IsometricLogoOverlay />
-      <IsometricStatusOverlays />
+      {/* 3D Office Room */}
+      <OfficeRoom />
     </div>
   )
 }

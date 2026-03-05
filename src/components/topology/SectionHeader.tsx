@@ -18,7 +18,7 @@ export function SectionHeader({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '6px 12px',
-        borderBottom: '1px solid #2a3042',
+        borderBottom: '1px solid #333333',
         flexShrink: 0,
       }}
     >

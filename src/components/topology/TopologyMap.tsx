@@ -64,11 +64,11 @@ function TopologyController() {
 
   const tabStyle = (active: boolean, color: string) => ({
     padding: '3px 10px',
-    background: active ? `${color}25` : 'rgba(10,14,26,0.7)',
-    border: `1px solid ${active ? color + '60' : '#2a3042'}`,
+    background: active ? `${color}25` : '#000000',
+    border: `1px solid ${active ? color + '60' : '#333333'}`,
     borderRadius: 4,
     fontSize: 9,
-    color: active ? color : '#4b5563',
+    color: active ? color : '#505661',
     cursor: 'pointer' as const,
     fontWeight: active ? 700 : 500,
     letterSpacing: '0.06em',
@@ -84,8 +84,8 @@ function TopologyController() {
           alignItems: 'center',
           justifyContent: 'flex-end',
           padding: '5px 12px',
-          borderBottom: '1px solid #2a3042',
-          background: 'rgba(10,14,26,0.95)',
+          borderBottom: '1px solid #333333',
+          background: '#000000',
           flexShrink: 0,
         }}
       >
@@ -96,9 +96,9 @@ function TopologyController() {
             alignItems: 'center',
             gap: 4,
             padding: '3px 8px',
-            background: 'rgba(10,14,26,0.9)',
+            background: '#000000',
             borderRadius: 4,
-            border: '1px solid #2a3042',
+            border: '1px solid #333333',
             fontSize: 9,
             color: '#6b7280',
           }}
@@ -113,7 +113,7 @@ function TopologyController() {
                   ? '#00ff88'
                   : state.phase === 'complete'
                   ? '#6b7280'
-                  : '#2a3042',
+                  : '#333333',
               boxShadow: state.phase === 'running' ? '0 0 4px #00ff88' : 'none',
               animation:
                 state.phase === 'running'
@@ -243,7 +243,7 @@ function TopologyContent() {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        background: '#0a0e1a',
+        background: 'transparent',
         overflow: 'hidden',
       }}
     >

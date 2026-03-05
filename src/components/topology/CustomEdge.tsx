@@ -84,7 +84,7 @@ export function CustomEdge({
               color: '#f59e0b',
               fontFamily: 'monospace',
               textAlign: 'center',
-              background: 'rgba(10,14,26,0.85)',
+              background: 'transparent',
               borderRadius: 3,
               padding: '1px 4px',
               whiteSpace: 'nowrap',
@@ -110,7 +110,7 @@ export function CustomEdge({
               color: '#6b7280',
               fontFamily: 'monospace',
               textAlign: 'center',
-              background: 'rgba(10,14,26,0.8)',
+              background: 'transparent',
               borderRadius: 3,
               padding: '1px 3px',
             }}

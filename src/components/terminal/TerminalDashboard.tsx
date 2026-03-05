@@ -133,7 +133,7 @@ export default function TerminalDashboard({ isVisible = true, rightPanel = null,
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        background: '#0a0e1a',
+        background: 'transparent',
         overflow: 'hidden',
       }}
     >
@@ -144,8 +144,8 @@ export default function TerminalDashboard({ isVisible = true, rightPanel = null,
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '4px 12px',
-          borderBottom: '1px solid #2a3042',
-          background: 'rgba(16,20,32,0.9)',
+          borderBottom: '1px solid #333333',
+          background: 'transparent',
           flexShrink: 0,
           height: 32,
         }}
@@ -165,7 +165,7 @@ export default function TerminalDashboard({ isVisible = true, rightPanel = null,
             />
             <span style={{ fontSize: 9, color: '#6b7280' }}>{status.label}</span>
           </div>
-          <div style={{ width: 1, height: 16, background: '#2a3042' }} />
+          <div style={{ width: 1, height: 16, background: '#333333' }} />
           <ToolbarCommandButtons
             onSendCommand={handleToolbarCommand}
             onSplitHorizontal={handleSplitH}
@@ -185,7 +185,7 @@ export default function TerminalDashboard({ isVisible = true, rightPanel = null,
           <button onClick={() => togglePanel('graph')} style={panelBtnStyle('graph', '#06b6d4')}>
             그래프뷰
           </button>
-          <div style={{ width: 1, height: 16, background: '#2a3042', alignSelf: 'center' }} />
+          <div style={{ width: 1, height: 16, background: '#333333', alignSelf: 'center' }} />
           <button
             onClick={handleGoHome}
             style={{

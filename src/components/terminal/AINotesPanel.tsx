@@ -138,8 +138,8 @@ export default function AINotesPanel({ onSendCommand }: AINotePanelProps) {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    background: 'rgba(16,20,32,0.97)',
-    borderLeft: '1px solid #2a3042',
+    background: 'transparent',
+    borderLeft: '1px solid #333333',
     overflow: 'hidden',
     flexShrink: 0,
   }
@@ -149,14 +149,14 @@ export default function AINotesPanel({ onSendCommand }: AINotePanelProps) {
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '8px 10px',
-    borderBottom: '1px solid #2a3042',
+    borderBottom: '1px solid #333333',
     flexShrink: 0,
   }
 
   const noteListStyle: React.CSSProperties = {
     maxHeight: 200,
     overflowY: 'auto',
-    borderBottom: '1px solid #2a3042',
+    borderBottom: '1px solid #333333',
     flexShrink: 0,
   }
 
@@ -169,10 +169,10 @@ export default function AINotesPanel({ onSendCommand }: AINotePanelProps) {
   }
 
   const inputBaseStyle: React.CSSProperties = {
-    background: 'rgba(10,14,26,0.8)',
-    border: '1px solid #2a3042',
+    background: 'transparent',
+    border: '1px solid #333333',
     borderRadius: 4,
-    color: '#e5e7eb',
+    color: '#e6edf3',
     fontSize: 11,
     outline: 'none',
     padding: '4px 8px',
@@ -243,7 +243,7 @@ export default function AINotesPanel({ onSendCommand }: AINotePanelProps) {
               onClick={() => handleSelectNote(note.id)}
               style={{
                 padding: '6px 10px',
-                borderBottom: '1px solid rgba(42,48,66,0.4)',
+                borderBottom: '1px solid #000000',
                 cursor: 'pointer',
                 background: isSelected ? 'rgba(0,255,136,0.05)' : 'transparent',
                 borderLeft: isSelected ? '2px solid #00ff88' : '2px solid transparent',
@@ -254,7 +254,7 @@ export default function AINotesPanel({ onSendCommand }: AINotePanelProps) {
                 style={{
                   fontSize: 10,
                   fontWeight: 600,
-                  color: isSelected ? '#e5e7eb' : '#9ca3af',
+                  color: isSelected ? '#e6edf3' : '#9ca3af',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
@@ -280,7 +280,7 @@ export default function AINotesPanel({ onSendCommand }: AINotePanelProps) {
                     </span>
                   ))}
                 </div>
-                <span style={{ fontSize: 7, color: '#4b5563', flexShrink: 0, marginLeft: 4 }}>
+                <span style={{ fontSize: 7, color: '#505661', flexShrink: 0, marginLeft: 4 }}>
                   {formatRelativeTime(note.updatedAt)}
                 </span>
               </div>
@@ -299,7 +299,7 @@ export default function AINotesPanel({ onSendCommand }: AINotePanelProps) {
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: 10,
-              color: '#4b5563',
+              color: '#505661',
               padding: 12,
               textAlign: 'center',
             }}

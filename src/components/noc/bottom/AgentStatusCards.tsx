@@ -12,8 +12,9 @@ const MOCK_AGENTS = [
 
 const cardStyle: React.CSSProperties = {
   minWidth: 130,
-  background: 'rgba(15,20,35,0.9)',
-  border: '1px solid #1e2535',
+  height: '100%',
+  background: 'transparent',
+  border: '1px solid #333333',
   borderRadius: 3,
   padding: '6px 8px',
   display: 'flex',
@@ -21,6 +22,7 @@ const cardStyle: React.CSSProperties = {
   alignItems: 'center',
   gap: 2,
   flexShrink: 0,
+  justifyContent: 'center',
 }
 
 const nameStyle: React.CSSProperties = {
@@ -38,11 +40,12 @@ const gaugeRowStyle: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'center',
   gap: 2,
+  marginTop: 2,
 }
 
 export default function AgentStatusCards() {
   return (
-    <div style={{ display: 'flex', gap: 6, padding: '6px 8px', overflowX: 'auto' }}>
+    <div style={{ display: 'flex', gap: 6, padding: '6px 8px', overflowX: 'auto', height: '100%', background: 'transparent', alignItems: 'center' }}>
       {MOCK_AGENTS.map((agent) => (
         <div key={agent.id} style={cardStyle}>
           <div style={nameStyle}>{agent.name}</div>

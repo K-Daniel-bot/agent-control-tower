@@ -31,7 +31,7 @@ export default function AgentStatusPanel() {
       <div
         style={{
           padding: '8px 10px',
-          borderBottom: '1px solid #1a2035',
+          borderBottom: '1px solid #333333',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -69,7 +69,7 @@ export default function AgentStatusPanel() {
                 alignItems: 'center',
                 gap: 6,
                 padding: '4px 10px',
-                borderBottom: '1px solid rgba(26,32,53,0.5)',
+                borderBottom: '1px solid #333333',
                 transition: 'background 0.15s',
               }}
             >
@@ -88,7 +88,7 @@ export default function AgentStatusPanel() {
                   style={{
                     fontSize: 9,
                     fontWeight: 600,
-                    color: '#e5e7eb',
+                    color: '#e6edf3',
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',

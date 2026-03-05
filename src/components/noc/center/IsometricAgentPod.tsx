@@ -70,7 +70,7 @@ function IsometricAgentPod({ x, y, color, status, name }: IsometricAgentPodProps
 
   const isWorking = status === 'working' || status === 'active'
   const isError = status === 'error'
-  const ledColor = isError ? '#ff3333' : isWorking ? '#00ff88' : '#4a5568'
+  const ledColor = isError ? '#ff3333' : isWorking ? '#00ff88' : '#505661'
 
   const glowId = `glow-${name.replace(/\s/g, '-')}`
 
@@ -97,21 +97,21 @@ function IsometricAgentPod({ x, y, color, status, name }: IsometricAgentPodProps
         <polygon
           points={faces.leftFace}
           fill={leftColor}
-          stroke="#0a0e18"
+          stroke="#000000"
           strokeWidth={0.5}
         />
         {/* Right face */}
         <polygon
           points={faces.rightFace}
           fill={rightColor}
-          stroke="#0a0e18"
+          stroke="#000000"
           strokeWidth={0.5}
         />
         {/* Top face */}
         <polygon
           points={faces.topFace}
           fill={topColor}
-          stroke="#0a0e18"
+          stroke="#000000"
           strokeWidth={0.5}
         />
       </g>
@@ -173,7 +173,7 @@ function IsometricAgentPod({ x, y, color, status, name }: IsometricAgentPodProps
         x={x}
         y={y + 10}
         textAnchor="middle"
-        fill="#8892a8"
+        fill="#8b95a5"
         fontSize={7}
         fontFamily="monospace"
       >

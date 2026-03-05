@@ -12,14 +12,14 @@ export default function NocLeftPanel() {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        background: 'rgba(10,14,26,0.97)',
+        background: 'transparent',
         overflow: 'hidden',
       }}
     >
-      <div style={{ flex: 1, minHeight: 0, borderBottom: '1px solid #1e2535' }}>
+      <div style={{ flex: 1, minHeight: 0, borderBottom: '1px solid #333333' }}>
         <TokenRateChart />
       </div>
-      <div style={{ flex: 1, minHeight: 0, borderBottom: '1px solid #1e2535' }}>
+      <div style={{ flex: 1, minHeight: 0, borderBottom: '1px solid #333333' }}>
         <ContextUsageChart />
       </div>
       <div style={{ flex: 1, minHeight: 0 }}>

@@ -196,8 +196,8 @@ export function AgentCreatePanel({ onClose }: AgentCreatePanelProps) {
         width: 340,
         maxHeight: 'calc(100vh - 120px)',
         overflowY: 'auto',
-        background: 'rgba(16,20,32,0.97)',
-        border: '1px solid #2a3042',
+        background: 'transparent',
+        border: '1px solid #333333',
         borderRadius: 8,
         padding: 14,
         display: 'flex',
@@ -209,7 +209,7 @@ export function AgentCreatePanel({ onClose }: AgentCreatePanelProps) {
     >
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: '#e5e7eb', letterSpacing: '0.04em' }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: '#e6edf3', letterSpacing: '0.04em' }}>
           에이전트 생성
         </span>
         <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: 14, padding: 2 }}>
@@ -250,8 +250,8 @@ export function AgentCreatePanel({ onClose }: AgentCreatePanelProps) {
                   width: 30,
                   height: 30,
                   fontSize: 16,
-                  background: active ? 'rgba(0,255,136,0.15)' : 'rgba(42,48,66,0.4)',
-                  border: `1px solid ${active ? 'rgba(0,255,136,0.5)' : '#2a3042'}`,
+                  background: active ? 'rgba(0,255,136,0.15)' : '#000000',
+                  border: `1px solid ${active ? 'rgba(0,255,136,0.5)' : '#333333'}`,
                   borderRadius: 5,
                   cursor: 'pointer',
                   display: 'flex',
@@ -267,7 +267,7 @@ export function AgentCreatePanel({ onClose }: AgentCreatePanelProps) {
             )
           })}
         </div>
-        <div style={{ fontSize: 8, color: '#4b5563' }}>
+        <div style={{ fontSize: 8, color: '#505661' }}>
           현재 선택: <span style={{ fontSize: 14 }}>{selectedIcon}</span> · 역할 변경 시 자동 업데이트
         </div>
       </div>
@@ -303,8 +303,8 @@ export function AgentCreatePanel({ onClose }: AgentCreatePanelProps) {
                 onClick={() => setRoleType(rt)}
                 style={{
                   padding: '4px 6px',
-                  background: active ? `${meta.color}18` : 'rgba(42,48,66,0.4)',
-                  border: `1px solid ${active ? meta.color + '60' : '#2a3042'}`,
+                  background: active ? `${meta.color}18` : '#000000',
+                  border: `1px solid ${active ? meta.color + '60' : '#333333'}`,
                   borderRadius: 4,
                   color: active ? meta.color : '#6b7280',
                   fontSize: 8,
@@ -337,8 +337,8 @@ export function AgentCreatePanel({ onClose }: AgentCreatePanelProps) {
                 onClick={() => toggleSkill(skill)}
                 style={{
                   padding: '2px 7px',
-                  background: active ? 'rgba(0,255,136,0.12)' : 'rgba(42,48,66,0.4)',
-                  border: `1px solid ${active ? 'rgba(0,255,136,0.4)' : '#2a3042'}`,
+                  background: active ? 'rgba(0,255,136,0.12)' : '#000000',
+                  border: `1px solid ${active ? 'rgba(0,255,136,0.4)' : '#333333'}`,
                   borderRadius: 10,
                   color: active ? '#00ff88' : '#6b7280',
                   fontSize: 8,
@@ -405,10 +405,10 @@ const labelStyle: React.CSSProperties = {
 
 const inputStyle: React.CSSProperties = {
   padding: '5px 8px',
-  background: 'rgba(10,14,26,0.8)',
-  border: '1px solid #2a3042',
+  background: 'transparent',
+  border: '1px solid #333333',
   borderRadius: 4,
-  color: '#e5e7eb',
+  color: '#e6edf3',
   fontSize: 10,
   outline: 'none',
   width: '100%',

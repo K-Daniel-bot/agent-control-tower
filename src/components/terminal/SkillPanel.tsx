@@ -84,14 +84,14 @@ export default function SkillPanel({ onSendCommand, projectDir }: SkillPanelProp
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        background: 'rgba(16,20,32,0.97)',
-        borderLeft: '1px solid #2a3042',
+        background: 'transparent',
+        borderLeft: '1px solid #333333',
         overflow: 'hidden',
         flexShrink: 0,
       }}
     >
       {/* Header */}
-      <div style={{ padding: '8px 10px', borderBottom: '1px solid #2a3042', flexShrink: 0 }}>
+      <div style={{ padding: '8px 10px', borderBottom: '1px solid #333333', flexShrink: 0 }}>
         <div style={{ fontSize: 10, fontWeight: 700, color: '#9ca3af', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
           스킬 라이브러리
         </div>
@@ -125,7 +125,7 @@ export default function SkillPanel({ onSendCommand, projectDir }: SkillPanelProp
           display: 'flex',
           gap: 4,
           padding: '5px 8px',
-          borderBottom: '1px solid #1e2535',
+          borderBottom: '1px solid #333333',
           flexShrink: 0,
           flexWrap: 'wrap',
         }}
@@ -139,9 +139,9 @@ export default function SkillPanel({ onSendCommand, projectDir }: SkillPanelProp
               style={{
                 padding: '1px 6px',
                 background: active ? `${color}15` : 'transparent',
-                border: `1px solid ${active ? `${color}40` : '#2a3042'}`,
+                border: `1px solid ${active ? `${color}40` : '#333333'}`,
                 borderRadius: 8,
-                color: active ? color : '#4b5563',
+                color: active ? color : '#505661',
                 fontSize: 8,
                 cursor: 'pointer',
                 fontWeight: active ? 700 : 400,
@@ -168,7 +168,7 @@ export default function SkillPanel({ onSendCommand, projectDir }: SkillPanelProp
               key={skill.id}
               style={{
                 padding: '8px 10px',
-                borderBottom: '1px solid rgba(42,48,66,0.5)',
+                borderBottom: '1px solid #000000',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 4,
@@ -178,8 +178,8 @@ export default function SkillPanel({ onSendCommand, projectDir }: SkillPanelProp
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ fontSize: 16 }}>{skill.icon}</span>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: '#e5e7eb' }}>{skill.name}</div>
-                  <div style={{ fontSize: 8, color: '#4b5563' }}>{skill.nameKo}</div>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: '#e6edf3' }}>{skill.name}</div>
+                  <div style={{ fontSize: 8, color: '#505661' }}>{skill.nameKo}</div>
                 </div>
                 <span
                   style={{
@@ -208,7 +208,7 @@ export default function SkillPanel({ onSendCommand, projectDir }: SkillPanelProp
                     fontSize: 8.5,
                     color: '#9ca3af',
                     lineHeight: 1.6,
-                    background: 'rgba(10,14,26,0.7)',
+                    background: '#000000',
                     borderLeft: '2px solid rgba(0,255,136,0.4)',
                     padding: '6px 8px',
                     borderRadius: '0 4px 4px 0',
@@ -225,12 +225,12 @@ export default function SkillPanel({ onSendCommand, projectDir }: SkillPanelProp
               <div
                 style={{
                   fontSize: 8,
-                  color: '#4b5563',
+                  color: '#505661',
                   fontFamily: 'monospace',
-                  background: 'rgba(10,14,26,0.6)',
+                  background: '#000000',
                   padding: '2px 6px',
                   borderRadius: 3,
-                  border: '1px solid #1e2535',
+                  border: '1px solid #333333',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
@@ -250,7 +250,7 @@ export default function SkillPanel({ onSendCommand, projectDir }: SkillPanelProp
                         fontSize: 7,
                         color: '#374151',
                         padding: '0 4px',
-                        background: 'rgba(42,48,66,0.5)',
+                        background: '#000000',
                         borderRadius: 3,
                       }}
                     >
@@ -264,8 +264,8 @@ export default function SkillPanel({ onSendCommand, projectDir }: SkillPanelProp
                     onClick={() => toggleExpand(skill.id)}
                     style={{
                       padding: '2px 7px',
-                      background: isExpanded ? 'rgba(96,165,250,0.15)' : 'rgba(42,48,66,0.5)',
-                      border: `1px solid ${isExpanded ? 'rgba(96,165,250,0.4)' : '#2a3042'}`,
+                      background: isExpanded ? 'rgba(96,165,250,0.15)' : '#000000',
+                      border: `1px solid ${isExpanded ? 'rgba(96,165,250,0.4)' : '#333333'}`,
                       borderRadius: 3,
                       color: isExpanded ? '#60a5fa' : '#6b7280',
                       fontSize: 7,
@@ -311,8 +311,8 @@ export default function SkillPanel({ onSendCommand, projectDir }: SkillPanelProp
                         onClick={() => handleCopy(skill)}
                         style={{
                           padding: '2px 7px',
-                          background: copiedId === skill.id ? 'rgba(0,255,136,0.1)' : 'rgba(42,48,66,0.5)',
-                          border: `1px solid ${copiedId === skill.id ? 'rgba(0,255,136,0.3)' : '#2a3042'}`,
+                          background: copiedId === skill.id ? 'rgba(0,255,136,0.1)' : '#000000',
+                          border: `1px solid ${copiedId === skill.id ? 'rgba(0,255,136,0.3)' : '#333333'}`,
                           borderRadius: 3,
                           color: copiedId === skill.id ? '#00ff88' : '#6b7280',
                           fontSize: 7,

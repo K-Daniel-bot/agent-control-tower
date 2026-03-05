@@ -132,7 +132,7 @@ export function DependencyGraphSection() {
       .attr('r', (d) => d.r)
       .attr('fill', (d) => {
         if (d.nodeType === 'hub') return 'rgba(0,255,136,0.12)'
-        return '#1a1f2e'
+        return '#000000'
       })
       .attr('stroke', (d) => d.color)
       .attr('stroke-width', (d) => (d.nodeType === 'hub' ? 3 : d.status === 'active' || d.status === 'working' ? 2.5 : 1.5))
@@ -234,7 +234,7 @@ export function DependencyGraphSection() {
         flexDirection: 'column',
         overflow: 'hidden',
         minHeight: 0,
-        borderTop: '1px solid #2a3042',
+        borderTop: '1px solid #333333',
       }}
     >
       <SectionHeader
@@ -254,7 +254,7 @@ export function DependencyGraphSection() {
               zIndex: 10,
             }}
           >
-            <span style={{ fontSize: 11, color: '#4b5563', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: 11, color: '#505661', letterSpacing: '0.05em' }}>
               의존성 그래프 대기 중...
             </span>
           </div>

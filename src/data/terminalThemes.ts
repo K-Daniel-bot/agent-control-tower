@@ -2,12 +2,12 @@ import type { TerminalTheme, ThemeName, TerminalConfig } from '@/types/terminal'
 
 export const THEMES: Record<ThemeName, TerminalTheme> = {
   'kaku-dark': {
-    background: '#0a0e1a',
+    background: '#1a1e28',
     foreground: '#e5e7eb',
     cursor: '#00ff88',
-    cursorAccent: '#0a0e1a',
+    cursorAccent: '#1a1e28',
     selectionBackground: 'rgba(0,255,136,0.2)',
-    black: '#1a1f2e',
+    black: '#222836',
     red: '#ef4444',
     green: '#00ff88',
     yellow: '#f59e0b',
@@ -26,12 +26,12 @@ export const THEMES: Record<ThemeName, TerminalTheme> = {
   },
 
   'noc-green': {
-    background: '#0a0e0a',
+    background: '#1a1e28',
     foreground: '#00ff88',
     cursor: '#00ff88',
-    cursorAccent: '#0a0e0a',
+    cursorAccent: '#1a1e28',
     selectionBackground: 'rgba(0,255,136,0.25)',
-    black: '#0a0e0a',
+    black: '#1a1e28',
     red: '#ff4444',
     green: '#00ff88',
     yellow: '#88ff00',
@@ -50,12 +50,12 @@ export const THEMES: Record<ThemeName, TerminalTheme> = {
   },
 
   monokai: {
-    background: '#272822',
+    background: '#1e2230',
     foreground: '#f8f8f2',
     cursor: '#f8f8f0',
-    cursorAccent: '#272822',
+    cursorAccent: '#1e2230',
     selectionBackground: 'rgba(73,72,62,0.6)',
-    black: '#272822',
+    black: '#1e2230',
     red: '#f92672',
     green: '#a6e22e',
     yellow: '#f4bf75',
@@ -74,12 +74,12 @@ export const THEMES: Record<ThemeName, TerminalTheme> = {
   },
 
   dracula: {
-    background: '#282a36',
+    background: '#222836',
     foreground: '#f8f8f2',
     cursor: '#f8f8f2',
-    cursorAccent: '#282a36',
+    cursorAccent: '#222836',
     selectionBackground: 'rgba(68,71,90,0.6)',
-    black: '#21222c',
+    black: '#1e2230',
     red: '#ff5555',
     green: '#50fa7b',
     yellow: '#f1fa8c',

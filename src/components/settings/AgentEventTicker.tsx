@@ -41,7 +41,7 @@ export default function AgentEventTicker() {
   if (!current) {
     return (
       <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ fontSize: 9, color: '#4b5563' }}>이벤트 대기 중...</span>
+        <span style={{ fontSize: 9, color: '#505661' }}>이벤트 대기 중...</span>
       </div>
     )
   }
@@ -89,7 +89,7 @@ export default function AgentEventTicker() {
       <span
         style={{
           fontSize: 9,
-          color: '#e5e7eb',
+          color: '#e6edf3',
           flex: 1,
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -100,7 +100,7 @@ export default function AgentEventTicker() {
       </span>
 
       {/* Counter */}
-      <span style={{ fontSize: 8, color: '#4b5563', flexShrink: 0, fontFamily: 'monospace' }}>
+      <span style={{ fontSize: 8, color: '#505661', flexShrink: 0, fontFamily: 'monospace' }}>
         {currentIndex + 1}/{events.length}
       </span>
     </div>

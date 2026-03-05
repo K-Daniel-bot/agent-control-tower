@@ -17,7 +17,7 @@ export default function NodeFeaturePopover({ node, screenX, screenY }: NodeFeatu
         top: screenY - 40,
         zIndex: 60,
         width: 180,
-        background: 'rgba(16,20,32,0.97)',
+        background: 'transparent',
         border: `1px solid ${node.color}44`,
         borderRadius: 8,
         padding: '10px 12px',
@@ -52,7 +52,7 @@ export default function NodeFeaturePopover({ node, screenX, screenY }: NodeFeatu
               alignItems: 'center',
               gap: 5,
               fontSize: 9,
-              color: '#d1d5db',
+              color: '#9ca3af',
             }}
           >
             <div

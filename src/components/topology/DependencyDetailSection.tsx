@@ -13,7 +13,7 @@ const STATUS_COLORS: Record<string, string> = {
   working: '#00ff88',
   idle: '#6b7280',
   error: '#ef4444',
-  complete: '#4b5563',
+  complete: '#505661',
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -52,7 +52,7 @@ export function DependencyDetailSection() {
         flexDirection: 'column',
         overflow: 'hidden',
         minHeight: 0,
-        borderTop: '1px solid #2a3042',
+        borderTop: '1px solid #333333',
       }}
     >
       <SectionHeader title="Agent Status Detail" accentColor="#a855f7" />
@@ -73,7 +73,7 @@ export function DependencyDetailSection() {
               justifyContent: 'center',
             }}
           >
-            <span style={{ fontSize: 11, color: '#4b5563', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: 11, color: '#505661', letterSpacing: '0.05em' }}>
               에이전트 상태 대기 중...
             </span>
           </div>
@@ -95,8 +95,8 @@ export function DependencyDetailSection() {
                   key={agent.identity.id}
                   onClick={(e) => handleCardClick(agent, e)}
                   style={{
-                    background: 'rgba(26,31,46,0.8)',
-                    border: `1px solid ${isActive ? statusColor : '#2a3042'}`,
+                    background: 'transparent',
+                    border: `1px solid ${isActive ? statusColor : '#333333'}`,
                     borderRadius: 6,
                     padding: '6px 8px',
                     display: 'flex',
@@ -135,7 +135,7 @@ export function DependencyDetailSection() {
                     </span>
                   </div>
                   {agent.latencyMs > 0 && (
-                    <div style={{ fontSize: 7, color: '#4b5563', fontFamily: 'monospace' }}>
+                    <div style={{ fontSize: 7, color: '#505661', fontFamily: 'monospace' }}>
                       p99: {agent.latencyMs}ms
                     </div>
                   )}

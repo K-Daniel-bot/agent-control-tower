@@ -8,25 +8,25 @@ export function UserRequestNode() {
       style={{
         width: 82,
         height: 52,
-        background: 'rgba(241,245,249,0.07)',
-        border: '1.5px solid rgba(226,232,240,0.4)',
+        background: 'rgba(34,40,54,0.6)',
+        border: '1.5px solid rgba(46,53,69,0.7)',
         borderRadius: 26,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         gap: 2,
-        boxShadow: '0 0 10px rgba(226,232,240,0.08)',
+        boxShadow: '0 0 10px rgba(46,53,69,0.3)',
         cursor: 'default',
         userSelect: 'none',
       }}
     >
       {/* Person icon */}
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="8" r="4" fill="#cbd5e1" opacity="0.85" />
+        <circle cx="12" cy="8" r="4" fill="#8b95a5" opacity="0.85" />
         <path
           d="M4 20c0-4 3.6-7 8-7s8 3 8 7"
-          stroke="#cbd5e1"
+          stroke="#8b95a5"
           strokeWidth="1.8"
           strokeLinecap="round"
           opacity="0.85"
@@ -37,7 +37,7 @@ export function UserRequestNode() {
         style={{
           fontSize: 7.5,
           fontWeight: 700,
-          color: '#94a3b8',
+          color: '#8b95a5',
           letterSpacing: '0.04em',
           textAlign: 'center',
           lineHeight: 1.3,
@@ -50,8 +50,8 @@ export function UserRequestNode() {
         type="source"
         position={Position.Right}
         style={{
-          background: '#64748b',
-          border: '2px solid #64748b',
+          background: '#505661',
+          border: '2px solid #505661',
           width: 7,
           height: 7,
         }}

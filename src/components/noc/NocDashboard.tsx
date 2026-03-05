@@ -18,7 +18,7 @@ export default function NocDashboard() {
         gridTemplateRows: '1fr auto auto',
         width: '100%',
         height: '100%',
-        background: '#0a0e1a',
+        background: 'transparent',
         overflow: 'hidden',
       }}
     >
@@ -28,7 +28,7 @@ export default function NocDashboard() {
           gridColumn: '1',
           gridRow: '1',
           overflow: 'hidden',
-          borderRight: '1px solid #1e2535',
+          borderRight: '1px solid #333333',
         }}
       >
         <NocLeftPanel />
@@ -50,7 +50,7 @@ export default function NocDashboard() {
           gridColumn: '3',
           gridRow: '1',
           overflow: 'hidden',
-          borderLeft: '1px solid #1e2535',
+          borderLeft: '1px solid #333333',
         }}
       >
         <NocRightPanel />
@@ -61,7 +61,7 @@ export default function NocDashboard() {
         style={{
           gridColumn: '1 / -1',
           gridRow: '2',
-          borderTop: '1px solid #1e2535',
+          borderTop: '1px solid #333333',
         }}
       >
         <NocBottomRow />
@@ -72,7 +72,7 @@ export default function NocDashboard() {
         style={{
           gridColumn: '1 / -1',
           gridRow: '3',
-          borderTop: '1px solid #1e2535',
+          borderTop: '1px solid #333333',
         }}
       >
         <NocEventLogFooter />

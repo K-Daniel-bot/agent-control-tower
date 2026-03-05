@@ -28,7 +28,7 @@ export default function AgentSettingsPage() {
   })
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: '#0a0e1a' }}>
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'transparent' }}>
       {/* Tab bar */}
       <div
         style={{
@@ -36,9 +36,9 @@ export default function AgentSettingsPage() {
           alignItems: 'center',
           gap: 4,
           padding: '6px 12px',
-          borderBottom: '1px solid #1a2035',
+          borderBottom: '1px solid #333333',
           flexShrink: 0,
-          background: 'rgba(16,20,32,0.8)',
+          background: 'transparent',
         }}
       >
         <button style={tabBtn('infra', '인프라 현황')} onClick={() => setTab('infra')}>인프라 현황</button>
@@ -61,20 +61,20 @@ export default function AgentSettingsPage() {
             overflow: 'hidden',
           }}
         >
-          <div style={{ gridArea: 'left', overflow: 'hidden', borderRight: '1px solid #1a2035', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ gridArea: 'left', overflow: 'hidden', borderRight: '1px solid #333333', display: 'flex', flexDirection: 'column' }}>
             <AgentResourcePanel />
           </div>
           <div style={{ gridArea: 'center', overflow: 'hidden', position: 'relative' }}>
             <AgentInfraMap />
           </div>
-          <div style={{ gridArea: 'right', overflow: 'hidden', borderLeft: '1px solid #1a2035', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ gridArea: 'right', overflow: 'hidden', borderLeft: '1px solid #333333', display: 'flex', flexDirection: 'column' }}>
             <AgentStatusPanel />
             <RequestStatusPanel />
           </div>
-          <div style={{ gridArea: 'bottom', overflow: 'hidden', borderTop: '1px solid #1a2035' }}>
+          <div style={{ gridArea: 'bottom', overflow: 'hidden', borderTop: '1px solid #333333' }}>
             <AgentMetricsBar />
           </div>
-          <div style={{ gridArea: 'ticker', overflow: 'hidden', borderTop: '1px solid #1a2035' }}>
+          <div style={{ gridArea: 'ticker', overflow: 'hidden', borderTop: '1px solid #333333' }}>
             <AgentEventTicker />
           </div>
         </div>

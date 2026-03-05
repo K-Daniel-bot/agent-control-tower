@@ -23,7 +23,7 @@ export default function AgentMetricsBar() {
           flex: '0 0 280px',
           display: 'flex',
           flexDirection: 'column',
-          borderRight: '1px solid #1a2035',
+          borderRight: '1px solid #333333',
           padding: '8px 10px',
         }}
       >
@@ -57,7 +57,7 @@ export default function AgentMetricsBar() {
                     transition: 'height 0.5s',
                   }}
                 />
-                <span style={{ fontSize: 6, color: '#4b5563', textAlign: 'center', lineHeight: 1 }}>
+                <span style={{ fontSize: 6, color: '#505661', textAlign: 'center', lineHeight: 1 }}>
                   {m.name.split('/')[0]?.slice(0, 3)}
                 </span>
               </div>
@@ -70,7 +70,7 @@ export default function AgentMetricsBar() {
       <div style={{ flex: 1, overflow: 'auto', padding: '8px 0' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 8 }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid #1a2035' }}>
+            <tr style={{ borderBottom: '1px solid #333333' }}>
               {['에이전트', 'CPU%', 'MEM%', 'Token/s', 'Requests'].map((h) => (
                 <th
                   key={h}
@@ -92,10 +92,10 @@ export default function AgentMetricsBar() {
               <tr
                 key={m.agentId}
                 style={{
-                  borderBottom: '1px solid rgba(26,32,53,0.5)',
+                  borderBottom: '1px solid #333333',
                 }}
               >
-                <td style={{ padding: '3px 8px', color: '#e5e7eb', fontWeight: 600 }}>
+                <td style={{ padding: '3px 8px', color: '#e6edf3', fontWeight: 600 }}>
                   {m.name}
                 </td>
                 <td style={{ padding: '3px 8px', color: m.cpuUsage > 70 ? '#ef4444' : '#9ca3af', fontFamily: 'monospace' }}>

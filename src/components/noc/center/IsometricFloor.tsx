@@ -62,16 +62,16 @@ function IsometricFloor() {
       {/* Floor gradient definition */}
       <defs>
         <linearGradient id="floorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#1a1f2e" />
-          <stop offset="100%" stopColor="#141824" />
+          <stop offset="0%" stopColor="#000000" />
+          <stop offset="100%" stopColor="#000000" />
         </linearGradient>
         <linearGradient id="leftWallGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#0f1219" />
-          <stop offset="100%" stopColor="#0b0e15" />
+          <stop offset="0%" stopColor="#000000" />
+          <stop offset="100%" stopColor="#000000" />
         </linearGradient>
         <linearGradient id="rightWallGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#151a24" />
-          <stop offset="100%" stopColor="#111620" />
+          <stop offset="0%" stopColor="#000000" />
+          <stop offset="100%" stopColor="#000000" />
         </linearGradient>
       </defs>
 
@@ -79,14 +79,14 @@ function IsometricFloor() {
       <polygon
         points={toPoints(LEFT_WALL)}
         fill="url(#leftWallGrad)"
-        stroke="#1e2535"
+        stroke="#333333"
         strokeWidth={0.5}
       />
       {/* Right wall */}
       <polygon
         points={toPoints(RIGHT_WALL)}
         fill="url(#rightWallGrad)"
-        stroke="#1e2535"
+        stroke="#333333"
         strokeWidth={0.5}
       />
       {/* Wall edge highlight (top edge) */}
@@ -95,7 +95,7 @@ function IsometricFloor() {
         y1={FLOOR.left.y - WALL_HEIGHT}
         x2={FLOOR.top.x}
         y2={FLOOR.top.y - WALL_HEIGHT}
-        stroke="#2a3a50"
+        stroke="#333333"
         strokeWidth={1}
       />
       <line
@@ -103,7 +103,7 @@ function IsometricFloor() {
         y1={FLOOR.top.y - WALL_HEIGHT}
         x2={FLOOR.right.x}
         y2={FLOOR.right.y - WALL_HEIGHT}
-        stroke="#2a3a50"
+        stroke="#333333"
         strokeWidth={1}
       />
 
@@ -111,7 +111,7 @@ function IsometricFloor() {
       <polygon
         points={toPoints([FLOOR.top, FLOOR.right, FLOOR.bottom, FLOOR.left])}
         fill="url(#floorGrad)"
-        stroke="#1e2535"
+        stroke="#333333"
         strokeWidth={1}
       />
 
@@ -123,7 +123,7 @@ function IsometricFloor() {
           y1={line.y1}
           x2={line.x2}
           y2={line.y2}
-          stroke="#2a3042"
+          stroke="#333333"
           strokeWidth={0.4}
           opacity={0.6}
         />
@@ -135,7 +135,7 @@ function IsometricFloor() {
         y1={FLOOR.left.y}
         x2={FLOOR.top.x}
         y2={FLOOR.top.y}
-        stroke="#2a3a50"
+        stroke="#333333"
         strokeWidth={0.8}
       />
       <line
@@ -143,7 +143,7 @@ function IsometricFloor() {
         y1={FLOOR.top.y}
         x2={FLOOR.right.x}
         y2={FLOOR.right.y}
-        stroke="#2a3a50"
+        stroke="#333333"
         strokeWidth={0.8}
       />
     </g>
