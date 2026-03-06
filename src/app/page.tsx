@@ -157,6 +157,17 @@ const CustomizePage = dynamic(
   }
 )
 
+const RemoteDashboard = dynamic(
+  () =>
+    import('@/components/remote/RemoteDashboard')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="원격 제어" color="#06b6d4" />),
+  {
+    ssr: false,
+    loading: () => <PlaceholderPanel title="원격 제어 로딩 중..." color="#06b6d4" />,
+  }
+)
+
 function DashboardView() {
   return (
     <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -245,6 +256,9 @@ export default function DashboardPage() {
       </div>
       <div style={{ display: activeTab === 'voice' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
         <VoiceMeetingDashboard />
+      </div>
+      <div style={{ display: activeTab === 'remote' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
+        <RemoteDashboard />
       </div>
 
       {/* Voice Modal */}

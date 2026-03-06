@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3939",
     "dev:terminal": "tsx scripts/terminal-server.ts",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:terminal\"",
     "servers": "tsx scripts/start-servers.ts",
-    "control": "npm run dev -- -p 3000 & open http://localhost:3000/servers",
+    "control": "npm run dev & open http://localhost:3939/servers",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
