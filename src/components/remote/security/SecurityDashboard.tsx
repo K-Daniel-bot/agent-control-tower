@@ -36,6 +36,7 @@ export default function SecurityDashboard() {
       borderRadius: 4,
       padding: 12,
       fontFamily: 'monospace',
+      overflow: 'visible',
     }}>
       <div style={{
         display: 'flex',
@@ -111,9 +112,11 @@ export default function SecurityDashboard() {
             color: levelInfo.color,
             fontSize: 10,
             fontWeight: 600,
-            padding: '1px 6px',
+            padding: '2px 8px',
             border: `1px solid ${levelInfo.color}`,
             borderRadius: 2,
+            whiteSpace: 'nowrap',
+            lineHeight: '14px',
           }}>
             {securityLevel.toUpperCase()}
           </span>

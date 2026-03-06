@@ -8,8 +8,9 @@ import ThreatDetector from './ThreatDetector'
 
 const cardStyle: React.CSSProperties = {
   flex: 1,
-  padding: '8px 12px',
+  padding: '10px 12px',
   minWidth: 0,
+  overflow: 'hidden',
 }
 
 const dividerStyle: React.CSSProperties = {

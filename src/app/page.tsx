@@ -168,6 +168,28 @@ const RemoteDashboard = dynamic(
   }
 )
 
+const LogsDashboard = dynamic(
+  () =>
+    import('@/components/logs/LogsDashboard')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="로그" color="#f59e0b" />),
+  {
+    ssr: false,
+    loading: () => <PlaceholderPanel title="로그 로딩 중..." color="#f59e0b" />,
+  }
+)
+
+const AutomationDashboard = dynamic(
+  () =>
+    import('@/components/automation/AutomationDashboard')
+      .then((mod) => mod.default)
+      .catch(() => () => <PlaceholderPanel title="자동화" color="#06b6d4" />),
+  {
+    ssr: false,
+    loading: () => <PlaceholderPanel title="자동화 로딩 중..." color="#06b6d4" />,
+  }
+)
+
 function DashboardView() {
   return (
     <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -259,6 +281,12 @@ export default function DashboardPage() {
       </div>
       <div style={{ display: activeTab === 'remote' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
         <RemoteDashboard />
+      </div>
+      <div style={{ display: activeTab === 'logs' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
+        <LogsDashboard />
+      </div>
+      <div style={{ display: activeTab === 'automation' ? 'flex' : 'none', flex: 1, overflow: 'hidden' }}>
+        <AutomationDashboard />
       </div>
 
       {/* Voice Modal */}

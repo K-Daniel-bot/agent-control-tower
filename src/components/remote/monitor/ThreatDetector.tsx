@@ -15,9 +15,9 @@ function getOverallStatus(counts: Record<ThreatLevel, number>): {
   readonly label: string
   readonly color: string
 } {
-  if (counts.danger > 0) return { label: '\uC704\uD5D8', color: NocTheme.red }
-  if (counts.warning > 0) return { label: '\uC8FC\uC758', color: NocTheme.orange }
-  return { label: '\uC815\uC0C1', color: NocTheme.green }
+  if (counts.danger > 0) return { label: '위험', color: NocTheme.red }
+  if (counts.warning > 0) return { label: '주의', color: NocTheme.orange }
+  return { label: '정상', color: NocTheme.green }
 }
 
 function countByLevel(
@@ -31,8 +31,8 @@ function countByLevel(
 }
 
 export default function ThreatDetector() {
-  const { state } = useRemote()
-  const { threats } = state
+  const { state, toggleMonitoring } = useRemote()
+  const { threats, monitoringEnabled } = state
 
   const counts = countByLevel(threats)
   const status = getOverallStatus(counts)
@@ -55,9 +55,23 @@ export default function ThreatDetector() {
         <span style={{ fontSize: 11, color: status.color, fontWeight: 600 }}>
           {status.label}
         </span>
-        <span style={{ fontSize: 9, color: NocTheme.textTertiary, marginLeft: 'auto' }}>
-          {'\uAC10\uC2DC ON'}
-        </span>
+        <button
+          onClick={toggleMonitoring}
+          style={{
+            marginLeft: 'auto',
+            fontSize: 9,
+            fontFamily: 'monospace',
+            color: monitoringEnabled ? NocTheme.green : NocTheme.red,
+            background: monitoringEnabled ? `${NocTheme.green}15` : `${NocTheme.red}15`,
+            border: `1px solid ${monitoringEnabled ? NocTheme.green : NocTheme.red}40`,
+            borderRadius: 3,
+            padding: '2px 8px',
+            cursor: 'pointer',
+            fontWeight: 600,
+          }}
+        >
+          감시 {monitoringEnabled ? 'ON' : 'OFF'}
+        </button>
       </div>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 6 }}>
@@ -90,9 +104,6 @@ export default function ThreatDetector() {
                 fontSize: 9,
                 color: LEVEL_CONFIG[threat.level].color,
                 marginBottom: 2,
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
               }}
             >
               <span style={{ flexShrink: 0 }}>
@@ -106,9 +117,11 @@ export default function ThreatDetector() {
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
+                  minWidth: 0,
+                  flex: 1,
                 }}
               >
-                {threat.description}
+                {threat.title}
               </span>
             </div>
           ))}

@@ -106,7 +106,7 @@ export default function ActionIndicator() {
             zIndex: 1,
           }}
         >
-          {config.label}
+          {state.currentAction ?? config.label}
         </span>
 
         {/* Target label */}

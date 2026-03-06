@@ -137,4 +137,5 @@ export interface RemoteState {
   readonly executionSpeed: number
   readonly currentAction: string | null
   readonly voiceLog: readonly VoiceEntry[]
+  readonly monitoringEnabled: boolean
 }

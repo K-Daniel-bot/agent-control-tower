@@ -2,10 +2,14 @@
   "name": "agent-control-tower",
   "version": "0.1.0",
   "private": true,
+  "main": "dist-electron/main.js",
   "scripts": {
     "dev": "next dev -p 3939",
     "dev:terminal": "tsx scripts/terminal-server.ts",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:terminal\"",
+    "dev:electron": "concurrently \"npm run dev\" \"npm run dev:terminal\" \"npm run electron:dev\"",
+    "electron:dev": "tsc -p electron/tsconfig.json && electron dist-electron/main.js",
+    "electron:build": "tsc -p electron/tsconfig.json && next build && electron-builder",
     "servers": "tsx scripts/start-servers.ts",
     "control": "npm run dev & open http://localhost:3939/servers",
     "build": "next build",
@@ -40,9 +44,32 @@
     "@types/react-dom": "^19",
     "@types/ws": "^8.18.1",
     "concurrently": "^9.2.1",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0",
     "postcss": "^8",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5"
+  },
+  "optionalDependencies": {
+    "@nut-tree/nut-js": "^4.2.0",
+    "screenshot-desktop": "^1.15.0"
+  },
+  "build": {
+    "appId": "com.agent-control-tower.app",
+    "productName": "Agent Control Tower",
+    "files": [
+      "dist-electron/**/*",
+      "out/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   }
 }

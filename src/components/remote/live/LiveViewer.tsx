@@ -1,10 +1,11 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { useRemote } from '../context/RemoteContext'
 import { NocTheme } from '@/constants/nocTheme'
 import CursorOverlay from './CursorOverlay'
 import ActionIndicator from './ActionIndicator'
+import { useElectronAPI } from '@/hooks/useElectronAPI'
 
 const FONT_FAMILY = "'JetBrains Mono', 'Fira Code', 'Menlo', monospace"
 
@@ -13,6 +14,41 @@ export default function LiveViewer() {
   const { connectionStatus, screenStream } = state
   const isConnected = connectionStatus === 'connected'
   const videoRef = useRef<HTMLVideoElement>(null)
+  const electronAPI = useElectronAPI()
+
+  // Electron native screenshot capture mode
+  const [nativeScreenshot, setNativeScreenshot] = useState<string | null>(null)
+  const [nativeCapturing, setNativeCapturing] = useState(false)
+  const nativeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const startNativeCapture = useCallback(() => {
+    setNativeCapturing(true)
+    const tick = async () => {
+      try {
+        const img = await electronAPI.screen.capture()
+        setNativeScreenshot(img)
+      } catch (err) {
+        console.error('[LiveViewer] Native capture error:', err)
+      }
+    }
+    void tick()
+    nativeIntervalRef.current = setInterval(() => { void tick() }, 1000)
+  }, [electronAPI])
+
+  const stopNativeCapture = useCallback(() => {
+    setNativeCapturing(false)
+    if (nativeIntervalRef.current) {
+      clearInterval(nativeIntervalRef.current)
+      nativeIntervalRef.current = null
+    }
+    setNativeScreenshot(null)
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (nativeIntervalRef.current) clearInterval(nativeIntervalRef.current)
+    }
+  }, [])
 
   useEffect(() => {
     const video = videoRef.current
@@ -32,6 +68,11 @@ export default function LiveViewer() {
       track?.removeEventListener('ended', handleEnded)
     }
   }, [screenMediaStream, stopScreenCapture])
+
+  const isNative = electronAPI.isElectron
+  const hasStream = isNative ? nativeCapturing : !!screenMediaStream
+  const handleStart = isNative ? startNativeCapture : startScreenCapture
+  const handleStop = isNative ? stopNativeCapture : stopScreenCapture
 
   return (
     <div style={{
@@ -60,20 +101,31 @@ export default function LiveViewer() {
 
       {/* Screen Area */}
       <div style={{ position: 'relative', flex: 1, overflow: 'hidden', background: '#0d1117' }}>
-        {screenMediaStream ? (
+        {hasStream ? (
           <>
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              style={{
-                width: '100%', height: '100%',
-                objectFit: 'contain', background: '#000',
-              }}
-            />
+            {isNative && nativeScreenshot ? (
+              <img
+                src={nativeScreenshot}
+                alt="Screen capture"
+                style={{
+                  width: '100%', height: '100%',
+                  objectFit: 'contain', background: '#000',
+                }}
+              />
+            ) : (
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                style={{
+                  width: '100%', height: '100%',
+                  objectFit: 'contain', background: '#000',
+                }}
+              />
+            )}
             <button
-              onClick={stopScreenCapture}
+              onClick={handleStop}
               style={{
                 position: 'absolute', top: 12, right: 12, zIndex: 5,
                 padding: '6px 14px', fontSize: 11, fontFamily: FONT_FAMILY,
@@ -81,7 +133,7 @@ export default function LiveViewer() {
                 border: 'none', borderRadius: 4, cursor: 'pointer',
               }}
             >
-              화면 공유 중지
+              {isNative ? '캡처 중지' : '화면 공유 중지'}
             </button>
           </>
         ) : (
@@ -90,7 +142,7 @@ export default function LiveViewer() {
             alignItems: 'center', justifyContent: 'center', gap: 20,
           }}>
             <button
-              onClick={startScreenCapture}
+              onClick={handleStart}
               style={{
                 padding: '14px 32px', fontSize: 15, fontFamily: FONT_FAMILY,
                 fontWeight: 600, background: 'transparent', color: '#00ff88',
@@ -100,10 +152,12 @@ export default function LiveViewer() {
               onMouseEnter={e => { (e.target as HTMLButtonElement).style.background = 'rgba(0,255,136,0.1)' }}
               onMouseLeave={e => { (e.target as HTMLButtonElement).style.background = 'transparent' }}
             >
-              화면 공유 시작
+              {isNative ? '화면 캡처 시작' : '화면 공유 시작'}
             </button>
             <span style={{ fontSize: 12, color: NocTheme.textTertiary, textAlign: 'center', maxWidth: 320 }}>
-              화면을 공유하면 AI가 실시간으로 화면을 확인합니다
+              {isNative
+                ? 'Electron 네이티브 스크린 캡처로 화면을 모니터링합니다'
+                : '화면을 공유하면 AI가 실시간으로 화면을 확인합니다'}
             </span>
           </div>
         )}

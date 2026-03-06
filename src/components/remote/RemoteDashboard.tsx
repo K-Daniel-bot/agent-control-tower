@@ -115,20 +115,18 @@ function RemoteContent() {
           <div style={{
             flexShrink: 0,
             padding: 10,
-            maxHeight: 140,
-            overflow: 'hidden',
+            overflow: 'auto',
           }}>
             <SecurityDashboard />
           </div>
         </div>
       </div>
 
-      {/* Row 3: System Monitor Bar - fixed 48px */}
+      {/* Row 3: System Monitor Bar */}
       <div style={{
-        height: 48,
+        minHeight: 56,
         flexShrink: 0,
         borderTop: `1px solid ${NocTheme.border}`,
-        overflow: 'hidden',
       }}>
         <SystemMonitor />
       </div>
